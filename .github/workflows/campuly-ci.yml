@@ -1,0 +1,124 @@
+name: Campuly CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI (${{ matrix.db }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    # PostgreSQL and SQLite stop part-way through the migrations until STEP 0.4.
+    continue-on-error: ${{ matrix.db != 'mysql' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [mysql, pgsql, sqlite]
+    services:
+      mysql:
+        image: ${{ matrix.db == 'mysql' && 'mysql:8.0' || '' }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+          MYSQL_USER: sail
+          MYSQL_PASSWORD: password
+        ports:
+          - '3306:3306'
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      postgres:
+        image: ${{ matrix.db == 'pgsql' && 'postgres:16' || '' }}
+        env:
+          POSTGRES_DB: testing
+          POSTGRES_USER: sail
+          POSTGRES_PASSWORD: password
+        ports:
+          - '5432:5432'
+        options: >-
+          --health-cmd="pg_isready -U sail -d testing"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - name: Check out the application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, curl, dom, gd, intl, mbstring, pdo_mysql, pdo_pgsql, pdo_sqlite, sqlite3, redis, xml, zip
+          coverage: none
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Install PHP dependencies
+        run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
+
+      # phpunit.xml forces Sail's MySQL settings (host mysql, user sail).
+      # MySQL keeps it and resolves the host; the other databases get a copy
+      # with their own connection settings.
+      - name: Configure the database
+        run: |
+          cp .env.testing .env
+          case "${{ matrix.db }}" in
+            mysql)
+              echo '127.0.0.1 mysql' | sudo tee -a /etc/hosts
+              cp phpunit.xml phpunit.ci.xml
+              ;;
+            pgsql)
+              sed -E \
+                -e 's/(name="DB_CONNECTION" value=)"mysql"/\1"pgsql"/' \
+                -e 's/(name="DB_HOST" value=)"mysql"/\1"127.0.0.1"/' \
+                -e 's/(name="DB_PORT" value=)"3306"/\1"5432"/' \
+                phpunit.xml > phpunit.ci.xml
+              sed -i -E 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/; s/^DB_HOST=.*/DB_HOST=127.0.0.1/; s/^DB_PORT=.*/DB_PORT=5432/' .env
+              ;;
+            sqlite)
+              touch "$GITHUB_WORKSPACE/database/testing.sqlite"
+              sed -E \
+                -e 's/(name="DB_CONNECTION" value=)"mysql"/\1"sqlite"/' \
+                -e "s#(name=\"DB_DATABASE\" value=)\"testing\"#\1\"$GITHUB_WORKSPACE/database/testing.sqlite\"#" \
+                phpunit.xml > phpunit.ci.xml
+              sed -i -E "s/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/; s#^DB_DATABASE=.*#DB_DATABASE=$GITHUB_WORKSPACE/database/testing.sqlite#" .env
+              ;;
+          esac
+          php artisan key:generate --no-interaction
+          grep -E 'DB_(CONNECTION|HOST|PORT|DATABASE)' phpunit.ci.xml
+
+      - name: Build front-end assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Migrate
+        run: php artisan migrate --force --no-interaction
+
+      - name: Run tests
+        run: php vendor/bin/pest --configuration=phpunit.ci.xml --compact
+
+      - name: Check code style
+        if: matrix.db == 'mysql'
+        run: vendor/bin/pint --test
+
+      - name: Run static analysis
+        if: matrix.db == 'mysql'
+        run: vendor/bin/phpstan analyse --memory-limit=2G --no-progress
