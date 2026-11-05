@@ -106,6 +106,7 @@ Common to all: `MAIL_MAILER`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `MAIL_REPLY
 
 | Variable | Default | Purpose |
 |---|---|---|
+| `APP_DEFAULT_LOCALE` | `fr` | Language when the person, campus and installation have not chosen one (`fr` or `en`); also the language of new campuses. |
 | `CAMPULY_DOCS_URL` | `https://github.com/Lineker-star/Campuly/tree/main/docs` | Where the header and sidebar "Documentation" links lead. |
 | `CAMPULY_UPDATE_REPOSITORY` | `Lineker-star/Campuly` | GitHub repository whose releases `campuly:update` installs. `SKUUL_UPDATE_REPOSITORY` is still read when this is unset, for older installs. |
 
@@ -117,7 +118,6 @@ Common to all: `MAIL_MAILER`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `MAIL_REPLY
 
 | Phase | Variables |
 |---|---|
-| 1 | `APP_DEFAULT_LOCALE=fr` |
 | 4 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` |
 | 6 | `PAYMENTS_MOBILE_MONEY_DRIVER`, provider keys (`CAMPAY_*`, `NOTCHPAY_*`, `FLUTTERWAVE_*`, `MTN_MOMO_*`, `ORANGE_MONEY_*`), `SMS_DRIVER`, `SMS_*`, `WHATSAPP_*` |
 | 7 | `CAMPULY_CLOUD_URL`, `CAMPULY_NODE_LAN=false` |

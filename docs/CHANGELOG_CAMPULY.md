@@ -2,6 +2,14 @@
 
 Changes made in the Campuly fork. Upstream Skuul history stays in `../CHANGELOG.md`.
 
+## [Unreleased] — Phase 1 — English ⇄ French (branch `phase-1-i18n`)
+
+### Added
+- STEP 1.1: `users.locale` and `schools.default_locale` (existing campuses keep the installation language); `APP_DEFAULT_LOCALE` (default `fr`); the language of each request is chosen from `?lang=`, the session, the person, the campus, the installation, the browser and the default, in that order, and sets Carbon and number formatting (`fr_CM`, `en_CM`); mail and notifications use the recipient's language (`HasLocalePreference`); `tests/Feature/I18n/LocaleResolutionTest.php`.
+
+### Changed
+- STEP 1.1: Campuly offers English and French only; print and portal documents declare the page language.
+
 ## [Unreleased] — Phase 0 — Foundation (branch `phase-0-foundation`)
 
 ### Added

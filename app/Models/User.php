@@ -10,6 +10,7 @@ use App\Enums\SchoolMembershipStatus;
 use App\Services\Authorization\SystemPermissionScope;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,7 +26,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     use HasFactory;
     use HasProfilePhoto;
@@ -51,7 +52,25 @@ class User extends Authenticatable implements MustVerifyEmail
         'state',
         'city',
         'gender',
+        'locale',
     ];
+
+    /**
+     * The language mail and notifications to this person are written in:
+     * their own choice, else the default of the campus they work in.
+     */
+    public function preferredLocale(): ?string
+    {
+        $supported = array_keys((array) config('app.supported_locales', []));
+
+        if (in_array($this->locale, $supported, true)) {
+            return $this->locale;
+        }
+
+        $campusLocale = current_school()?->default_locale;
+
+        return in_array($campusLocale, $supported, true) ? $campusLocale : null;
+    }
 
     /**
      * @var array<int, string>

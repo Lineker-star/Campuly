@@ -35,7 +35,7 @@ class School extends Model
 
     protected $fillable = [
         'organization_id', 'billing_group_id', 'name', 'address', 'country', 'state', 'city',
-        'postal_code', 'timezone', 'code', 'initials', 'phone', 'email', 'logo_path', 'setup_details_completed_at',
+        'postal_code', 'timezone', 'default_locale', 'code', 'initials', 'phone', 'email', 'logo_path', 'setup_details_completed_at',
     ];
 
     /**
@@ -44,6 +44,19 @@ class School extends Model
     protected $casts = [
         'setup_details_completed_at' => 'datetime',
     ];
+
+    /**
+     * A new campus speaks the installation's default language until someone
+     * chooses another (APP_DEFAULT_LOCALE).
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (School $school): void {
+            if (($school->getAttributes()['default_locale'] ?? null) === null) {
+                $school->default_locale = (string) config('app.locale');
+            }
+        });
+    }
 
     /**
      * Get the organization that owns this campus.

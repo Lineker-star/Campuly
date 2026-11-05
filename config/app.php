@@ -16,26 +16,21 @@ return [
     'asset_url' => env('ASSET_URL'),
 
     'timezone' => env('APP_TIMEZONE', 'UTC'),
-    'locale' => env('APP_LOCALE', 'en'),
+    // The language used when nothing else decides (docs/I18N.md, section 2).
+    'locale' => env('APP_DEFAULT_LOCALE', env('APP_LOCALE', 'fr')),
+    // Translation keys are the English text, so English is the safe fallback.
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
     'supported_locales' => [
-        'ar' => 'العربية',
-        'bn' => 'বাংলা',
-        'br' => 'Português (Brasil)',
-        'de' => 'Deutsch',
         'en' => 'English',
-        'es' => 'Español',
         'fr' => 'Français',
-        'ja' => '日本語',
-        'kr' => '한국어',
-        'nl' => 'Nederlands',
-        'pl' => 'Polski',
-        'pt' => 'Português',
-        'ro' => 'Română',
-        'ru' => 'Русский',
-        'zh' => '中文',
+    ],
+
+    // Region used for dates and numbers in each language (Cameroon).
+    'number_locales' => [
+        'en' => 'en_CM',
+        'fr' => 'fr_CM',
     ],
 
     'key' => env('APP_KEY'),

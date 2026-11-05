@@ -13,6 +13,8 @@
     <env name="APP_ENV" value="testing" force="true"/>
     <env name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" force="true"/>
     <env name="DEMO_MODE" value="false" force="true"/>
+    <!-- The suite asserts English text; tests about language set it themselves. -->
+    <env name="APP_DEFAULT_LOCALE" value="en" force="true"/>
     <env name="BCRYPT_ROUNDS" value="4" force="true"/>
     <env name="CACHE_DRIVER" value="array" force="true"/>
     <env name="DB_CONNECTION" value="mysql" force="true"/>
@@ -30,6 +32,7 @@
     <server name="APP_ENV" value="testing"/>
     <server name="APP_KEY" value="base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="/>
     <server name="DEMO_MODE" value="false"/>
+    <server name="APP_DEFAULT_LOCALE" value="en"/>
     <server name="BCRYPT_ROUNDS" value="4"/>
     <server name="CACHE_DRIVER" value="array"/>
     <server name="DB_CONNECTION" value="mysql"/>
