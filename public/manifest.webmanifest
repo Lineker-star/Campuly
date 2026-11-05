@@ -1,0 +1,29 @@
+{
+    "id": "/?app=campuly",
+    "name": "Campuly — Learn · Interact · Excel",
+    "short_name": "Campuly",
+    "description": "School management for every campus: students, results, attendance, timetables, fees and families — in English and French.",
+    "lang": "en",
+    "dir": "ltr",
+    "start_url": "/dashboard?source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+    "orientation": "any",
+    "background_color": "#F7F8FF",
+    "theme_color": "#2E2CFC",
+    "categories": ["education", "productivity"],
+    "icons": [
+        { "src": "/img/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/img/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/img/brand/icon-1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" },
+        { "src": "/img/brand/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "/img/brand/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "shortcuts": [
+        { "name": "Dashboard", "url": "/dashboard?source=pwa-shortcut", "icons": [{ "src": "/img/brand/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Take attendance", "url": "/dashboard/attendance/register?source=pwa-shortcut", "icons": [{ "src": "/img/brand/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Students", "url": "/dashboard/students?source=pwa-shortcut", "icons": [{ "src": "/img/brand/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Finance", "url": "/dashboard/fees/fee-invoices?source=pwa-shortcut", "icons": [{ "src": "/img/brand/icon-192.png", "sizes": "192x192" }] }
+    ]
+}

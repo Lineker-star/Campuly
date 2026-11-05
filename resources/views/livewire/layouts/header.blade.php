@@ -1,0 +1,95 @@
+<header
+    class="sticky top-0 z-30 flex h-14 w-full items-center justify-between gap-2 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+    <div class="flex min-w-0 items-center gap-2">
+        {{-- Prevent the mobile menu trigger from shrinking below its usable width. --}}
+        <april:sidebar-trigger class="size-11 shrink-0 select-none" />
+        <a href="{{route('home')}}" class="flex shrink-0 items-center gap-3" aria-label="Home">
+            {{-- The page layout supplies the h1; keep the product name as branding. --}}
+            <span class="contents md:hidden"><x-brand-logo variant="mark" size="sm" /></span>
+            <span class="brand-wordmark hidden text-sm sm:block md:hidden lg:block">{{ mb_substr(config('app.name'), 0, -2) }}<span class="brand-wordmark-accent">{{ mb_substr(config('app.name'), -2) }}</span></span>
+        </a>
+        <x-show-set-school />
+    </div>
+    <div class="flex h-full shrink-0 items-center gap-1" x-data="{'fullScreen' : $persist(false) }">
+        <a href="https://skuul.org/current/using/workspace" target="_blank" rel="noopener noreferrer"
+            class="inline-flex size-11 shrink-0 items-center justify-center gap-2 rounded-md text-sm hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto sm:px-3"
+            aria-label="Documentation (opens in a new tab)">
+            <x-lucide-book-open class="size-4" />
+            <span class="hidden sm:inline">Documentation</span>
+        </a>
+        <button type="button" x-on:click="$dispatch('open-command-palette')"
+            class="hidden h-9 items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted sm:flex"
+            aria-label="{{ __('Search pages and features') }}">
+            <x-lucide-search class="size-4" />
+            <span>{{ __('Search') }}</span>
+            <kbd class="ml-2 hidden rounded border bg-background px-1.5 py-0.5 font-mono text-[10px] sm:inline-block">{{ __('Ctrl') }} K</kbd>
+        </button>
+
+        <april:button variant="ghost" size="icon" class="hidden sm:inline-flex" type="button"
+            @click="fullScreen = !fullScreen; fullScreen == true ? document.documentElement.requestFullscreen() : document.exitFullscreen()">
+            <x-lucide-maximize class="size-4" />
+            <p class="sr-only">Full screen mode</p>
+        </april:button>
+
+        <april:dropdown-menu>
+            <slot:trigger>
+                <april:button aria-label="open theme selection" class="size-11 select-none justify-center" size="icon" variant="ghost"
+                    type="button">
+                    <x-lucide-sun class="h-4 w-4 dark:hidden" />
+                    <x-lucide-moon class="hidden h-4 w-4 dark:block" />
+                </april:button>
+            </slot:trigger>
+            <slot:content class="w-40">
+                <april:dropdown-menu-item aria-label="Select light theme" size="sm" type="button"
+                    class="w-full justify-start focus-visible:outline-hidden" x-on:click="setTheme('light')">
+                    <x-lucide-sun class="mr-2 h-4 w-4" />
+                    <p class="text-sm">Light</p>
+                </april:dropdown-menu-item>
+                <april:dropdown-menu-item aria-label="Select dark theme" size="sm" type="button"
+                    class="w-full justify-start focus-visible:outline-hidden" x-on:click="setTheme('dark')">
+                    <x-lucide-moon class="mr-2 h-4 w-4" />
+                    <p class="text-sm">Dark</p>
+                </april:dropdown-menu-item>
+                <april:dropdown-menu-item aria-label="Set theme based on system preference" size="sm" type="button"
+                    class="w-full justify-start focus-visible:outline-hidden" x-on:click="setTheme('system')">
+                    <x-lucide-monitor class="mr-2 h-4 w-4" />
+                    <p class="text-sm">System</p>
+                </april:dropdown-menu-item>
+            </slot:content>
+        </april:dropdown-menu>
+
+        <april:dropdown-menu x-teleport="body">
+            <slot:trigger>
+                <april:button variant="ghost" size="none" class="ml-1 flex h-11 select-none items-center gap-2 rounded-md px-2">
+                    <april:avatar size="sm">
+                        <slot:image src="{{auth()->user()->profile_photo_url}}" alt="{{auth()->user()->name}}" />
+                        <slot:fallback>{{strtoupper(substr(auth()->user()->name, 0, 1))}}</slot:fallback>
+                    </april:avatar>
+                    <span
+                        class="hidden max-w-40 truncate text-left text-sm font-medium lg:block">{{auth()->user()->name}}</span>
+                    <x-lucide-chevron-down class="size-3.5 text-muted-foreground" />
+                </april:button>
+            </slot:trigger>
+            <slot:content class="right-4 top-14 w-72 md:right-6">
+                <div class="flex items-center gap-3 border-b p-3">
+                    <div>
+                        <p class="font-medium">{{auth()->user()->name}}</p>
+                        <p class="text-xs text-muted-foreground">{{auth()->user()->email}}</p>
+                    </div>
+                </div>
+                <div class="p-1">
+                    <p class="px-2 py-1.5 text-xs text-muted-foreground">
+                        @if (current_school() !== null)
+                        Academic year: {{current_academic_year()?->name}}<br>
+                        Working {{ strtolower(school_term('period', 'term')) }}: {{current_academic_period()?->displayName ?? 'Not selected'}}
+                        @endif
+                    </p>
+                    <form action="{{route('logout')}}" method="POST">
+                        @csrf
+                        <april:dropdown-menu-item type="submit">Log out</april:dropdown-menu-item>
+                    </form>
+                </div>
+            </slot:content>
+        </april:dropdown-menu>
+    </div>
+</header>

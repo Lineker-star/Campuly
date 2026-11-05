@@ -1,0 +1,33 @@
+@extends('layouts.print')
+
+@section('title', $timetable->name)
+
+@section('back_url', route('timetables.show', $timetable))
+
+@section('content')
+    <h1 class="school-name">{{current_school()->name}}</h1>
+    @livewire('show-timetable', ['timetable' => $timetable, 'showCalendar' => false])
+@endsection
+
+@section('style')
+    <style>
+        .school-name{
+            font-size: 1.6rem;
+        }
+        h4{
+            margin: 0;
+        }
+        td, th {
+            padding: 0.05rem;
+        }
+        p{
+            padding: 0.20rem;
+        }
+        @page{
+            size: landscape;
+        }
+        header{
+            display: none;
+        }
+    </style>
+@endSection

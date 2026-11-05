@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Actions\Identity\ChangeGuardianLink;
+use App\Enums\AcademicStructureStatus;
+use App\Exceptions\InvalidValueException;
+use App\Livewire\Concerns\DispatchesStatusNotifications;
+use App\Models\AcademicCycleSection;
+use App\Models\ParentRecord;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
+
+class AssignStudentsToParent extends Component
+{
+    use DispatchesStatusNotifications;
+
+    #[Locked]
+    public User $parent;
+
+    /** @var array<int, array{id: int, label: string}> */
+    #[Locked]
+    public array $cycleSections = [];
+
+    public ?int $academicCycleSectionId = null;
+
+    /** @var array<int, array{id: int, name: string, admission_number: string|null}> */
+    #[Locked]
+    public array $students = [];
+
+    public ?int $studentId = null;
+
+    /** @var array<int, array{id: int, name: string, email: string, admission_number: string|null, cycle_section: string|null}> */
+    #[Locked]
+    public array $children = [];
+
+    public function mount(User $parent): void
+    {
+        Gate::authorize('update', [$parent, 'parent']);
+        abort_unless($parent->hasRole('parent'), 404);
+
+        $this->parent = $parent;
+        $this->cycleSections = AcademicCycleSection::inSchool()
+            ->with('academicLevel')
+            ->where('academic_year_id', current_academic_year_id())
+            ->where('status', AcademicStructureStatus::Active)
+            ->orderBy('position')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (AcademicCycleSection $cycleSection): array => [
+                'id' => $cycleSection->id,
+                'label' => $cycleSection->academicLevel->name
+                    .' · '.($cycleSection->label ?? $cycleSection->name),
+            ])
+            ->all();
+
+        $this->loadChildren();
+
+        if ($this->cycleSections === []) {
+            return;
+        }
+
+        $this->academicCycleSectionId = $this->cycleSections[0]['id'];
+        $this->loadStudents();
+    }
+
+    public function add(ChangeGuardianLink $changeGuardianLink): void
+    {
+        Gate::authorize('update', [$this->parent, 'parent']);
+
+        $linked = collect($this->children)->firstWhere('id', $this->studentId);
+
+        if ($linked !== null) {
+            $this->notify("{$linked['name']} is already linked to {$this->parent->name}.");
+
+            return;
+        }
+
+        $learner = collect($this->students)->firstWhere('id', $this->studentId) === null
+            ? null
+            : User::query()->find($this->studentId);
+
+        if ($learner === null) {
+            $this->addError('studentId', 'Choose a learner from the list.');
+
+            return;
+        }
+
+        try {
+            $changeGuardianLink->link($this->parent, $learner, auth()->user());
+        } catch (InvalidValueException $exception) {
+            $this->addError('studentId', $exception->getMessage());
+
+            return;
+        }
+
+        $this->loadChildren();
+        $this->loadStudents();
+        $this->notify("{$learner->name} is now linked to {$this->parent->name}.");
+    }
+
+    public function remove(int $studentId, ChangeGuardianLink $changeGuardianLink): void
+    {
+        Gate::authorize('update', [$this->parent, 'parent']);
+
+        abort_unless(collect($this->children)->contains('id', $studentId), 404);
+        $learner = User::query()->findOrFail($studentId);
+
+        try {
+            $changeGuardianLink->unlink($this->parent, $learner, auth()->user());
+        } catch (InvalidValueException $exception) {
+            $this->notify($exception->getMessage(), 'danger');
+
+            return;
+        }
+
+        $this->loadChildren();
+        $this->loadStudents();
+        $this->notify("{$learner->name} is no longer linked to {$this->parent->name}.");
+    }
+
+    public function updatedAcademicCycleSectionId(): void
+    {
+        $this->loadStudents();
+    }
+
+    private function loadStudents(): void
+    {
+        if ($this->academicCycleSectionId === null) {
+            $this->students = [];
+            $this->studentId = null;
+
+            return;
+        }
+
+        $this->students = User::role('student')
+            ->ofSchool()
+            ->whereNotIn('users.id', array_column($this->children, 'id'))
+            ->whereHas('studentRecord', fn ($query) => $query->where('academic_cycle_section_id', $this->academicCycleSectionId))
+            ->with(['studentRecord' => function (Relation $query): void {
+                $query->select([
+                    'student_records.id',
+                    'student_records.user_id',
+                    'student_records.admission_number',
+                ]);
+            }])
+            ->orderBy('name')
+            ->get()
+            ->map(fn (User $student): array => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'admission_number' => $student->studentRecord?->admission_number,
+            ])
+            ->all();
+
+        $this->studentId = $this->students[0]['id'] ?? null;
+    }
+
+    private function loadChildren(): void
+    {
+        $parentRecord = ParentRecord::query()->firstWhere('user_id', $this->parent->id);
+
+        if ($parentRecord === null) {
+            $this->children = [];
+
+            return;
+        }
+
+        $this->children = $parentRecord->studentsInSchool()
+            ->with('studentRecord.academicCycleSection.academicLevel')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (User $student): array => [
+                'id' => $student->id,
+                'name' => $student->name,
+                'email' => $student->email,
+                'admission_number' => $student->studentRecord?->admission_number,
+                'cycle_section' => $student->studentRecord?->academicCycleSection === null
+                    ? null
+                    : $student->studentRecord->academicCycleSection->academicLevel->name
+                        .' · '.($student->studentRecord->academicCycleSection->label
+                            ?? $student->studentRecord->academicCycleSection->name),
+            ])
+            ->all();
+    }
+
+    public function render(): View
+    {
+        return view('livewire.assign-students-to-parent');
+    }
+}

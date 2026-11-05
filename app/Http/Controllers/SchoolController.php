@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Actions\School\OpenCampus;
+use App\Http\Requests\SchoolStoreRequest;
+use App\Http\Requests\SchoolUpdateRequest;
+use App\Models\Organization;
+use App\Models\School;
+use App\Services\School\SchoolService;
+use App\Services\School\SchoolSetupChecklist;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
+class SchoolController extends Controller
+{
+    /**
+     * @var SchoolService
+     */
+    public $schoolService;
+
+    /**
+     * SchoolController constructor.
+     */
+    public function __construct(
+        SchoolService $schoolService,
+        private SchoolSetupChecklist $schoolSetupChecklist,
+        private OpenCampus $openCampus,
+    ) {
+        $this->schoolService = $schoolService;
+        $this->authorizeResource(School::class, 'school');
+    }
+
+    public function index(): View
+    {
+        return view('pages.school.index');
+    }
+
+    public function create(): View
+    {
+        return view('pages.school.create');
+    }
+
+    public function store(SchoolStoreRequest $request): RedirectResponse
+    {
+        $attributes = $request->validated();
+        $organization = Organization::findOrFail($attributes['organization_id']);
+
+        $this->authorize('createForOrganization', [School::class, $organization]);
+        unset($attributes['organization_id']);
+        $school = $this->openCampus->open($organization, $attributes, $request->user());
+        school_context()->set($school, remember: false);
+
+        return to_route('schools.setup', [$school, 'details'])
+            ->with('success', __('School created successfully. Let’s set up the essentials.'));
+    }
+
+    public function show(School $school): View
+    {
+        return view('pages.school.show', compact('school'));
+    }
+
+    public function edit(School $school): View
+    {
+        return view('pages.school.edit', [
+            'school' => $school,
+            'setup' => request()->boolean('setup'),
+        ]);
+    }
+
+    public function update(SchoolUpdateRequest $request, School $school): RedirectResponse
+    {
+        $this->schoolService->updateSchool($school, $request->validated());
+
+        if ($request->boolean('setup')) {
+            return to_route('schools.setup', [$school, 'language'])
+                ->with('success', __('School details updated.'));
+        }
+
+        return back()->with('success', __('School updated successfully'));
+    }
+
+    public function destroy(School $school): RedirectResponse
+    {
+        $this->schoolService->deleteSchool($school);
+
+        return back()->with('success', __('School deleted successfully'));
+    }
+
+    /**
+     * Get settings for authenticated user's school.
+     */
+    public function settings(): View
+    {
+        $school = current_school();
+
+        $this->authorize('update', $school);
+
+        $setupChecklist = $this->schoolSetupChecklist->for($school);
+
+        return view('pages.school.settings', [
+            'school' => $school,
+            'setupChecklist' => $setupChecklist,
+        ]);
+    }
+}

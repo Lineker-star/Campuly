@@ -1,0 +1,47 @@
+# Campuly — single-server production stack (app + MySQL + Redis).
+# Usage: cp .env.example .env (fill values, DB_HOST=db, REDIS_HOST=redis) then
+#        docker compose -f docker-compose.prod.yml up -d --build
+# For PostgreSQL/Supabase: remove the db service and point DB_* to your database.
+services:
+  app:
+    build: .
+    image: campuly/app:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RUN_MIGRATIONS: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - campuly-storage:/var/www/html/storage/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-campuly}
+      MYSQL_USER: ${DB_USERNAME:-campuly}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD}
+    volumes:
+      - campuly-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - campuly-redis:/data
+
+volumes:
+  campuly-storage:
+  campuly-mysql:
+  campuly-redis:

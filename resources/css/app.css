@@ -1,0 +1,458 @@
+@import "tailwindcss";
+@import "../../vendor/yungifez/april-ui/resources/css/april.css";
+
+@source "../../resources/**/*.blade.php";
+@source "../../app/**/*.php";
+
+/* Keep x-cloak hidden before Alpine starts, independently of April UI. */
+[x-cloak] {
+    display: none !important;
+}
+
+/* April's combobox transition can leave the panel hidden after opening when
+   the component is nested inside an Alpine location field. */
+[data-slot="combobox"][data-state="open"] > [data-slot="combobox-content"] {
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Native selects are flex items on form screens. Let long learner and period
+   options shrink to their column instead of pushing the control past the card. */
+[data-slot="native-select"] {
+    min-width: 0;
+}
+
+/* Campuly: --primary is the solid brand indigo, so text links use the link token.
+   Keep these rules outside layers to override Tailwind utilities. */
+[data-slot="button"].text-primary,
+[data-slot="editor-content"] .tiptap a {
+    color: hsl(var(--brand-link));
+}
+
+/* Notice content is sanitized to this small set of tags before it is stored.
+   Keep its published form readable even though the typography plugin is not
+   part of the application bundle. */
+.rich-text {
+    overflow-wrap: anywhere;
+}
+
+.rich-text > * + * {
+    margin-top: 0.75rem;
+}
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3 {
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.rich-text h1 {
+    font-size: 1.5rem;
+}
+
+.rich-text h2 {
+    font-size: 1.25rem;
+}
+
+.rich-text h3 {
+    font-size: 1.125rem;
+}
+
+.rich-text ul,
+.rich-text ol {
+    padding-left: 1.5rem;
+}
+
+.rich-text ul {
+    list-style: disc;
+}
+
+.rich-text ol {
+    list-style: decimal;
+}
+
+.rich-text blockquote {
+    border-left: 3px solid hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+    padding-left: 1rem;
+}
+
+.rich-text pre {
+    overflow-x: auto;
+    border-radius: 0.375rem;
+    background: hsl(var(--muted));
+    padding: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875rem;
+}
+
+.rich-text code {
+    border-radius: 0.25rem;
+    background: hsl(var(--muted));
+    padding: 0.125rem 0.25rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875rem;
+}
+
+.rich-text pre code {
+    background: transparent;
+    padding: 0;
+}
+
+.rich-text a {
+    color: hsl(var(--primary-foreground));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.rich-text hr {
+    border-top: 1px solid hsl(var(--border));
+}
+
+/* Use a separate dark-theme text token to meet 4.5:1 contrast without changing button backgrounds.
+   Keep these rules outside layers to override Tailwind utilities. */
+:root {
+    --destructive-text: var(--destructive);
+}
+
+.dark {
+    --destructive-text: 0 72% 68%;
+}
+
+.text-destructive {
+    color: hsl(var(--destructive-text));
+}
+
+/* Use the foreground token for focus rings to meet 3:1 contrast in both themes.
+   Keep these rules outside layers to override Tailwind utilities. */
+:root {
+    --ring: var(--primary-foreground);
+}
+
+.dark {
+    --ring: var(--primary-foreground);
+}
+
+/* Match native checkbox size and color to custom controls.
+   Exclude switches, which draw their own tracks. Override utilities outside layers. */
+input[type="checkbox"]:not([role="switch"]),
+input[type="radio"] {
+    accent-color: hsl(var(--primary-foreground));
+    width: 1rem;
+    height: 1rem;
+}
+
+@layer components {
+    .beautify-scrollbar::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: transparent;
+    }
+
+    .beautify-scrollbar::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+
+    .beautify-scrollbar::-webkit-scrollbar-thumb {
+        background-color: hsl(var(--muted-foreground) / 0.35);
+        border-radius: 9999px;
+    }
+
+    .card {
+        @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+    }
+
+    .card-header {
+        @apply flex flex-col gap-1.5 border-b p-6;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    .card-title {
+        @apply text-lg font-semibold leading-none tracking-tight;
+    }
+
+    [data-slot="data-table"] > .relative {
+        @apply max-w-full overflow-x-auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable;
+    }
+
+    [data-slot="data-table"] th {
+        white-space: nowrap;
+    }
+
+    [data-slot="data-table"] th:last-child,
+    [data-slot="data-table"] td:last-child {
+        position: sticky;
+        right: 0;
+        z-index: 2;
+        width: 1%;
+        min-width: 0;
+        white-space: nowrap;
+        box-shadow: -0.75rem 0 1rem -1rem rgb(0 0 0 / 0.55);
+    }
+
+    [data-slot="data-table"] th:last-child {
+        z-index: 3;
+        /* Opaque, so a column scrolling under the pinned one never shows through. */
+        background-color: color-mix(in oklab, var(--color-muted) 50%, var(--color-background));
+    }
+
+    [data-slot="data-table"] td:last-child {
+        background-color: var(--color-background);
+    }
+
+    [data-slot="data-table"] td:last-child > div {
+        flex-wrap: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        [data-slot="data-table"] th,
+        [data-slot="data-table"] td {
+            white-space: nowrap;
+        }
+
+        [data-slot="data-table-pagination"] {
+            align-items: stretch;
+        }
+
+        [data-slot="data-table-pagination"] > p {
+            width: 100%;
+        }
+
+        [data-slot="data-table-pagination"] > div {
+            display: grid;
+            width: 100%;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        [data-slot="data-table-pagination"] > div > label {
+            grid-column: 1 / -1;
+            width: 100%;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        [data-slot="data-table-pagination"] > div > button:first-of-type {
+            justify-self: start;
+            width: 2.25rem;
+            padding-inline: 0;
+            font-size: 0;
+        }
+
+        [data-slot="data-table-pagination"] > div > button:first-of-type::before {
+            content: "←";
+            font-size: 1rem;
+        }
+
+        [data-slot="data-table-pagination"] > div > span {
+            justify-self: center;
+            min-width: max-content;
+            white-space: nowrap;
+        }
+
+        [data-slot="data-table-pagination"] > div > button:last-child {
+            justify-self: end;
+            width: 2.25rem;
+            padding-inline: 0;
+            font-size: 0;
+        }
+
+        [data-slot="data-table-pagination"] > div > button:last-child::before {
+            content: "→";
+            font-size: 1rem;
+        }
+    }
+}
+
+
+/* ==========================================================================
+   CAMPULY BRAND THEME — Learn · Interact · Excel
+   Source colours are sampled from the official logo:
+     Navy   #0B135A  (wordmark, ink)
+     Blue   #0044FB  (cap highlight, gradient start)
+     Indigo #2E2CFC  (primary actions)
+     Violet #7109FC  ("LY", swoosh, accents)
+     Purple #A100F8  (gradient end)
+   Tokens are HSL triplets because April UI wraps them in hsl().
+   ========================================================================== */
+
+@theme {
+    --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --color-brand-navy: #0B135A;
+    --color-brand-blue: #0044FB;
+    --color-brand-indigo: #2E2CFC;
+    --color-brand-violet: #7109FC;
+    --color-brand-purple: #A100F8;
+}
+
+:root {
+    --brand-navy: 234 78% 20%;
+    --brand-blue: 224 100% 49%;
+    --brand-indigo: 241 97% 58%;
+    --brand-violet: 266 98% 51%;
+    --brand-purple: 279 100% 49%;
+    --brand-link: 241 80% 48%;
+    --brand-gradient: linear-gradient(135deg, #0044FB 0%, #2E2CFC 45%, #7109FC 80%, #A100F8 100%);
+
+    --background: 230 50% 98%;
+    --foreground: 234 60% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 234 60% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 234 60% 14%;
+    --primary: 241 90% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 232 60% 95%;
+    --secondary-foreground: 234 70% 20%;
+    --muted: 232 45% 95%;
+    --muted-foreground: 234 16% 40%;
+    --accent: 262 100% 96%;
+    --accent-foreground: 266 75% 36%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 232 35% 89%;
+    --input: 232 35% 86%;
+    --ring: 241 90% 58%;
+    --radius: 0.75rem;
+    --sidebar-background: 232 60% 97%;
+    --sidebar-foreground: 234 60% 16%;
+    --sidebar-primary: 241 90% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 241 90% 94%;
+    --sidebar-accent-foreground: 241 80% 30%;
+    --sidebar-border: 232 35% 89%;
+    --sidebar-ring: 241 90% 58%;
+    --chart-1: #2E2CFC;
+    --chart-2: #0044FB;
+    --chart-3: #7109FC;
+    --chart-4: #0B135A;
+    --chart-5: #A100F8;
+}
+
+.dark {
+    --brand-link: 245 100% 78%;
+
+    --background: 234 55% 7%;
+    --foreground: 230 50% 95%;
+    --card: 234 48% 10%;
+    --card-foreground: 230 50% 95%;
+    --popover: 234 48% 10%;
+    --popover-foreground: 230 50% 95%;
+    --primary: 248 95% 64%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 234 40% 15%;
+    --secondary-foreground: 230 50% 95%;
+    --muted: 234 40% 14%;
+    --muted-foreground: 232 22% 70%;
+    --accent: 266 60% 18%;
+    --accent-foreground: 266 100% 88%;
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 6%;
+    --border: 234 35% 20%;
+    --input: 234 35% 22%;
+    --ring: 248 95% 66%;
+    --sidebar-background: 234 62% 6%;
+    --sidebar-foreground: 230 50% 94%;
+    --sidebar-primary: 248 95% 64%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 241 50% 18%;
+    --sidebar-accent-foreground: 240 100% 92%;
+    --sidebar-border: 234 35% 16%;
+    --sidebar-ring: 248 95% 66%;
+    --chart-1: #6E6CFF;
+    --chart-2: #4D86FF;
+    --chart-3: #9D5CFF;
+    --chart-4: #C7CBFF;
+    --chart-5: #C46BFF;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Figures line up in tables, stat tiles and money. */
+td, .tabular-nums, [data-slot="table"] { font-variant-numeric: tabular-nums; }
+
+/* Wordmark: CAMPU in navy, LY in violet, like the logo. */
+.brand-wordmark {
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #0B135A;
+}
+.brand-wordmark-accent { color: #7109FC; }
+.brand-tagline { letter-spacing: 0.08em; }
+.dark .brand-wordmark { color: hsl(var(--foreground)); }
+.dark .brand-wordmark-accent { color: #9D5CFF; }
+
+.bg-brand-gradient { background-image: var(--brand-gradient); }
+.text-brand-gradient {
+    background-image: var(--brand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Primary buttons carry the logo gradient; hover deepens it. */
+[data-slot="button"].bg-primary {
+    background-image: var(--brand-gradient);
+    background-size: 140% 100%;
+    background-position: 0% 50%;
+    border-color: transparent;
+    box-shadow: 0 6px 18px -8px rgb(46 44 252 / 0.55);
+    transition: background-position 0.3s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+[data-slot="button"].bg-primary:hover {
+    background-position: 100% 50%;
+    box-shadow: 0 10px 24px -10px rgb(113 9 252 / 0.6);
+}
+[data-slot="button"].bg-primary:active { transform: translateY(1px); }
+
+/* Active sidebar item: indigo tint with a gradient rail. */
+[data-sidebar="menu-button"][data-active="true"],
+[data-slot="sidebar-menu-button"][data-active="true"] {
+    position: relative;
+    font-weight: 600;
+}
+[data-sidebar="menu-button"][data-active="true"]::before,
+[data-slot="sidebar-menu-button"][data-active="true"]::before {
+    content: "";
+    position: absolute;
+    left: -0.5rem;
+    top: 20%;
+    bottom: 20%;
+    width: 3px;
+    border-radius: 999px;
+    background-image: var(--brand-gradient);
+}
+
+/* Sign-in and installer backdrop: soft brand aurora. */
+.brand-aurora {
+    background:
+        radial-gradient(60rem 30rem at 10% -10%, rgb(0 68 251 / 0.16), transparent 60%),
+        radial-gradient(50rem 28rem at 110% 0%, rgb(113 9 252 / 0.16), transparent 60%),
+        radial-gradient(40rem 24rem at 50% 120%, rgb(46 44 252 / 0.10), transparent 60%);
+}
+.dark .brand-aurora {
+    background:
+        radial-gradient(60rem 30rem at 10% -10%, rgb(0 68 251 / 0.28), transparent 60%),
+        radial-gradient(50rem 28rem at 110% 0%, rgb(113 9 252 / 0.26), transparent 60%);
+}
+
+/* Page header gets a thin brand line under it. */
+#main { scroll-margin-top: 4rem; }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-slot="button"].bg-primary { transition: none; }
+}

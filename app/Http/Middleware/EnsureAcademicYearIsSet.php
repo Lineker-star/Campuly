@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Models\AcademicYear;
+use Closure;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+class EnsureAcademicYearIsSet
+{
+    /**
+     * @param  Closure(Request): (Response|RedirectResponse)  $next
+     * @return Response|RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        if (current_academic_year() === null && !$this->hasExplicitAcademicYear($request)) {
+            session()->flash('info', 'Choose a working school year before opening this page.');
+
+            return redirect()->route('academic-years.index');
+        }
+
+        return $next($request);
+    }
+
+    private function hasExplicitAcademicYear(Request $request): bool
+    {
+        if (!$request->routeIs('course-offerings.create')) {
+            return false;
+        }
+
+        $academicYearId = $request->input('academic_year_id');
+
+        return is_numeric($academicYearId)
+            && AcademicYear::inSchool()->whereKey((int) $academicYearId)->exists();
+    }
+}

@@ -1,0 +1,85 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Casts\\Money\:\:get\(\) should return Brick\\Money\\Money but returns null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Casts/Money.php
+
+		-
+			message: '#^Call to an undefined static method Nnjeim\\World\\World\:\:countries\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 2
+			path: app/Livewire/NationalityAndStateInputFields.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:isDue\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Models/FeeInvoice.php
+
+		-
+			message: '#^PHPDoc type array of property App\\Models\\User\:\:\$appends is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$appends\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property App\\Models\\User\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array\<string\> of property App\\Models\\User\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Policies/CustomTimetableItemPolicy.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Policies/FeeCategoryPolicy.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:students\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/Parent/ParentService.php
+
+		-
+			message: '#^Property App\\Models\\School\:\:\$logo_path \(string\|null\) does not accept bool\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Services/School/SchoolService.php
+
+		-
+			message: '#^Parameter \#1 \$min of function mt_rand expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Student/StudentService.php
+
+		-
+			message: '#^Parameter \#2 \$max of function mt_rand expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Student/StudentService.php
+
+		-
+			message: '#^Parameter \#1 \$code of function abort expects Illuminate\\Contracts\\Support\\Responsable\|int\|Symfony\\Component\\HttpFoundation\\Response, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/User/UserService.php
+
+		-
+			message: '#^Trait App\\Traits\\FeatureTestTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: app/Traits/FeatureTestTrait.php

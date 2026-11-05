@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Services\Teacher;
+
+use App\Enums\Role;
+use App\Models\StudentRecord;
+use App\Models\User;
+use App\Services\Print\PrintService;
+use App\Services\User\UserService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+
+class TeacherService
+{
+    /**
+     * User service variable.
+     */
+    public UserService $user;
+
+    public function __construct(UserService $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * Get all teachers in school.
+     *
+     * @return Collection
+     */
+    public function getAllTeachers()
+    {
+        return $this->user->getUsersByRole('teacher')->load('teacherRecord');
+    }
+
+    /**
+     * Create a new teacher.
+     *
+     * @param  array<string, mixed>  $record
+     */
+    public function createTeacher(array $record): User
+    {
+        $this->user->failIfAlreadyHolds($record['email'], Role::Teacher);
+
+        $learner = StudentRecord::query()
+            ->whereRelation('user', 'email', $record['email'])
+            ->enrolled()
+            ->with('user:id,name')
+            ->first();
+
+        if ($learner !== null) {
+            throw ValidationException::withMessages([
+                'email' => "{$learner->user?->name} is a learner. A learner cannot be made staff.",
+            ]);
+        }
+
+        return DB::transaction(function () use ($record): User {
+            $teacher = $this->user->createUser($record);
+            $teacher->assignRole(Role::Teacher);
+
+            return $teacher;
+        });
+    }
+
+    /**
+     * Update a teacher.
+     *
+     * @param  array|object|Collection  $records
+     * @return void
+     */
+    public function updateTeacher(User $teacher, $records)
+    {
+        $this->user->updateUser($teacher, $records, 'teacher');
+    }
+
+    /**
+     * Delete teacher.
+     *
+     *
+     * @return void
+     */
+    public function deleteTeacher(User $teacher)
+    {
+        $this->user->deleteUser($teacher);
+    }
+
+    /**
+     * Print a user profile.
+     *
+     *
+     * @return mixed
+     */
+    public function printProfile(string $name, string $view, array $data)
+    {
+        return PrintService::page($view, $data);
+    }
+}

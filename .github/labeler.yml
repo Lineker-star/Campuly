@@ -1,0 +1,23 @@
+PHP:
+  - changed-files:
+      - any-glob-to-any-file: ['app/**', 'config/**', 'database/**', 'routes/**', 'tests/**']
+
+blade:
+  - changed-files:
+      - any-glob-to-any-file: 'resources/views/**'
+
+js:
+  - changed-files:
+      - any-glob-to-any-file: 'resources/js/**'
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ['composer.json', 'composer.lock', 'package.json', 'package-lock.json']
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'tests/**'
+
+github:
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'

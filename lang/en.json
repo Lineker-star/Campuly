@@ -1,0 +1,13 @@
+{
+    "The :attribute must contain at least one letter.": "The :attribute must contain at least one letter.",
+    "The :attribute must contain at least one number.": "The :attribute must contain at least one number.",
+    "The :attribute must contain at least one symbol.": "The :attribute must contain at least one symbol.",
+    "The :attribute must contain at least one uppercase and one lowercase letter.": "The :attribute must contain at least one uppercase and one lowercase letter.",
+    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "The given :attribute has appeared in a data leak. Please choose a different :attribute.",
+    "Learn · Interact · Excel": "Learn · Interact · Excel",
+    "Campuly — Learn · Interact · Excel. School management for every campus.": "Campuly — Learn · Interact · Excel. School management for every campus.",
+    "Sign in to continue to :app.": "Sign in to continue to :app.",
+    "Install :app": "Install :app",
+    ":app is being updated. Try again in a few minutes.": ":app is being updated. Try again in a few minutes.",
+    "Home": "Home"
+}

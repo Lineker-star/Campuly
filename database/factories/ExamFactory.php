@@ -1,0 +1,32 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Exam;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<Exam>
+ */
+class ExamFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        $start = $this->faker->dateTimeBetween('next Monday', 'next Monday +7 day');
+        $stop = $this->faker->dateTimeBetween($start, $start->format('Y-m-d H:i:s').' +10 days');
+
+        return [
+            'name' => $this->faker->word,
+            'description' => $this->faker->sentence,
+            'academic_period_id' => '1',
+            'start_date' => $start,
+            'stop_date' => $stop,
+            'active' => $this->faker->boolean(),
+        ];
+    }
+}

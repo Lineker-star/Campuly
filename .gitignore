@@ -1,0 +1,22 @@
+/node_modules
+/public/hot
+/public/build
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+.htaccess
+/tmp
+# Tool caches. Both are rebuilt on every run.
+/storage/framework/phpstan
+.php-cs-fixer.cache
+_ide_helper.php

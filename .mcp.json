@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "vendor/bin/sail",
+            "args": [
+                "artisan",
+                "boost:mcp"
+            ]
+        },
+        "april-ui": {
+            "command": "vendor/bin/sail",
+            "args": [
+                "artisan",
+                "april:mcp"
+            ]
+        }
+    }
+}

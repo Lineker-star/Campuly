@@ -1,0 +1,190 @@
+<?php
+
+namespace App\Policies;
+
+use App\Enums\AcademicPeriodStatus;
+use App\Enums\Role;
+use App\Enums\TimetableStatus;
+use App\Models\CourseOffering;
+use App\Models\Timetable;
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class TimetablePolicy
+{
+    use HandlesAuthorization;
+
+    public function viewAny(User $user): bool
+    {
+        return $user->can('read timetable') && !$user->isParentPortalOnly();
+    }
+
+    public function view(User $user, Timetable $timetable): bool
+    {
+        if (!$user->can('read timetable')
+            || $user->isParentPortalOnly()
+            || !$this->belongsToWorkingSchool($timetable)
+        ) {
+            return false;
+        }
+
+        if (!$user->hasRole(Role::Student)) {
+            return true;
+        }
+
+        $enrollment = $user->studentRecord()->attending()->with('academicCycleSection.academicLevel')->first();
+
+        if ($timetable->status !== TimetableStatus::Published || $enrollment === null) {
+            return false;
+        }
+
+        // A subject's own times serve only the learners who take it.
+        if ($timetable->course_offering_id !== null) {
+            return CourseOffering::query()->whereKey($timetable->course_offering_id)->takenBy($enrollment)->exists();
+        }
+
+        return $timetable->academic_cycle_section_id === null
+            || $timetable->academic_cycle_section_id === $enrollment->academic_cycle_section_id;
+    }
+
+    public function create(User $user)
+    {
+        if ($user->can('create timetable')) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can create a schoolwide timetable.
+     */
+    public function createSchoolwide(User $user): bool
+    {
+        return $user->can('create timetable') && $user->can('create schoolwide timetable');
+    }
+
+    public function update(User $user, Timetable $timetable)
+    {
+        if ($user->can('update timetable')
+            && $timetable->acceptsChanges()
+            && $this->canPlan($timetable)
+            && $this->belongsToWorkingSchool($timetable)
+        ) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * Only a draft goes. A timetable that was once in use keeps the cover
+     * given against it, and deleting it would take that record with it.
+     */
+    public function delete(User $user, Timetable $timetable)
+    {
+        if ($user->can('delete timetable')
+            && $timetable->status === TimetableStatus::Draft
+            && $this->belongsToWorkingSchool($timetable)
+        ) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can publish the timetable.
+     */
+    public function publish(User $user, Timetable $timetable): ?bool
+    {
+        if ($user->can('update timetable')
+            && $timetable->status === TimetableStatus::Draft
+            && $this->canPlan($timetable)
+            && $this->belongsToWorkingSchool($timetable)
+        ) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
+     * Determine whether the user can start a timetable revision.
+     */
+    public function revise(User $user, Timetable $timetable): ?bool
+    {
+        if ($user->can('update timetable')
+            && $timetable->status === TimetableStatus::Published
+            && $this->canPlan($timetable)
+            && $this->belongsToWorkingSchool($timetable)
+        ) {
+            return true;
+        }
+
+        return null;
+    }
+
+    /**
+     * Determine whether the user can create a section-specific draft from a published template.
+     */
+    public function override(User $user, Timetable $timetable): ?bool
+    {
+        return $this->canManagePublishedSchedule($user, $timetable);
+    }
+
+    /**
+     * Determine whether the user can record a date-specific teacher replacement.
+     */
+    public function substitute(User $user, Timetable $timetable): ?bool
+    {
+        return $this->canManagePublishedSchedule($user, $timetable);
+    }
+
+    /**
+     * Check shared authority for work alongside a published timetable.
+     */
+    private function canManagePublishedSchedule(User $user, Timetable $timetable): ?bool
+    {
+        if ($user->can('update timetable')
+            && $timetable->status === TimetableStatus::Published
+            && $timetable->academicPeriod->acceptsNewWork()
+            && $timetable->academicPeriod->academicYear->acceptsNewWork()
+            && $this->belongsToWorkingSchool($timetable)
+        ) {
+            return true;
+        }
+
+        return null;
+    }
+
+    private function belongsToWorkingSchool(Timetable $timetable): bool
+    {
+        return current_school_id() === $timetable->academicPeriod?->school_id;
+    }
+
+    /**
+     * Check whether staff may prepare a timetable for the period.
+     *
+     * Scheduled periods need timetable planning before teaching starts. A
+     * closing or frozen period does not accept new timetable changes.
+     */
+    private function canPlan(Timetable $timetable): bool
+    {
+        $period = $timetable->academicPeriod;
+        $academicYear = $period?->academicYear;
+
+        return $period !== null
+            && $academicYear !== null
+            && !$period->status->isFrozen()
+            && $period->status !== AcademicPeriodStatus::Closing
+            && !$academicYear->status->isFrozen()
+            && $academicYear->status !== AcademicPeriodStatus::Closing;
+    }
+
+    public function restore(User $user, Timetable $timetable)
+    {
+        //
+    }
+
+    public function forceDelete(User $user, Timetable $timetable)
+    {
+        //
+    }
+}
