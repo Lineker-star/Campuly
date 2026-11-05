@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\AcademicCycleSection;
 use App\Models\Timetable;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 
 class TimetableSeeder extends Seeder
@@ -25,6 +26,9 @@ class TimetableSeeder extends Seeder
             'academic_cycle_section_id' => $cycleSection->id,
             'academic_period_id' => 1,
         ]);
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
+
         Timetable::factory()->count(10)->create();
     }
 }

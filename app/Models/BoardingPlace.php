@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Database\Factories\BoardingPlaceFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,7 @@ class BoardingPlace extends Model
     use HasFactory;
 
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

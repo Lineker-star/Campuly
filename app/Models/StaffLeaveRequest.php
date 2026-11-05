@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\LeaveStatus;
 use App\Enums\LeaveType;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ class StaffLeaveRequest extends Model
 {
     use HasFactory;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Exam;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 
 class ExamSeeder extends Seeder
@@ -22,6 +23,9 @@ class ExamSeeder extends Seeder
             'start_date' => '2020-01-01',
             'stop_date' => '2020-01-31',
         ]);
+
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
 
         Exam::factory()->count(10)->create();
     }

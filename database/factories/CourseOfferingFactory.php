@@ -24,7 +24,7 @@ class CourseOfferingFactory extends Factory
     public function definition(): array
     {
         /** @var School $school */
-        $school = School::query()->first() ?? School::factory()->create();
+        $school = School::query()->oldest('id')->first() ?? School::factory()->create();
         /** @var AcademicYear $academicYear */
         $academicYear = AcademicYear::query()->where('school_id', $school->id)->first()
             ?? AcademicYear::factory()->create(['school_id' => $school->id]);

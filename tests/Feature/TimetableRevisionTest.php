@@ -131,7 +131,7 @@ class TimetableRevisionTest extends TestCase
         $subject = $this->subject();
         TimetableRecord::create([
             'timetable_time_slot_id' => $slot->id,
-            'weekday_id' => Weekday::first()->id,
+            'weekday_id' => Weekday::query()->oldest('id')->first()->id,
             'timetable_time_slot_weekdayable_id' => $subject->id,
             'timetable_time_slot_weekdayable_type' => $subject->getMorphClass(),
         ]);
@@ -928,7 +928,7 @@ class TimetableRevisionTest extends TestCase
 
         TimetableRecord::create([
             'timetable_time_slot_id' => $slot->id,
-            'weekday_id' => Weekday::first()->id,
+            'weekday_id' => Weekday::query()->oldest('id')->first()->id,
             'timetable_time_slot_weekdayable_id' => $subject->id,
             'timetable_time_slot_weekdayable_type' => $subject->getMorphClass(),
         ]);

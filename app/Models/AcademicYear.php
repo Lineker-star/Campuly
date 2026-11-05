@@ -6,6 +6,7 @@ use App\Enums\AcademicPeriodStatus;
 use App\Enums\AcademicPeriodType;
 use App\Traits\HasPeriodLifecycle;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,7 @@ class AcademicYear extends Model
     use HasFactory;
     use HasPeriodLifecycle;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $appends = ['name'];
 

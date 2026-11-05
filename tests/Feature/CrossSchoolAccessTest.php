@@ -421,7 +421,7 @@ class CrossSchoolAccessTest extends TestCase
     {
         $this->assertSame(1, AcademicYear::inSchool($this->otherSchool)->count());
         $this->assertFalse(
-            AcademicYear::inSchool(School::first())->get()->contains($this->records['academicYear'])
+            AcademicYear::inSchool(School::query()->oldest('id')->first())->get()->contains($this->records['academicYear'])
         );
     }
 

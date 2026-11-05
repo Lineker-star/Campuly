@@ -56,7 +56,7 @@ class SyllabusSeeder extends Seeder
      */
     public function run(): void
     {
-        $school = School::query()->first();
+        $school = School::query()->oldest('id')->first();
 
         if ($school === null) {
             return;

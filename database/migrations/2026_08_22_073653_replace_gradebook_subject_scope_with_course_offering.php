@@ -32,6 +32,14 @@ return new class extends Migration
             $table->dropForeign(['subject_id']);
             $table->dropForeign(['academic_year_id']);
             $table->dropForeign(['academic_period_id']);
+
+            // SQLite refuses to drop a column an index still names. MySQL and
+            // PostgreSQL shrink or drop the index themselves, and MySQL needs
+            // it for the student_record_id foreign key.
+            if (Schema::getConnection()->getDriverName() === 'sqlite') {
+                $table->dropIndex(['student_record_id', 'academic_year_id']);
+            }
+
             $table->dropColumn(['subject_id', 'academic_year_id', 'academic_period_id']);
         });
     }

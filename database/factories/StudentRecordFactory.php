@@ -28,7 +28,7 @@ class StudentRecordFactory extends Factory
     public function definition()
     {
         $student = User::query()->findOrFail(User::factory()->create()->getKey());
-        $school = School::query()->first() ?? School::query()->findOrFail(School::factory()->create()->getKey());
+        $school = School::query()->oldest('id')->first() ?? School::query()->findOrFail(School::factory()->create()->getKey());
         $academicYear = AcademicYear::query()->where('school_id', $school->id)->first()
             ?? AcademicYear::query()->findOrFail(AcademicYear::factory()->create(['school_id' => $school->id])->getKey());
         $academicLevel = AcademicLevel::query()->where('school_id', $school->id)->first()

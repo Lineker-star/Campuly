@@ -19,7 +19,7 @@ class DormitoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'school_id' => School::first()?->id ?? School::factory(),
+            'school_id' => School::query()->oldest('id')->first()?->id ?? School::factory(),
             'name' => fake()->unique()->lastName().' House',
             'label' => 'House',
         ];

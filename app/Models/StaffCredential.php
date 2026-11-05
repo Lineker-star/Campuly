@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Support\Carbon;
 class StaffCredential extends Model
 {
     use HasFactory;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'staff_profile_id',

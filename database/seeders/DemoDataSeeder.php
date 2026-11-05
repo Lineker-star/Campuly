@@ -17,8 +17,8 @@ class DemoDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $school = School::first();
-        $admin = User::first();
+        $school = School::query()->oldest('id')->first();
+        $admin = User::query()->oldest('id')->first();
 
         if ($school !== null && $admin !== null) {
             $this->seedFor($school, $admin);

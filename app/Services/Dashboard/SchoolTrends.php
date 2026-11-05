@@ -13,6 +13,7 @@ use App\Models\StudentPayment;
 use App\Models\StudentRecord;
 use App\Models\User;
 use App\Services\Attendance\AttendanceSummary;
+use App\Services\Database\PortableSql;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -91,7 +92,7 @@ class SchoolTrends
             ->join('fee_invoices', 'fee_invoices.id', '=', 'fee_invoice_records.fee_invoice_id')
             ->where('fee_invoices.school_id', current_school_id())
             ->whereBetween('fee_invoices.issue_date', [$firstMonth->toDateString(), $today->endOfDay()->toDateTimeString()])
-            ->selectRaw("date_format(fee_invoices.issue_date, '%Y-%m') as month")
+            ->selectRaw(PortableSql::yearMonth('fee_invoices.issue_date').' as month')
             ->selectRaw('sum(fee_invoice_records.amount + coalesce(fee_invoice_records.fine, 0) - coalesce(fee_invoice_records.waiver, 0)) as total')
             ->groupBy('month')
             ->pluck('total', 'month');
@@ -100,7 +101,7 @@ class SchoolTrends
             ->inSchool()
             ->stillStanding()
             ->whereBetween('received_on', [$firstMonth->toDateString(), $today->toDateString()])
-            ->selectRaw("date_format(received_on, '%Y-%m') as month, sum(amount) as total")
+            ->selectRaw(PortableSql::yearMonth('received_on').' as month, sum(amount) as total')
             ->groupBy('month')
             ->toBase()
             ->pluck('total', 'month');
@@ -128,8 +129,8 @@ class SchoolTrends
     public function owedByLateness(CarbonImmutable $today): array
     {
         $paid = '(select coalesce(sum(payment_allocations.amount), 0) from payment_allocations where payment_allocations.fee_invoice_record_id = fee_invoice_records.id)';
-        $owed = "greatest(fee_invoice_records.amount + coalesce(fee_invoice_records.fine, 0) - coalesce(fee_invoice_records.waiver, 0) - $paid, 0)";
-        $daysLate = 'datediff(?, fee_invoices.due_date)';
+        $owed = PortableSql::greatest("fee_invoice_records.amount + coalesce(fee_invoice_records.fine, 0) - coalesce(fee_invoice_records.waiver, 0) - $paid", '0');
+        $daysLate = PortableSql::daysSince('fee_invoices.due_date');
 
         $totals = DB::table('fee_invoice_records')
             ->join('fee_invoices', 'fee_invoices.id', '=', 'fee_invoice_records.fee_invoice_id')
@@ -165,7 +166,7 @@ class SchoolTrends
             ->inSchool()
             ->stillStanding()
             ->whereBetween('received_on', [$firstMonth->toDateString(), $today->toDateString()])
-            ->selectRaw("date_format(received_on, '%Y-%m') as month, sum(amount) as total")
+            ->selectRaw(PortableSql::yearMonth('received_on').' as month, sum(amount) as total')
             ->groupBy('month')
             ->toBase()
             ->pluck('total', 'month');
@@ -173,7 +174,7 @@ class SchoolTrends
         $spent = Expense::query()
             ->inSchool()
             ->whereBetween('expense_date', [$firstMonth->toDateString(), $today->toDateString()])
-            ->selectRaw("date_format(expense_date, '%Y-%m') as month, sum(amount) as total")
+            ->selectRaw(PortableSql::yearMonth('expense_date').' as month, sum(amount) as total')
             ->groupBy('month')
             ->toBase()
             ->pluck('total', 'month');

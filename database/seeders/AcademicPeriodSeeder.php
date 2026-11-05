@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicPeriod;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 
 class AcademicPeriodSeeder extends Seeder
@@ -22,6 +23,9 @@ class AcademicPeriodSeeder extends Seeder
             ]);
         $academicPeriod->school->academic_period_id = $academicPeriod->id;
         $academicPeriod->school->save();
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
+
         AcademicPeriod::factory()->count(4)->create();
     }
 }

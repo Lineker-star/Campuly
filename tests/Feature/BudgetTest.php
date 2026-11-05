@@ -43,7 +43,7 @@ class BudgetTest extends TestCase
         app(SetBudget::class)->set($cycle, $account, 7_500);
 
         $this->assertSame(1, Budget::where('academic_year_id', $cycle->id)->count());
-        $this->assertSame(7500.0, Budget::first()->amount);
+        $this->assertSame(7500.0, Budget::query()->oldest('id')->first()->amount);
     }
 
     public function test_the_same_account_can_be_planned_for_each_term(): void

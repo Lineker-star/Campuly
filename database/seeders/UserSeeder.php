@@ -8,6 +8,7 @@ use App\Enums\EnrollmentStatus;
 use App\Enums\Role;
 use App\Models\School;
 use App\Models\User;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +39,7 @@ class UserSeeder extends Seeder
             'email' => 'super@example.com',
             'password' => Hash::make('password'),
             'address' => 'super admin street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -55,7 +56,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'address' => 'admin street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -73,7 +74,7 @@ class UserSeeder extends Seeder
             'email' => 'teacher@example.com',
             'password' => Hash::make('password'),
             'address' => 'teacher street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -95,7 +96,7 @@ class UserSeeder extends Seeder
             'email' => 'student@example.com',
             'password' => Hash::make('password'),
             'address' => 'student street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -103,7 +104,7 @@ class UserSeeder extends Seeder
             'gender' => 'male',
         ]);
         $student->studentRecord()->create([
-            'admission_date' => '22/04/04',
+            'admission_date' => '2022-04-04',
             'status' => EnrollmentStatus::Active,
             'admission_number' => Str::random(10),
         ]);
@@ -111,12 +112,15 @@ class UserSeeder extends Seeder
         $join($student);
         $student->assignRole('student');
 
+        // PostgreSQL does not move the id sequence past the fixed ids above.
+        app(SyncIdSequences::class)->handle();
+
         $parent = User::create([
             'name' => 'John Doe',
             'email' => 'parent@example.com',
             'password' => Hash::make('password'),
             'address' => 'parent street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -135,7 +139,7 @@ class UserSeeder extends Seeder
             'email' => 'accountant@example.com',
             'password' => Hash::make('password'),
             'address' => 'accountant street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',
@@ -152,7 +156,7 @@ class UserSeeder extends Seeder
             'email' => 'libratian@example.com',
             'password' => Hash::make('password'),
             'address' => 'librarian street',
-            'birthday' => '22/04/04',
+            'birthday' => '2022-04-04',
             'nationality' => 'nigeria',
             'state' => 'lagos',
             'city' => 'lagos',

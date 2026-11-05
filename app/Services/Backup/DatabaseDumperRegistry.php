@@ -5,6 +5,8 @@ namespace App\Services\Backup;
 use App\Contracts\DatabaseDumper;
 use App\Exceptions\InvalidValueException;
 use App\Services\Backup\Dumpers\MysqlDumper;
+use App\Services\Backup\Dumpers\PostgresDumper;
+use App\Services\Backup\Dumpers\SqliteDumper;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -19,6 +21,8 @@ class DatabaseDumperRegistry
      */
     private const DUMPERS = [
         MysqlDumper::class,
+        PostgresDumper::class,
+        SqliteDumper::class,
     ];
 
     /**

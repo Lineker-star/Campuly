@@ -53,7 +53,7 @@ class UserFactory extends Factory
                 return;
             }
 
-            $school = current_school() ?? School::first();
+            $school = current_school() ?? School::query()->oldest('id')->first();
 
             if ($school !== null) {
                 app(GrantSchoolMembership::class)->grant($user, $school, primary: true);

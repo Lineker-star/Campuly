@@ -113,7 +113,10 @@ class CurriculumLibraryService
         }
 
         return DB::transaction(function () use ($draft, $source): int {
-            $position = (int) SyllabusTopic::query()->where('syllabus_id', $draft->id)->lockForUpdate()->max('position');
+            // Lock the draft, not its topics: PostgreSQL refuses FOR UPDATE on
+            // an aggregate, and the draft lock keeps two copies apart anyway.
+            Syllabus::query()->whereKey($draft->id)->lockForUpdate()->first();
+            $position = (int) SyllabusTopic::query()->where('syllabus_id', $draft->id)->max('position');
             $topics = $source->topics()->get();
 
             foreach ($topics as $topic) {

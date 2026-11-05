@@ -117,8 +117,9 @@ class BackupTest extends TestCase
         $sql = (string) file_get_contents((string) $dump);
         unlink((string) $dump);
 
-        $this->assertStringContainsString('CREATE TABLE `users`', $sql);
-        $this->assertStringContainsString('CREATE TABLE `schools`', $sql);
+        // mysqldump writes `users`, pg_dump public.users, the SQLite dump "users".
+        $this->assertMatchesRegularExpression('/CREATE TABLE (?:"?public"?\.)?[`"]?users[`"]?[\s(]/', $sql);
+        $this->assertMatchesRegularExpression('/CREATE TABLE (?:"?public"?\.)?[`"]?schools[`"]?[\s(]/', $sql);
     }
 
     public function test_a_backup_is_refused_when_the_school_has_no_key(): void
@@ -407,11 +408,18 @@ class BackupTest extends TestCase
         $this->assertFalse($record['restored']);
     }
 
-    public function test_the_mysql_dumper_is_the_one_this_installation_uses(): void
+    public function test_the_dumper_of_the_installed_engine_is_the_one_this_installation_uses(): void
     {
         $dumper = app(DatabaseDumperRegistry::class)->forConnection((string) config('database.default'));
 
-        $this->assertSame('mysql', $dumper->driver());
+        $this->assertSame(DB::connection()->getDriverName(), $dumper->driver());
+    }
+
+    public function test_every_supported_engine_has_a_dumper(): void
+    {
+        foreach (['mysql', 'pgsql', 'sqlite'] as $driver) {
+            $this->assertSame($driver, app(DatabaseDumperRegistry::class)->forDriver($driver)->driver());
+        }
     }
 
     public function test_the_dumper_uses_the_driver_resolved_from_a_database_url(): void

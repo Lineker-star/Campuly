@@ -38,10 +38,10 @@ return new class extends Migration
     public function up(): void
     {
         // Drop the foreign keys first. MySQL will not rename a column that a
-        // constraint still names.
+        // constraint still names. Naming the column, not the key, lets SQLite drop it too.
         foreach (array_keys($this->referencingTables) as $table) {
-            Schema::table($table, function (Blueprint $blueprint) use ($table): void {
-                $blueprint->dropForeign("{$table}_semester_id_foreign");
+            Schema::table($table, function (Blueprint $blueprint): void {
+                $blueprint->dropForeign(['semester_id']);
             });
         }
 
@@ -75,8 +75,8 @@ return new class extends Migration
     public function down(): void
     {
         foreach (array_keys($this->referencingTables) as $table) {
-            Schema::table($table, function (Blueprint $blueprint) use ($table): void {
-                $blueprint->dropForeign("{$table}_academic_period_id_foreign");
+            Schema::table($table, function (Blueprint $blueprint): void {
+                $blueprint->dropForeign(['academic_period_id']);
             });
         }
 

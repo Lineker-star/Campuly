@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TimetableStatus;
 use App\Exceptions\InvalidValueException;
 use App\Traits\InAcademicPeriod;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,7 @@ class Timetable extends Model
 {
     use HasFactory;
     use InAcademicPeriod;
+    use StoresDatesWithoutTime;
 
     protected $table = 'timetables';
 

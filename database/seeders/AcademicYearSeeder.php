@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\AcademicYear;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 
 class AcademicYearSeeder extends Seeder
@@ -24,6 +25,9 @@ class AcademicYearSeeder extends Seeder
         ]);
         $academicYear->school->academic_year_id = $academicYear->id;
         $academicYear->school->save();
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
+
         AcademicYear::factory()->count(4)->create();
     }
 }

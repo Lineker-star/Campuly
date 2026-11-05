@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\StoresDatesWithoutTime;
 use Database\Factories\TimetableSubstitutionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,8 @@ class TimetableSubstitution extends Model
 {
     /** @use HasFactory<TimetableSubstitutionFactory> */
     use HasFactory;
+
+    use StoresDatesWithoutTime;
 
     protected $fillable = ['timetable_id', 'timetable_time_slot_id', 'weekday_id', 'replacement_teacher_id', 'substituted_on', 'reason', 'approved_by'];
 

@@ -143,7 +143,7 @@ class AcademicPeriodContextTest extends TestCase
         academic_period_context()->forget();
         academic_period_context()->resolveFor($school->fresh());
         $component = Livewire::test(SetAcademicPeriod::class, ['compact' => true]);
-        $periodReads = collect(DB::getQueryLog())->filter(fn (array $query): bool => str_contains($query['query'], 'from `academic_periods`'))->count();
+        $periodReads = collect(DB::getQueryLog())->filter(fn (array $query): bool => str_contains(str_replace(['`', '"'], '', $query['query']), 'from academic_periods'))->count();
         DB::disableQueryLog();
 
         $this->assertSame($currentTerm->id, current_academic_period_id());

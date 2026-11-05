@@ -6,6 +6,7 @@ use App\Livewire\Concerns\InteractsWithAprilTable;
 use App\Models\AcademicYear;
 use App\Models\Promotion;
 use App\Services\AcademicYear\AcademicYearService;
+use App\Services\Database\PortableSql;
 use App\Services\Student\StudentService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -42,7 +43,7 @@ class ListPromotionsTable extends DataTableComponent
         return [Column::make('From '.strtolower(school_term('class_level', 'class')), 'from_level'), Column::make('From '.strtolower(school_term('section', 'section')), 'from_section'), Column::make('To '.strtolower(school_term('class_level', 'class')), 'to_level'), Column::make('To '.strtolower(school_term('section', 'section')), 'to_section'), Column::make('Learners', 'learners_count')->sortable(
             // A promotion holds its learners in a JSON column, so the count is
             // worked out per row and no column of that name exists to sort on.
-            fn (Builder $query, string $direction): Builder => $query->orderByRaw('JSON_LENGTH(students) '.($direction === 'desc' ? 'desc' : 'asc'))
+            fn (Builder $query, string $direction): Builder => $query->orderByRaw(PortableSql::jsonArrayLength('students').' '.($direction === 'desc' ? 'desc' : 'asc'))
         )];
     }
 

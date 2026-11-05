@@ -70,6 +70,21 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "test:mysql": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php tests/phpunit-for-driver.php mysql",
+            "@php vendor/bin/pest --configuration=phpunit.mysql.xml --compact"
+        ],
+        "test:pgsql": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php tests/phpunit-for-driver.php pgsql",
+            "@php vendor/bin/pest --configuration=phpunit.pgsql.xml --compact"
+        ],
+        "test:sqlite": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php tests/phpunit-for-driver.php sqlite",
+            "@php vendor/bin/pest --configuration=phpunit.sqlite.xml --compact"
         ]
     },
     "extra": {

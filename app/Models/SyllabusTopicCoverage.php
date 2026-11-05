@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TopicCoverageStatus;
 use App\Traits\InAcademicPeriod;
+use App\Traits\StoresDatesWithoutTime;
 use Database\Factories\SyllabusTopicCoverageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,7 @@ class SyllabusTopicCoverage extends Model
     use HasFactory;
 
     use InAcademicPeriod;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'syllabus_topic_id', 'academic_cycle_section_id', 'status', 'covered_on', 'note', 'recorded_by',

@@ -24,7 +24,7 @@ class CampusMoveRequestFactory extends Factory
      */
     public function definition(): array
     {
-        $enrollment = StudentRecord::query()->first() ?? StudentRecord::factory()->create();
+        $enrollment = StudentRecord::query()->oldest('id')->first() ?? StudentRecord::factory()->create();
         $source = School::query()->findOrFail($enrollment->school_id);
         $destination = School::factory()->create(['organization_id' => $source->organization_id]);
 

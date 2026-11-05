@@ -85,6 +85,6 @@ trait FeatureTestTrait
      */
     public function workingSchool(?School $school = null): School
     {
-        return $school ?? School::first() ?? School::factory()->create();
+        return $school ?? School::query()->oldest('id')->first() ?? School::factory()->create();
     }
 }

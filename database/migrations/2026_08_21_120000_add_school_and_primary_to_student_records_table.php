@@ -24,10 +24,14 @@ return new class extends Migration
         });
 
         // The school was only reachable through the class. Write it down.
+        // A correlated subquery, not an update with joins: PostgreSQL and
+        // SQLite cannot read joined columns in an UPDATE.
         DB::table('student_records')
-            ->join('my_classes', 'student_records.my_class_id', '=', 'my_classes.id')
-            ->join('class_groups', 'my_classes.class_group_id', '=', 'class_groups.id')
-            ->update(['student_records.school_id' => DB::raw('class_groups.school_id')]);
+            ->whereNotNull('my_class_id')
+            ->update(['school_id' => DB::table('my_classes')
+                ->join('class_groups', 'my_classes.class_group_id', '=', 'class_groups.id')
+                ->whereColumn('my_classes.id', 'student_records.my_class_id')
+                ->select('class_groups.school_id')]);
 
         Schema::table('student_records', function (Blueprint $table): void {
             // An admission number identifies a student inside one school.

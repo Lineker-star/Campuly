@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Exceptions\InvalidValueException;
 use App\Traits\InAcademicPeriod;
+use App\Traits\StoresDatesWithoutTime;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,7 @@ class TimetableTimeSlot extends Model
 {
     use HasFactory;
     use InAcademicPeriod;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'start_time',

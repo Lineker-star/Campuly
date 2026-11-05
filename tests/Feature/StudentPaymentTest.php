@@ -835,7 +835,7 @@ class StudentPaymentTest extends TestCase
 
         $this->expectException(RuntimeException::class);
 
-        PaymentAllocation::first()->delete();
+        PaymentAllocation::query()->oldest('id')->first()->delete();
     }
 
     public function test_the_account_screen_waives_part_of_a_billed_fee(): void

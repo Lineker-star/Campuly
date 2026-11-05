@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DataCategory;
 use App\Enums\DataSharingStatus;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ use Illuminate\Support\Carbon;
 class DataSharingRequest extends Model
 {
     use HasFactory;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'requesting_school_id',

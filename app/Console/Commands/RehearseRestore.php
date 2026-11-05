@@ -169,6 +169,9 @@ class RehearseRestore extends Command
     /**
      * Say which of the required tables the dump does not hold.
      *
+     * Each engine quotes names its own way: mysqldump writes `users`,
+     * pg_dump writes public.users and the SQLite dump writes "users".
+     *
      * @return array<int, string>
      */
     private function missingTables(string $dump): array
@@ -177,7 +180,9 @@ class RehearseRestore extends Command
         $missing = [];
 
         foreach (self::REQUIRED as $table) {
-            if (!str_contains($contents, "CREATE TABLE `$table`")) {
+            $pattern = '/CREATE TABLE (?:IF NOT EXISTS )?(?:"?public"?\.)?[`"]?'.preg_quote($table, '/').'[`"]?[\s(]/i';
+
+            if (preg_match($pattern, $contents) !== 1) {
                 $missing[] = $table;
             }
         }

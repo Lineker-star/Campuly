@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\GradeItemType;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class GradeItem extends Model
 {
     use HasFactory;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

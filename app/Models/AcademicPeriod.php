@@ -6,6 +6,7 @@ use App\Enums\AcademicPeriodStatus;
 use App\Enums\AcademicPeriodType;
 use App\Traits\HasPeriodLifecycle;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,6 +36,7 @@ class AcademicPeriod extends Model
     use HasFactory;
     use HasPeriodLifecycle;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $table = 'academic_periods';
 

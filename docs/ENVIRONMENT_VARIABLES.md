@@ -28,6 +28,9 @@ Set in `.env` (local) or the platform's environment settings (production). Never
 | `DB_DATABASE` | `campuly` | `postgres` | absolute path to `.sqlite` file |
 | `DB_USERNAME` / `DB_PASSWORD` | | `postgres.<project-ref>` / password | — |
 | `DB_SSLMODE` | — | `require` | — |
+| `DB_JOURNAL_MODE` | — | — | `wal` (unset: SQLite default) |
+| `DB_SYNCHRONOUS` | — | — | unset; tests use `off` |
+| `DB_BUSY_TIMEOUT` | — | — | milliseconds to wait for a lock, e.g. `10000` |
 | `DATABASE_URL` | optional single URL overriding the above | | |
 
 ## Files

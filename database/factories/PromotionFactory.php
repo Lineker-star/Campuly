@@ -25,7 +25,7 @@ class PromotionFactory extends Factory
      */
     public function definition()
     {
-        $school = School::query()->first() ?? School::factory()->create();
+        $school = School::query()->oldest('id')->first() ?? School::factory()->create();
         $academicYear = AcademicYear::query()->where('school_id', $school->id)->first()
             ?? AcademicYear::factory()->create(['school_id' => $school->id]);
 

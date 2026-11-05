@@ -15,10 +15,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('school_domains', function (Blueprint $table): void {
+        // CASE runs on MySQL, PostgreSQL and SQLite. SQLite can only add a
+        // virtual generated column to an existing table, and can still index it.
+        $expression = 'case when verified_at is null then null else host end';
+
+        Schema::table('school_domains', function (Blueprint $table) use ($expression): void {
             $table->dropUnique(['host']);
             $table->unique(['organization_id', 'host']);
-            $table->string('verified_host')->nullable()->storedAs('IF(verified_at IS NULL, NULL, host)');
+
+            $column = $table->string('verified_host')->nullable();
+
+            if (Schema::getConnection()->getDriverName() === 'sqlite') {
+                $column->virtualAs($expression);
+            } else {
+                $column->storedAs($expression);
+            }
+
             $table->unique('verified_host');
         });
     }

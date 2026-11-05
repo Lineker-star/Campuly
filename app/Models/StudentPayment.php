@@ -7,6 +7,7 @@ use App\Contracts\PaymentChannel;
 use App\Exceptions\InvalidValueException;
 use App\Services\Finance\PaymentChannelRegistry;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Brick\Money\Money as BrickMoney;
 use Database\Factories\StudentPaymentFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +32,7 @@ class StudentPayment extends Model
     use HasFactory;
 
     use InSchool;
+    use StoresDatesWithoutTime;
 
     /**
      * A payment is written once and never touched again.

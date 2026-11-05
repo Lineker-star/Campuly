@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
 
         // A request always works inside one school. Give tests the same
         // starting point, so roles and permissions resolve against a school.
-        $school = School::first();
+        $school = School::query()->oldest('id')->first();
 
         if ($school !== null) {
             school_context()->set($school, remember: false);

@@ -74,35 +74,19 @@ jobs:
         run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
 
       # phpunit.xml forces Sail's MySQL settings (host mysql, user sail).
-      # MySQL keeps it and resolves the host; the other databases get a copy
-      # with their own connection settings.
+      # tests/phpunit-for-driver.php writes phpunit.<db>.xml from
+      # .env.testing / .env.testing.pgsql / .env.testing.sqlite.
       - name: Configure the database
         run: |
-          cp .env.testing .env
-          case "${{ matrix.db }}" in
-            mysql)
-              echo '127.0.0.1 mysql' | sudo tee -a /etc/hosts
-              cp phpunit.xml phpunit.ci.xml
-              ;;
-            pgsql)
-              sed -E \
-                -e 's/(name="DB_CONNECTION" value=)"mysql"/\1"pgsql"/' \
-                -e 's/(name="DB_HOST" value=)"mysql"/\1"127.0.0.1"/' \
-                -e 's/(name="DB_PORT" value=)"3306"/\1"5432"/' \
-                phpunit.xml > phpunit.ci.xml
-              sed -i -E 's/^DB_CONNECTION=.*/DB_CONNECTION=pgsql/; s/^DB_HOST=.*/DB_HOST=127.0.0.1/; s/^DB_PORT=.*/DB_PORT=5432/' .env
-              ;;
-            sqlite)
-              touch "$GITHUB_WORKSPACE/database/testing.sqlite"
-              sed -E \
-                -e 's/(name="DB_CONNECTION" value=)"mysql"/\1"sqlite"/' \
-                -e "s#(name=\"DB_DATABASE\" value=)\"testing\"#\1\"$GITHUB_WORKSPACE/database/testing.sqlite\"#" \
-                phpunit.xml > phpunit.ci.xml
-              sed -i -E "s/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/; s#^DB_DATABASE=.*#DB_DATABASE=$GITHUB_WORKSPACE/database/testing.sqlite#" .env
-              ;;
-          esac
+          if [ "${{ matrix.db }}" = mysql ]; then
+            echo '127.0.0.1 mysql' | sudo tee -a /etc/hosts
+            cp .env.testing .env
+          else
+            cp ".env.testing.${{ matrix.db }}" .env
+          fi
+          php tests/phpunit-for-driver.php ${{ matrix.db }}
           php artisan key:generate --no-interaction
-          grep -E 'DB_(CONNECTION|HOST|PORT|DATABASE)' phpunit.ci.xml
+          grep -E 'name="DB_(CONNECTION|HOST|PORT|DATABASE)"' "phpunit.${{ matrix.db }}.xml"
 
       - name: Build front-end assets
         run: |
@@ -113,7 +97,7 @@ jobs:
         run: php artisan migrate --force --no-interaction
 
       - name: Run tests
-        run: php vendor/bin/pest --configuration=phpunit.ci.xml --compact
+        run: php vendor/bin/pest --configuration=phpunit.${{ matrix.db }}.xml --compact
 
       - name: Check code style
         if: matrix.db == 'mysql'

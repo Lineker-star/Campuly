@@ -20,7 +20,7 @@ class LibraryCopyFactory extends Factory
     public function definition(): array
     {
         return [
-            'school_id' => School::first()?->id ?? School::factory(),
+            'school_id' => School::query()->oldest('id')->first()?->id ?? School::factory(),
             'library_title_id' => LibraryTitle::factory(),
             'barcode' => fake()->unique()->bothify('LIB-########'),
         ];

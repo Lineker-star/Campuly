@@ -9,9 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('timetable_time_slot_weekday', static function (Blueprint $table) {
+            // Drop the key while the column still has its old name: SQLite
+            // finds a foreign key by its column, not by the key's name.
+            $table->dropForeign(['subject_id']);
             $table->string('timetable_time_slot_weekdayable_type')->after('subject_id');
             $table->renameColumn('subject_id', 'timetable_time_slot_weekdayable_id');
-            $table->dropForeign(['subject_id']);
         });
 
         // update all existing columns

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +23,7 @@ use RuntimeException;
 class EnrollmentPlacement extends Model
 {
     use HasFactory;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'student_record_id',

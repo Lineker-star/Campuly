@@ -20,7 +20,7 @@ class FacilityFactory extends Factory
     public function definition(): array
     {
         return [
-            'school_id' => School::first()?->id ?? School::factory(),
+            'school_id' => School::query()->oldest('id')->first()?->id ?? School::factory(),
             'name' => ucfirst(fake()->unique()->word()).' Hall',
             'kind' => FacilityKind::Hall,
             'capacity' => fake()->numberBetween(20, 400),

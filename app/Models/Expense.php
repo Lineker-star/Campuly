@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class Expense extends Model
 {
     use HasFactory;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id', 'financial_period_id', 'ledger_account_id',

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Brick\Money\Money as BrickMoney;
 use Database\Factories\LibraryLoanFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,6 +24,7 @@ class LibraryLoan extends Model
     use HasFactory;
 
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class IncidentAction extends Model
 {
     use HasFactory;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'incident_id',

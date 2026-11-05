@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Subject;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 
 class SubjectSeeder extends Seeder
@@ -21,6 +22,9 @@ class SubjectSeeder extends Seeder
             'short_name' => 'mat',
             'school_id' => 1,
         ]);
+
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
 
         Subject::firstOrCreate([
             'name' => 'English',

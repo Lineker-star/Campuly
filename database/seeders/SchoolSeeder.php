@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Organization;
 use App\Models\School;
+use App\Services\Database\SyncIdSequences;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -31,6 +32,9 @@ class SchoolSeeder extends Seeder
                 'initials' => 'DSI',
             ]
         );
+
+        // PostgreSQL does not move the id sequence past the fixed id above.
+        app(SyncIdSequences::class)->handle();
 
         School::factory()
             ->count(3)

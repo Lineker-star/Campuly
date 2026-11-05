@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AttendanceKind;
 use App\Enums\AttendanceStatus;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,7 @@ class AttendanceRecord extends Model
 {
     use HasFactory;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

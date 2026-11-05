@@ -124,11 +124,11 @@ class PlatformPermissionTest extends TestCase
                 ->assertOk();
 
             $schoolRoleQueries = collect(DB::getQueryLog())->filter(function (array $query) use ($school): bool {
-                return str_starts_with($query['query'], 'select `roles`.*, `model_has_roles`.`model_id`')
+                return str_starts_with(str_replace(['`', '"'], '', $query['query']), 'select roles.*, model_has_roles.model_id')
                     && in_array($school->id, $query['bindings'], true);
             });
             $schoolPermissionQueries = collect(DB::getQueryLog())->filter(function (array $query) use ($school): bool {
-                return str_starts_with($query['query'], 'select `permissions`.*, `model_has_permissions`.`model_id`')
+                return str_starts_with(str_replace(['`', '"'], '', $query['query']), 'select permissions.*, model_has_permissions.model_id')
                     && in_array($school->id, $query['bindings'], true);
             });
 

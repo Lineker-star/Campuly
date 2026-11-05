@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BoardingRollType;
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Database\Factories\BoardingRollFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,7 @@ class BoardingRoll extends Model
     use HasFactory;
 
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id',

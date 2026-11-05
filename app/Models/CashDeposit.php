@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\InSchool;
+use App\Traits\StoresDatesWithoutTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ class CashDeposit extends Model
 {
     use HasFactory;
     use InSchool;
+    use StoresDatesWithoutTime;
 
     protected $fillable = [
         'school_id', 'financial_period_id', 'ledger_transaction_id', 'amount',

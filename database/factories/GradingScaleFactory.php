@@ -20,7 +20,7 @@ class GradingScaleFactory extends Factory
     public function definition(): array
     {
         /** @var School $school */
-        $school = School::query()->first() ?? School::factory()->create();
+        $school = School::query()->oldest('id')->first() ?? School::factory()->create();
 
         return [
             'school_id' => $school->id,

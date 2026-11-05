@@ -87,7 +87,7 @@ class CustomTimetableItemTest extends TestCase
             ->call('save')
             ->assertHasErrors('name');
 
-        $this->assertSame(1, CustomTimetableItem::inSchool()->where('name', 'like', 'break')->count());
+        $this->assertSame(1, CustomTimetableItem::inSchool()->whereRaw('LOWER(name) = ?', ['break'])->count());
     }
 
     public function test_another_school_may_use_the_same_name(): void
