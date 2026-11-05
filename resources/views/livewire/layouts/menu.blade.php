@@ -176,20 +176,41 @@ $menuGroups[] = $currentGroup;
                     </template>
 
                     <template x-for="(item, index) in filteredItems" :key="item.key">
-                        <a :href="item.url" wire:navigate x-on:click="closePalette()" x-on:mouseenter="selectedIndex = index"
-                            :data-command-index="index"
-                            class="flex items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors"
-                            :class="selectedIndex === index ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/60'"
-                            role="option" :aria-selected="selectedIndex === index">
-                            <span class="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
-                                <x-lucide-arrow-right class="size-4" />
-                            </span>
-                            <span class="min-w-0 flex-1">
-                                <span class="block truncate text-sm font-medium" x-text="item.label"></span>
-                                <span class="block truncate text-xs text-muted-foreground" x-text="item.group"></span>
-                            </span>
-                            <x-lucide-corner-down-left class="size-4 shrink-0 text-muted-foreground" />
-                        </a>
+                        <div role="none">
+                            {{-- A page opens with wire:navigate; an action (e.g. switch language) fires an event. --}}
+                            <template x-if="!item.action">
+                                <a :href="item.url" wire:navigate x-on:click="run(item, $event)" x-on:mouseenter="selectedIndex = index"
+                                    :data-command-index="index"
+                                    class="flex items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors"
+                                    :class="selectedIndex === index ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/60'"
+                                    role="option" :aria-selected="selectedIndex === index">
+                                    <span class="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
+                                        <x-lucide-arrow-right class="size-4" />
+                                    </span>
+                                    <span class="min-w-0 flex-1">
+                                        <span class="block truncate text-sm font-medium" x-text="item.label"></span>
+                                        <span class="block truncate text-xs text-muted-foreground" x-text="item.group"></span>
+                                    </span>
+                                    <x-lucide-corner-down-left class="size-4 shrink-0 text-muted-foreground" />
+                                </a>
+                            </template>
+                            <template x-if="item.action">
+                                <button type="button" x-on:click="run(item, $event)" x-on:mouseenter="selectedIndex = index"
+                                    :data-command-index="index"
+                                    class="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors"
+                                    :class="selectedIndex === index ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/60'"
+                                    role="option" :aria-selected="selectedIndex === index">
+                                    <span class="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
+                                        <x-lucide-languages class="size-4" />
+                                    </span>
+                                    <span class="min-w-0 flex-1">
+                                        <span class="block truncate text-sm font-medium" x-text="item.label"></span>
+                                        <span class="block truncate text-xs text-muted-foreground" x-text="item.group"></span>
+                                    </span>
+                                    <x-lucide-corner-down-left class="size-4 shrink-0 text-muted-foreground" />
+                                </button>
+                            </template>
+                        </div>
                     </template>
                 </div>
 

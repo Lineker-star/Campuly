@@ -17,6 +17,10 @@
         <livewire:styles />
     </head>
     <body class="min-h-screen bg-background text-foreground" data-ui="april">
+        {{-- Sign-in, password reset, invitations and the installer all use this layout. --}}
+        <div class="fixed right-4 top-4 z-50">
+            <x-language-switcher :shortcut="true" />
+        </div>
         @yield('body')
         <livewire:display-status />
     </body>

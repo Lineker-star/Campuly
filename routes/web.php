@@ -28,6 +28,7 @@ use App\Http\Controllers\LibraryCopyController;
 use App\Http\Controllers\LibraryLendingRulesController;
 use App\Http\Controllers\LibraryLoanController;
 use App\Http\Controllers\LibraryReservationController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NoticeAttachmentController;
 use App\Http\Controllers\NoticeController;
@@ -62,6 +63,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 Route::get('/health', HealthController::class)->name('health');
+
+// Guests and signed-in people alike may switch the language.
+Route::post('/locale', LocaleController::class)->middleware('throttle:30,1')->name('locale.update');
 
 Route::get('/install', [InstallationController::class, 'index'])->name('install.index');
 Route::post('/install/key', [InstallationController::class, 'generateKey'])

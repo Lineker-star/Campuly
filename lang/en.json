@@ -11,5 +11,7 @@
     ":app is being updated. Try again in a few minutes.": ":app is being updated. Try again in a few minutes.",
     "Home": "Home",
     "Documentation": "Documentation",
-    "Documentation (opens in a new tab)": "Documentation (opens in a new tab)"
+    "Documentation (opens in a new tab)": "Documentation (opens in a new tab)",
+    "Language": "Language",
+    "Preferences": "Preferences"
 }

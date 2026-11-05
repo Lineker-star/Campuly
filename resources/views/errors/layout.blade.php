@@ -11,6 +11,9 @@
         @vite('resources/css/app.css')
     </head>
     <body class="min-h-screen bg-background text-foreground antialiased">
+        <div class="fixed right-4 top-4">
+            <x-language-switcher mode="links" />
+        </div>
         <main class="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center gap-6 px-4 py-10">
             <img src="{{ asset('img/brand/campuly-logo.png') }}" alt="{{ config('app.name', 'Campuly') }}" class="w-44 dark:hidden">
             <img src="{{ asset('img/brand/campuly-logo-dark.png') }}" alt="{{ config('app.name', 'Campuly') }}" class="hidden w-44 dark:block">

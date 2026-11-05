@@ -1,6 +1,7 @@
 import "@fontsource-variable/plus-jakarta-sans";
 import { Livewire } from "../../vendor/livewire/livewire/dist/livewire.esm";
 import "../../vendor/yungifez/april-ui/dist/april.js";
+import "./language-switch";
 
 const themeStorageKey = "theme";
 const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -92,16 +93,34 @@ window.commandPalette = function commandPalette(items) {
 
             if (event.key === "Enter" && this.filteredItems[this.selectedIndex]) {
                 event.preventDefault();
-                const url = this.filteredItems[this.selectedIndex].url;
-
-                if (window.Livewire?.navigate) {
-                    window.Livewire.navigate(url);
-                } else {
-                    window.location.assign(url);
-                }
-
-                this.closePalette();
+                this.run(this.filteredItems[this.selectedIndex]);
             }
+        },
+
+        // An item either opens a page (url) or fires a window event (action),
+        // e.g. "switch-language", which the language switcher listens for.
+        run(item, event = null) {
+            if (item.action) {
+                event?.preventDefault();
+                this.closePalette();
+                window.dispatchEvent(new CustomEvent(item.action));
+
+                return;
+            }
+
+            if (event) {
+                this.closePalette();
+
+                return;
+            }
+
+            if (window.Livewire?.navigate) {
+                window.Livewire.navigate(item.url);
+            } else {
+                window.location.assign(item.url);
+            }
+
+            this.closePalette();
         },
 
         moveSelection(direction) {

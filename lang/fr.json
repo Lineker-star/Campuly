@@ -6,5 +6,7 @@
     ":app is being updated. Try again in a few minutes.": ":app est en cours de mise à jour. Réessayez dans quelques minutes.",
     "Home": "Accueil",
     "Documentation": "Documentation",
-    "Documentation (opens in a new tab)": "Documentation (s’ouvre dans un nouvel onglet)"
+    "Documentation (opens in a new tab)": "Documentation (s’ouvre dans un nouvel onglet)",
+    "Language": "Langue",
+    "Preferences": "Préférences"
 }

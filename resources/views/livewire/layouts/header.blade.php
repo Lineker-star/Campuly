@@ -31,6 +31,8 @@
             <p class="sr-only">Full screen mode</p>
         </april:button>
 
+        <x-language-switcher class="hidden md:inline-flex" :shortcut="true" />
+
         <april:dropdown-menu>
             <slot:trigger>
                 <april:button aria-label="open theme selection" class="size-11 select-none justify-center" size="icon" variant="ghost"
@@ -84,6 +86,9 @@
                         Working {{ strtolower(school_term('period', 'term')) }}: {{current_academic_period()?->displayName ?? 'Not selected'}}
                         @endif
                     </p>
+                    <div class="px-2 py-2 md:hidden">
+                        <x-language-switcher />
+                    </div>
                     <form action="{{route('logout')}}" method="POST">
                         @csrf
                         <april:dropdown-menu-item type="submit">Log out</april:dropdown-menu-item>

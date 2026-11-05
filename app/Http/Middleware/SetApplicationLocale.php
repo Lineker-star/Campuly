@@ -13,7 +13,7 @@ use Throwable;
 
 /**
  * Choose the language of the request, first match wins:
- * ?lang= → session → the user's choice → the campus default →
+ * ?lang= → session → the user's choice → cookie (a guest's last choice) → the campus default →
  * the installation default → the browser's Accept-Language → APP_DEFAULT_LOCALE.
  */
 class SetApplicationLocale
@@ -22,6 +22,11 @@ class SetApplicationLocale
      * The session key holding the language chosen in this browser.
      */
     public const SESSION_KEY = 'locale';
+
+    /**
+     * The cookie that remembers the choice for a year, across sign-outs.
+     */
+    public const COOKIE_NAME = 'campuly_locale';
 
     /**
      * @param  Closure(Request): (Response)  $next
@@ -56,6 +61,7 @@ class SetApplicationLocale
 
         return $this->supported($request->hasSession() ? $request->session()->get(self::SESSION_KEY) : null)
             ?? $this->supported($user instanceof User ? $user->locale : null)
+            ?? $this->supported($request->cookie(self::COOKIE_NAME))
             ?? $this->supported(current_school()?->default_locale)
             ?? $this->supported($this->installationLocale())
             ?? $this->browserLocale($request)

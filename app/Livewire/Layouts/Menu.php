@@ -477,7 +477,7 @@ class Menu extends Component
         ];
 
         $this->menu = $this->withVisibility($this->menu);
-        $this->commandItems = $this->buildCommandPaletteItems($this->menu);
+        $this->commandItems = [...$this->buildCommandPaletteItems($this->menu), $this->switchLanguageItem()];
     }
 
     /**
@@ -508,6 +508,25 @@ class Menu extends Component
     public function render()
     {
         return view('livewire.layouts.menu');
+    }
+
+    /**
+     * The palette entry that switches between English and French.
+     *
+     * Written in both languages, so it can be found whichever one is showing.
+     *
+     * @return array{key: string, label: string, group: string, url: string, action: string, keywords: string}
+     */
+    private function switchLanguageItem(): array
+    {
+        return [
+            'key' => 'switch-language',
+            'label' => 'Switch language / Changer de langue',
+            'group' => __('Preferences'),
+            'url' => '',
+            'action' => 'switch-language',
+            'keywords' => 'switch language changer de langue english anglais french français alt+l',
+        ];
     }
 
     /**

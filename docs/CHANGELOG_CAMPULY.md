@@ -6,6 +6,7 @@ Changes made in the Campuly fork. Upstream Skuul history stays in `../CHANGELOG.
 
 ### Added
 - STEP 1.1: `users.locale` and `schools.default_locale` (existing campuses keep the installation language); `APP_DEFAULT_LOCALE` (default `fr`); the language of each request is chosen from `?lang=`, the session, the person, the campus, the installation, the browser and the default, in that order, and sets Carbon and number formatting (`fr_CM`, `en_CM`); mail and notifications use the recipient's language (`HasLocalePreference`); `tests/Feature/I18n/LocaleResolutionTest.php`.
+- STEP 1.2: `POST /locale` and `<x-language-switcher />` in the header, user menu, guest pages and error pages; `Alt+L`; command palette entry; a one-year language cookie for guests; unsaved form values survive the switch; `tests/Feature/I18n/LanguageSwitcherTest.php`.
 
 ### Changed
 - STEP 1.1: Campuly offers English and French only; print and portal documents declare the page language.
