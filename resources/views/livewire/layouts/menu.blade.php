@@ -1,7 +1,7 @@
 @php
 $menuGroups = [];
 $currentGroup = [
-'label' => 'Workspace',
+'label' => __('Workspace'),
 'can' => null,
 'items' => [],
 ];
@@ -13,7 +13,7 @@ $menuGroups[] = $currentGroup;
 }
 
 $currentGroup = [
-'label' => $menuItem['header'],
+'label' => __($menuItem['header']),
 'can' => $menuItem['can'] ?? null,
 'items' => [],
 ];
@@ -46,10 +46,10 @@ $menuGroups[] = $currentGroup;
                         {{-- April repeats the header for desktop and mobile. Wrap the control to avoid duplicate label IDs. --}}
                         <label class="flex min-w-0 flex-col gap-1">
                             <span class="px-2 text-xs font-medium text-sidebar-foreground/70">
-                                Working school
+                                {{ __('Working school') }}
                             </span>
                             <april:native-select class="h-11"
-                                aria-label="Working school" wire:change="switchSchool($event.target.value)" wire:loading.attr="disabled" wire:target="switchSchool">
+                                aria-label="{{ __('Working school') }}" wire:change="switchSchool($event.target.value)" wire:loading.attr="disabled" wire:target="switchSchool">
                                 @foreach ($schools as $school)
                                     <option value="{{ $school->id }}" @selected(current_school_id() === $school->id)>
                                         {{ $school->name }}
@@ -68,7 +68,7 @@ $menuGroups[] = $currentGroup;
 
         {{-- Apply the navigation landmark to April's slot wrapper and distinguish it from breadcrumbs. --}}
         <slot:content class="beautify-scrollbar" wire:navigate:scroll role="navigation"
-            aria-label="Main">
+            aria-label="{{ __('Main') }}">
             @foreach ($menuGroups as $group)
             @if (collect($group['items'])->contains(fn (array $menuItem): bool => $menuItem['visible'] ?? true))
             <april:sidebar-group>
@@ -87,7 +87,7 @@ $menuGroups[] = $currentGroup;
                                 <slot:trigger>
                                     <april:sidebar-menu-button type="button" :expand-sidebar="false">
                                         <x-icon :name="'lucide-'.($menuItem['icon'] ?? 'circle')" class="shrink-0" />
-                                        <span>{{$menuItem['text']}}</span>
+                                        <span>{{ __($menuItem['text']) }}</span>
                                         <span class="ml-auto transition-transform group-data-[collapsible=icon]:!hidden"
                                             x-bind:class="{ '-rotate-90': !open }">
                                             <x-lucide-chevron-down class="size-3.5" />
@@ -103,7 +103,7 @@ $menuGroups[] = $currentGroup;
                                                 wire:navigate
                                                 wire:current.exact="bg-sidebar-accent font-medium text-sidebar-accent-foreground">
                                                 <x-icon :name="'lucide-'.($submenu['icon'] ?? 'circle')" class="shrink-0" />
-                                                <span>{{$submenu['text']}}</span>
+                                                <span>{{ __($submenu['text']) }}</span>
                                             </april:sidebar-menu-sub-button>
                                         </april:sidebar-menu-sub-item>
                                         @endif
@@ -118,7 +118,7 @@ $menuGroups[] = $currentGroup;
                                 href="{{route($menuItem['route'], $menuItem['parameters'] ?? [])}}" wire:navigate
                                 wire:current.exact="bg-sidebar-accent font-medium text-sidebar-accent-foreground">
                                 <x-icon :name="'lucide-'.($menuItem['icon'] ?? 'circle')" class="w-4 shrink-0" />
-                                <span>{{$menuItem['text']}}</span>
+                                <span>{{ __($menuItem['text']) }}</span>
                             </april:sidebar-menu-button-link>
                         </april:sidebar-menu-item>
                         @endif
