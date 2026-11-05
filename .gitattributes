@@ -2,3 +2,8 @@
 *.css linguist-vendored
 *.scss linguist-vendored
 *.js linguist-vendored
+
+# Run inside Linux containers: keep LF line endings on every checkout.
+*.sh text eol=lf
+docker/* text eol=lf
+Dockerfile text eol=lf

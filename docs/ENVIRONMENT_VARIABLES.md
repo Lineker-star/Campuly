@@ -111,7 +111,7 @@ Common to all: `MAIL_MAILER`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `MAIL_REPLY
 
 ## Container
 
-`RUN_MIGRATIONS` (`true` on one service only), `PHP_OPCACHE_VALIDATE_TIMESTAMPS` (`0` in production).
+`RUN_MIGRATIONS` (`true` on one service only), `DB_WAIT_SECONDS` (60), `RUN_WORKER` and `RUN_SCHEDULER` (`true`; `false` when the platform runs them separately), `PHP_FPM_MAX_CHILDREN` (10), `PHP_OPCACHE_VALIDATE_TIMESTAMPS` (`0` in production). Compose only: `APP_PORT` (8080), `DB_HOST_IN_COMPOSE` (`db`), `DB_ROOT_PASSWORD`. See docs/DEPLOYMENT.md section 1.
 
 ## Planned (added by later phases)
 

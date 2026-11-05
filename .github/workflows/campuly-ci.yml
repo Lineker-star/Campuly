@@ -119,3 +119,52 @@ jobs:
       - name: Run static analysis
         if: matrix.db == 'mysql'
         run: vendor/bin/phpstan analyse --memory-limit=2G --no-progress
+
+  container:
+    name: Container (MySQL, then PostgreSQL)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Check out the application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Write a production .env
+        run: |
+          cp .env.example .env
+          {
+            echo "APP_ENV=production"
+            echo "APP_DEBUG=false"
+            echo "APP_URL=http://localhost:8080"
+            echo "APP_KEY=base64:$(openssl rand -base64 32)"
+            echo "DB_DATABASE=campuly"
+            echo "DB_USERNAME=campuly"
+            echo "DB_PASSWORD=$(openssl rand -hex 16)"
+            echo "DB_ROOT_PASSWORD=$(openssl rand -hex 16)"
+            echo "MAIL_MAILER=log"
+          } >> .env
+
+      - name: Build the image
+        run: docker compose -f docker-compose.prod.yml build
+
+      - name: Start on MySQL and wait for a healthy app
+        run: |
+          docker compose -f docker-compose.prod.yml up -d
+          .github/scripts/wait-for-health.sh
+          curl -sf -o /dev/null -w "/login %{http_code}\n" http://localhost:8080/login
+
+      - name: Logs (MySQL)
+        if: always()
+        run: docker compose -f docker-compose.prod.yml logs --tail=200 app
+
+      - name: Start the same image on PostgreSQL
+        run: |
+          docker compose -f docker-compose.prod.yml down -v
+          docker compose -f docker-compose.prod.yml -f docker-compose.pgsql.yml up -d
+          .github/scripts/wait-for-health.sh
+          curl -sf -o /dev/null -w "/login %{http_code}\n" http://localhost:8080/login
+
+      - name: Logs (PostgreSQL)
+        if: always()
+        run: docker compose -f docker-compose.prod.yml -f docker-compose.pgsql.yml logs --tail=200 app

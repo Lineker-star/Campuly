@@ -1,7 +1,16 @@
-# Campuly — single-server production stack (app + MySQL + Redis).
-# Usage: cp .env.example .env (fill values, DB_HOST=db, REDIS_HOST=redis) then
-#        docker compose -f docker-compose.prod.yml up -d --build
-# For PostgreSQL/Supabase: remove the db service and point DB_* to your database.
+# Campuly — single-server production stack: the app image and MySQL.
+#
+#   cp .env.example .env      # set APP_KEY, APP_URL, DB_PASSWORD, DB_ROOT_PASSWORD, mail ...
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   open http://localhost:8080
+#
+# Cache, sessions and queue use the database, so no Redis is needed. For Redis
+# add "--profile redis" and set CACHE_STORE / SESSION_DRIVER / QUEUE_CONNECTION=redis.
+#
+# PostgreSQL instead of MySQL (same image):
+#   docker compose -f docker-compose.prod.yml -f docker-compose.pgsql.yml up -d --build
+# A hosted database (Supabase, Neon, RDS): run only the app service and point
+# DB_* at it, e.g. docker compose -f docker-compose.prod.yml up -d --no-deps app
 services:
   app:
     build: .
@@ -9,35 +18,37 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST_IN_COMPOSE:-db}
+      DB_PORT: ${DB_PORT:-3306}
       RUN_MIGRATIONS: "true"
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-8080}:8080"
     volumes:
       - campuly-storage:/var/www/html/storage/app
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
 
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE:-campuly}
       MYSQL_USER: ${DB_USERNAME:-campuly}
-      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
     volumes:
       - campuly-mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
-      interval: 10s
-      retries: 10
+      interval: 5s
+      retries: 30
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    profiles: ["redis"]
     volumes:
       - campuly-redis:/data
 

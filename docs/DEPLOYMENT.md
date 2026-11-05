@@ -52,18 +52,32 @@ First run: open `https://<your-domain>/install` and complete the installer.
 
 ## 1. Docker on any VPS (Hostinger VPS, Contabo, DigitalOcean, Hetzner, OVH) — recommended
 
-Files provided: `Dockerfile`, `docker-compose.prod.yml`, `docker/`.
+Files provided: `Dockerfile`, `docker-compose.prod.yml` (app + MySQL), `docker-compose.pgsql.yml` (swap MySQL for PostgreSQL), `docker/` (Nginx, PHP-FPM, Supervisor, entrypoint).
+
+The image runs Nginx + PHP-FPM, the queue worker and the scheduler under Supervisor, listens on port **8080** and answers `GET /health`. It is configured **by environment variables only** (no `.env` file inside the image):
+
+| Variable | Default in the image | Purpose |
+|---|---|---|
+| `APP_KEY` | — (required) | The container refuses to start without it |
+| `RUN_MIGRATIONS` | `false` (`true` in the compose file) | Run `php artisan migrate --force` at start, waiting up to `DB_WAIT_SECONDS` (60) for the database |
+| `RUN_WORKER` / `RUN_SCHEDULER` | `true` | Set `false` when the platform runs `php artisan queue:work` / `schedule:work` as separate services from the same image |
+| `PHP_FPM_MAX_CHILDREN` | `10` | PHP workers; about 60 MB of RAM each |
+| `APP_ENV` / `APP_DEBUG` / `LOG_CHANNEL` | `production` / `false` / `stderr` | Logs go to `docker logs` |
 
 ```bash
 # on the server (Ubuntu 24.04), once
 curl -fsSL https://get.docker.com | sh
 git clone <your-campuly-repo> campuly && cd campuly
-cp .env.example .env    # fill production values, DB_HOST=db
-docker compose -f docker-compose.prod.yml up -d --build
-docker compose -f docker-compose.prod.yml exec app php artisan key:generate --force
-docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+cp .env.example .env    # set APP_KEY, APP_URL, DB_PASSWORD, DB_ROOT_PASSWORD, mail settings
+# a key: docker run --rm php:8.4-cli php -r 'echo "base64:".base64_encode(random_bytes(32)), PHP_EOL;'
+docker compose -f docker-compose.prod.yml up -d --build      # migrations run at start
 docker compose -f docker-compose.prod.yml exec app php artisan db:seed --class=WorldSeeder --force
+# open http://<server>:8080 and finish the installer
 ```
+
+PostgreSQL instead of MySQL, same image: `docker compose -f docker-compose.prod.yml -f docker-compose.pgsql.yml up -d --build`. A hosted database (Supabase, Neon, RDS): set `DB_*` in `.env` (`DB_HOST_IN_COMPOSE` to its host) and start only the app: `docker compose -f docker-compose.prod.yml up -d --no-deps app`. Redis is optional (`--profile redis`).
+
+The CI job "Container" builds this image and checks that `/health` reports every check OK on MySQL and then on PostgreSQL.
 
 Put Caddy or Nginx Proxy Manager in front for HTTPS, or use Cloudflare Tunnel. Update: `git pull && docker compose -f docker-compose.prod.yml up -d --build`.
 
