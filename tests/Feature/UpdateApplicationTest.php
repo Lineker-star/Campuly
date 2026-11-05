@@ -53,7 +53,7 @@ class UpdateApplicationTest extends TestCase
     public function test_an_install_that_is_not_a_release_checkout_is_refused(): void
     {
         $this->fakeRelease('v3.1.0');
-        Process::fake(["*describe*" => Process::result(errorOutput: 'fatal: No names found', exitCode: 128)]);
+        Process::fake(['*describe*' => Process::result(errorOutput: 'fatal: No names found', exitCode: 128)]);
 
         $this->artisan('skuul:update --no-backup')
             ->expectsOutput('This install is not a git checkout of a '.config('app.name').' release. Update it by hand.')
@@ -148,7 +148,7 @@ class UpdateApplicationTest extends TestCase
     public function test_a_failed_step_stops_there_and_keeps_the_site_in_maintenance(): void
     {
         $this->fakeRelease('v3.1.0');
-        $this->fakeCheckout('v3.0.2', failingStep: "*composer*");
+        $this->fakeCheckout('v3.0.2', failingStep: '*composer*');
 
         $this->artisan('skuul:update --no-backup')
             ->expectsOutput('Installing PHP packages failed.')
@@ -171,9 +171,9 @@ class UpdateApplicationTest extends TestCase
     {
         Process::fake(array_filter([
             $failingStep => $failingStep ? Process::result(errorOutput: 'Your requirements could not be resolved.', exitCode: 2) : null,
-            "*describe*" => Process::result("$tag\n"),
-            "*status*" => Process::result($localChanges),
-            "*fetch*" => $fetchFails ? Process::result(errorOutput: 'Could not resolve host', exitCode: 128) : Process::result(),
+            '*describe*' => Process::result("$tag\n"),
+            '*status*' => Process::result($localChanges),
+            '*fetch*' => $fetchFails ? Process::result(errorOutput: 'Could not resolve host', exitCode: 128) : Process::result(),
             '*' => Process::result(),
         ]));
     }

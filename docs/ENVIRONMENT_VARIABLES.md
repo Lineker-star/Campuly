@@ -68,7 +68,7 @@ S3-compatible storage:
 | Backblaze B2 | `https://s3.<region>.backblazeb2.com` | e.g. `eu-central-003` | `false` |
 | MinIO | `http://<host>:9000` | `us-east-1` | `true` |
 
-`tests/Feature/S3CompatibleStorageTest.php` round-trips files through a real S3-compatible server when `S3_TEST_ENDPOINT`, `S3_TEST_KEY` and `S3_TEST_SECRET` are set (CI starts MinIO for it).
+`tests/Feature/S3CompatibleStorageTest.php` round-trips files through a real S3-compatible server when `S3_TEST_ENDPOINT`, `S3_TEST_KEY` and `S3_TEST_SECRET` are set (CI starts Adobe S3Mock for it; MinIO or any S3 service works the same).
 
 ## Queue, cache, sessions
 

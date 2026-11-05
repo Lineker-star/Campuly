@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
- * Files round-trip through a real S3-compatible server (MinIO in CI).
+ * Files round-trip through a real S3-compatible server (Adobe S3Mock in CI; MinIO works too).
  *
  * Runs only when S3_TEST_ENDPOINT is set, for example:
  *   S3_TEST_ENDPOINT=http://127.0.0.1:9000 S3_TEST_KEY=campuly S3_TEST_SECRET=campuly-secret

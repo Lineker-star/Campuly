@@ -97,17 +97,18 @@ jobs:
         run: php artisan migrate --force --no-interaction
 
       # An S3-compatible server for tests/Feature/S3CompatibleStorageTest.php.
-      - name: Start MinIO
+      # MinIO no longer publishes free images, so CI uses Adobe S3Mock (Apache-2.0).
+      - name: Start an S3-compatible server
         if: matrix.db == 'mysql'
         run: |
-          docker run -d --name minio -p 9000:9000 \
-            -e MINIO_ROOT_USER=campuly -e MINIO_ROOT_PASSWORD=campuly-secret \
-            minio/minio server /data
-          for i in $(seq 1 30); do curl -sf http://127.0.0.1:9000/minio/health/live && break; sleep 1; done
+          docker run -d --name s3 -p 9090:9090 adobe/s3mock
+          for i in $(seq 1 60); do curl -sf -o /dev/null http://127.0.0.1:9090/ && exit 0; sleep 1; done
+          docker logs s3
+          exit 1
 
       - name: Run tests
         env:
-          S3_TEST_ENDPOINT: ${{ matrix.db == 'mysql' && 'http://127.0.0.1:9000' || '' }}
+          S3_TEST_ENDPOINT: ${{ matrix.db == 'mysql' && 'http://127.0.0.1:9090' || '' }}
           S3_TEST_KEY: campuly
           S3_TEST_SECRET: campuly-secret
         run: php vendor/bin/pest --configuration=phpunit.${{ matrix.db }}.xml --compact
