@@ -122,7 +122,7 @@ class WellbeingScreenTest extends TestCase
 
         Livewire::test(ShowSupportPlan::class, ['plan' => $plan])
             ->call('completeAction', $action->id)
-            ->assertSee('Done '.now()->format('j M Y'));
+            ->assertSee('Done '.local_date(now()));
 
         $this->assertNotNull($action->fresh()->completed_at);
     }

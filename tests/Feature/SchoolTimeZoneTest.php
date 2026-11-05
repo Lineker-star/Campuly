@@ -104,7 +104,7 @@ class SchoolTimeZoneTest extends TestCase
         $this->travelTo(now('UTC')->setDate(2026, 10, 1)->setTime(23, 30));
         $this->authorized_user([], $school);
 
-        $this->get(route('dashboard'))->assertOk()->assertSee('Fri, Oct 2, 2026')->assertDontSee('Thu, Oct 1, 2026');
+        $this->get(route('dashboard'))->assertOk()->assertSee('Friday, October 2, 2026')->assertDontSee('Thursday, October 1, 2026');
     }
 
     public function test_a_form_takes_the_school_date_after_local_midnight(): void

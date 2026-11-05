@@ -11,11 +11,11 @@
         </div>
         <div>
             <dt class="text-sm text-muted-foreground">Paid</dt>
-            <dd class="font-medium tabular-nums">{{ $feeInvoice->paid->formatToLocale($locale) }}</dd>
+            <dd class="font-medium tabular-nums">{{ money($feeInvoice->paid) }}</dd>
         </div>
         <div class="col-span-2 sm:col-span-1">
             <dt class="text-sm text-muted-foreground">Owed</dt>
-            <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$feeInvoice->balance->isPositive()]) id="payment-owed">{{ $feeInvoice->balance->formatToLocale($locale) }}</dd>
+            <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$feeInvoice->balance->isPositive()]) id="payment-owed">{{ money($feeInvoice->balance) }}</dd>
         </div>
     </dl>
 
@@ -81,7 +81,7 @@
                                 <li wire:key="line-{{ $line->id }}" class="flex items-center justify-between gap-4 py-2">
                                     <div class="min-w-0 text-sm">
                                         <p class="truncate font-medium">{{ $line->fee?->name ?? '—' }}</p>
-                                        <p class="tabular-nums text-muted-foreground">{{ $line->outstanding->formatToLocale($locale) }} owed</p>
+                                        <p class="tabular-nums text-muted-foreground">{{ money($line->outstanding) }} owed</p>
                                     </div>
                                     <div class="w-36 shrink-0">
                                         <label for="line-{{ $line->id }}" class="sr-only">Amount against {{ $line->fee?->name }}</label>

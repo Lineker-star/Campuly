@@ -55,18 +55,18 @@
                 @if ($showCampuses && $canOpenOrganization)
                     <a id="organization-campuses" href="{{ route('organizations.show', $organization) }}" class="group flex min-h-11 select-none flex-col-reverse justify-end">
                         <dt class="truncate text-sm text-muted-foreground group-hover:text-foreground">Campuses</dt>
-                        <dd class="text-2xl font-semibold tabular-nums">{{ number_format($organizationSchools) }}</dd>
+                        <dd class="text-2xl font-semibold tabular-nums">{{ number_local($organizationSchools) }}</dd>
                     </a>
                 @elseif ($showCampuses)
                     <div id="organization-campuses" class="flex min-h-11 select-none flex-col-reverse justify-end">
                         <dt class="truncate text-sm text-muted-foreground">Campuses</dt>
-                        <dd class="text-2xl font-semibold tabular-nums">{{ number_format($organizationSchools) }}</dd>
+                        <dd class="text-2xl font-semibold tabular-nums">{{ number_local($organizationSchools) }}</dd>
                     </div>
                 @endif
                 @foreach ($visibleSnapshotStats as $stat)
                     <a href="{{ $stat['href'] }}" class="group flex min-h-11 select-none flex-col-reverse justify-end">
                         <dt class="truncate text-sm text-muted-foreground group-hover:text-foreground">{{ $stat['label'] }}</dt>
-                        <dd class="text-2xl font-semibold tabular-nums">{{ number_format($stat['value']) }}</dd>
+                        <dd class="text-2xl font-semibold tabular-nums">{{ number_local($stat['value']) }}</dd>
                     </a>
                 @endforeach
             </dl>
@@ -99,7 +99,7 @@
                             </div>
                             <div class="flex flex-col-reverse">
                                 <dt class="text-sm text-muted-foreground">Registered</dt>
-                                <dd class="text-2xl font-semibold tabular-nums">{{ number_format($todayAttendance['registered']) }}<span class="text-sm font-normal text-muted-foreground"> / {{ number_format($students) }}</span></dd>
+                                <dd class="text-2xl font-semibold tabular-nums">{{ number_local($todayAttendance['registered']) }}<span class="text-sm font-normal text-muted-foreground"> / {{ number_local($students) }}</span></dd>
                             </div>
                             <div class="flex flex-col-reverse">
                                 <dt class="text-sm text-muted-foreground">Absent · late</dt>

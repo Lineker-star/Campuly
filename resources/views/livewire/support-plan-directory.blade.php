@@ -117,7 +117,7 @@
                                     </span>
                                 </april:data-table-cell>
                                 <april:data-table-cell class="whitespace-nowrap text-muted-foreground">
-                                    {{ $plan->review_on?->format('j M Y') ?? 'No date' }}
+                                    {{ local_date($plan->review_on, 'medium') ?? 'No date' }}
                                 </april:data-table-cell>
                                 <april:data-table-cell class="text-right">
                                     <april:button-link href="{{ route('support-plans.show', $plan) }}" variant="outline" size="sm"

@@ -131,7 +131,7 @@ class LibraryLendingDesk extends Component
         }
 
         $this->notify($loan->fine_charged > 0
-            ? 'The copy is back. A fine of '.$loan->fine()->formatToLocale(app()->getLocale()).' went on the account.'
+            ? 'The copy is back. A fine of '.money($loan->fine()).' went on the account.'
             : 'The copy is back.');
     }
 

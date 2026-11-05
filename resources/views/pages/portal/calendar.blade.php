@@ -16,13 +16,13 @@
 @section('content')
     <div class="space-y-6">
         <april:card>
-            <slot:title>{{ $month->format('F Y') }}</slot:title>
+            <slot:title>{{ local_date($month, 'month') }}</slot:title>
             <slot:description>
                 @if ($closures->isEmpty())
                     The school is open every day this month.
                 @else
                     The school is shut on
-                    {{ $closures->map(fn ($closure) => $closure->starts_at->format('j M'))->join(', ', ' and ') }}.
+                    {{ $closures->map(fn ($closure) => local_date($closure->starts_at, 'day'))->join(', ', ' and ') }}.
                 @endif
             </slot:description>
             <slot:content>
@@ -31,11 +31,11 @@
                         <div class="flex gap-2">
                             <april:button-link href="{{ $linkFor($month->copy()->subMonth()->format('Y-m')) }}" variant="outline" size="sm">
                                 <x-lucide-chevron-left class="mr-1 size-4" />
-                                {{ $month->copy()->subMonth()->format('M') }}
+                                {{ local_date($month->copy()->subMonth(), 'month_short') }}
                             </april:button-link>
                             <april:button-link href="{{ $linkFor(school_today($studentRecord->school_id)->format('Y-m')) }}" variant="outline" size="sm">Today</april:button-link>
                             <april:button-link href="{{ $linkFor($month->copy()->addMonth()->format('Y-m')) }}" variant="outline" size="sm">
-                                {{ $month->copy()->addMonth()->format('M') }}
+                                {{ local_date($month->copy()->addMonth(), 'month_short') }}
                                 <x-lucide-chevron-right class="ml-1 size-4" />
                             </april:button-link>
                         </div>
@@ -87,12 +87,12 @@
                                 <div>
                                     <p class="font-medium">{{ $event->title }}</p>
                                     <p class="text-sm text-muted-foreground">
-                                        {{ $event->starts_at->format('j M') }}
+                                        {{ local_date($event->starts_at, 'day') }}
                                         @if ($event->ends_at->toDateString() !== $event->starts_at->toDateString())
-                                            to {{ $event->ends_at->format('j M') }}
+                                            to {{ local_date($event->ends_at, 'day') }}
                                         @endif
                                         ·
-                                        {{ $event->is_all_day ? 'All day' : $event->starts_at->format('H:i').' to '.$event->ends_at->format('H:i') }}
+                                        {{ $event->is_all_day ? 'All day' : local_date($event->starts_at, 'time').' to '.local_date($event->ends_at, 'time') }}
                                         @if (filled($event->location))
                                             · {{ $event->location }}
                                         @endif
@@ -106,7 +106,7 @@
                                         {{ $event->type->label() }}
                                     </span>
                                     @if ($event->type === \App\Enums\CalendarEventType::Appointment)
-                                        <april:button-link href="{{ route('portal.requests.index', [$studentRecord, 'type' => 'appointment', 'subject' => 'Appointment: '.$event->title, 'message' => 'I would like to request the published time on '.$event->starts_at->format('j M Y H:i').' at '.($event->location ?: 'the school').'.']) }}" variant="outline" size="sm" class="mt-2">Request this time</april:button-link>
+                                        <april:button-link href="{{ route('portal.requests.index', [$studentRecord, 'type' => 'appointment', 'subject' => 'Appointment: '.$event->title, 'message' => 'I would like to request the published time on '.local_date($event->starts_at, 'datetime').' at '.($event->location ?: 'the school').'.']) }}" variant="outline" size="sm" class="mt-2">Request this time</april:button-link>
                                     @endif
                                     @unless ($event->isTeachingDay())
                                         <span class="mt-1 block text-xs text-muted-foreground">The school is shut</span>

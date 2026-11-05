@@ -241,7 +241,7 @@ class TimetableTest extends TestCase
         Livewire::test(CreateTimetableForm::class)
             ->assertSeeHtml('wire:click="openEventDialog"')
             ->assertSee('Add event')
-            ->assertSee('2 Sep 2030 to 20 Dec 2030')
+            ->assertSee('Sep 2, 2030 to Dec 20, 2030')
             ->assertDontSee('2030-09-02 to');
     }
 

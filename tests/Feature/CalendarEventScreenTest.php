@@ -181,7 +181,7 @@ class CalendarEventScreenTest extends TestCase
 
         $this->get(route('calendar-events.index', ['month' => $closure->starts_at->format('Y-m')]))
             ->assertOk()
-            ->assertSee($closure->starts_at->format('j M').'.')
+            ->assertSee(local_date($closure->starts_at, 'day').'.')
             ->assertSee('The school is shut');
     }
 

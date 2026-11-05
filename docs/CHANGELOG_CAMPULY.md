@@ -7,9 +7,11 @@ Changes made in the Campuly fork. Upstream Skuul history stays in `../CHANGELOG.
 ### Added
 - STEP 1.1: `users.locale` and `schools.default_locale` (existing campuses keep the installation language); `APP_DEFAULT_LOCALE` (default `fr`); the language of each request is chosen from `?lang=`, the session, the person, the campus, the installation, the browser and the default, in that order, and sets Carbon and number formatting (`fr_CM`, `en_CM`); mail and notifications use the recipient's language (`HasLocalePreference`); `tests/Feature/I18n/LocaleResolutionTest.php`.
 - STEP 1.2: `POST /locale` and `<x-language-switcher />` in the header, user menu, guest pages and error pages; `Alt+L`; command palette entry; a one-year language cookie for guests; unsaved form values survive the switch; `tests/Feature/I18n/LanguageSwitcherTest.php`.
+- STEP 1.3: `local_date()` (short, medium, long, day, month, weekday, time, datetime, day_time, weekday_time), `money()`, `number_local()`, `percent_local()` and `number_locale()` in `app/helpers.php`: 5 nov. 2026 / Nov 5, 2026, 125 000 FCFA / FCFA 125,000, 12,5 % / 12.5%; `tests/Feature/I18n/FormattingHelpersTest.php`.
 
 ### Changed
 - STEP 1.1: Campuly offers English and French only; print and portal documents declare the page language.
+- STEP 1.3: every human date in the views (179) goes through `local_date()`, every money display through `money()` (`money_text()` now delegates to it) and display numbers through `number_local()`; only machine formats (ISO input values, `Y-m` keys) keep `->format()`. English dates now read "Nov 5, 2026".
 
 ## [Unreleased] — Phase 0 — Foundation (branch `phase-0-foundation`)
 

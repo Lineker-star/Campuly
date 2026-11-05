@@ -237,7 +237,7 @@ class IncidentScreenTest extends TestCase
 
         $this->assertTrue($action->isOutstanding());
 
-        $screen->call('completeAction', $action->id)->assertSee('Done '.now()->format('j M Y'));
+        $screen->call('completeAction', $action->id)->assertSee('Done '.local_date(now()));
 
         $this->assertFalse($action->fresh()->isOutstanding());
     }

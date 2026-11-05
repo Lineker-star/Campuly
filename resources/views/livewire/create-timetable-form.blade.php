@@ -29,7 +29,7 @@
                         <label for="academic-period" class="text-sm font-medium">Academic period *</label>
                         <select id="academic-period" wire:model.live="academicPeriodId" class="h-10 rounded-md border border-input bg-background px-3 text-sm">
                             @foreach ($periods as $period)
-                                <option value="{{ $period['id'] }}">{{ $period['name'] }}{{ $period['starts_on'] && $period['ends_on'] ? ' · '.\Illuminate\Support\Carbon::parse($period['starts_on'])->format('j M Y').' to '.\Illuminate\Support\Carbon::parse($period['ends_on'])->format('j M Y') : '' }}</option>
+                                <option value="{{ $period['id'] }}">{{ $period['name'] }}{{ $period['starts_on'] && $period['ends_on'] ? ' · '.local_date(\Illuminate\Support\Carbon::parse($period['starts_on']), 'medium').' to '.local_date(\Illuminate\Support\Carbon::parse($period['ends_on']), 'medium') : '' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -136,7 +136,7 @@
                             <button type="button" wire:click="moveCalendar(-1)" class="inline-flex size-9 items-center justify-center rounded-md border bg-background hover:bg-muted" aria-label="Previous calendar period">‹</button>
                             <button type="button" wire:click="moveCalendar(1)" class="inline-flex size-9 items-center justify-center rounded-md border bg-background hover:bg-muted" aria-label="Next calendar period">›</button>
                             <button type="button" wire:click="goToCalendarToday" class="inline-flex h-9 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-muted">Today</button>
-                            <span class="ml-1 text-sm font-semibold">{{ $calendarView === 'month' ? $calendarAnchor->format('F Y') : $weekStart->format('j M').' – '.$weekStart->copy()->addDays(6)->format('j M Y') }}</span>
+                            <span class="ml-1 text-sm font-semibold">{{ $calendarView === 'month' ? local_date($calendarAnchor, 'month') : local_date($weekStart, 'day').' – '.local_date($weekStart->copy()->addDays(6), 'medium') }}</span>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="flex rounded-md border bg-background p-1">
@@ -161,13 +161,13 @@
                                     $dayEvents = $draftEvents->filter(fn (array $event): bool => $this->eventOccursOn($event, $date));
                                 @endphp
                                 <div wire:key="draft-week-day-{{ $date->toDateString() }}" class="min-h-48 bg-background p-2 {{ $date->toDateString() === $calendarDate ? 'ring-2 ring-inset ring-primary' : '' }}">
-                                    <button type="button" wire:click="openEventDialog('{{ $date->toDateString() }}')" class="flex w-full items-center justify-between rounded px-1 py-1 text-left hover:bg-muted"><span class="text-xs font-semibold">{{ $date->format('D') }}</span><span class="text-xs text-muted-foreground">{{ $date->format('j M') }}</span></button>
+                                    <button type="button" wire:click="openEventDialog('{{ $date->toDateString() }}')" class="flex w-full items-center justify-between rounded px-1 py-1 text-left hover:bg-muted"><span class="text-xs font-semibold">{{ local_date($date, 'weekday_short') }}</span><span class="text-xs text-muted-foreground">{{ local_date($date, 'day') }}</span></button>
                                     <div class="mt-3 space-y-2">
                                         @forelse ($dayEvents->sortBy('start_time') as $event)
                                             @php
                                                 $eventIndex = array_search($event, $events, true);
                                             @endphp
-                                            <div wire:key="draft-week-event-{{ $date->toDateString() }}-{{ $eventIndex }}" class="rounded-md border border-primary/20 bg-primary/10 p-2 text-xs"><div class="flex items-start justify-between gap-2"><span class="font-medium">{{ $event['start_time'] }}–{{ $event['stop_time'] }}</span><button type="button" wire:click="removeEvent({{ $eventIndex }})" class="text-muted-foreground hover:text-destructive" aria-label="Remove event">×</button></div><p class="mt-1">{{ $event['type'] === 'subject' ? data_get(collect($subjects)->firstWhere('id', $event['subject_id']), 'name', 'Subject') : $event['title'] }}</p><p class="mt-1 text-muted-foreground">{{ $event['recurrence'] === 'weekly' ? 'Every week · '.$date->format('D') : 'One date' }}</p></div>
+                                            <div wire:key="draft-week-event-{{ $date->toDateString() }}-{{ $eventIndex }}" class="rounded-md border border-primary/20 bg-primary/10 p-2 text-xs"><div class="flex items-start justify-between gap-2"><span class="font-medium">{{ $event['start_time'] }}–{{ $event['stop_time'] }}</span><button type="button" wire:click="removeEvent({{ $eventIndex }})" class="text-muted-foreground hover:text-destructive" aria-label="Remove event">×</button></div><p class="mt-1">{{ $event['type'] === 'subject' ? data_get(collect($subjects)->firstWhere('id', $event['subject_id']), 'name', 'Subject') : $event['title'] }}</p><p class="mt-1 text-muted-foreground">{{ $event['recurrence'] === 'weekly' ? 'Every week · '.local_date($date, 'weekday_short') : 'One date' }}</p></div>
                                         @empty
                                             <p class="pt-4 text-center text-xs text-muted-foreground">No events</p>
                                         @endforelse

@@ -301,24 +301,122 @@ if (!function_exists('april_field_error_attributes')) {
     }
 }
 
+if (!function_exists('number_locale')) {
+    /**
+     * The ICU locale used for numbers, money and dates in the current language
+     * (fr_CM, en_CM), from config('app.number_locales').
+     */
+    function number_locale(?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+
+        return (string) config("app.number_locales.$locale", $locale);
+    }
+}
+
+if (!function_exists('local_date')) {
+    /**
+     * Write a date for people in the current language.
+     *
+     * Styles (French / English):
+     *   short    05/11/2026      / 11/05/2026
+     *   medium   5 nov. 2026     / Nov 5, 2026
+     *   long     5 novembre 2026 / November 5, 2026
+     *   day      5 nov.          / Nov 5
+     *   month    novembre 2026   / November 2026
+     *   weekday  jeudi 5 novembre 2026 / Thursday, November 5, 2026
+     *   time     14:30           / 14:30
+     *   datetime 5 nov. 2026, 14:30 / Nov 5, 2026, 14:30
+     *   day_time 5 nov., 14:30 / Nov 5, 14:30
+     *   weekday_time jeu. 5 nov., 14:30 / Thu Nov 5, 14:30
+     * Machine formats (ISO for inputs) stay with ->format() / ->toDateString().
+     */
+    function local_date(CarbonInterface|DateTimeInterface|string|null $date, string $style = 'medium'): ?string
+    {
+        if ($date === null || $date === '') {
+            return null;
+        }
+
+        $locale = app()->getLocale();
+        $carbon = Carbon::parse($date)->locale($locale);
+        $french = $locale === 'fr';
+
+        $pattern = match ($style) {
+            'short' => 'L',
+            'long' => 'LL',
+            'day' => $french ? 'D MMM' : 'MMM D',
+            'month' => 'MMMM YYYY',
+            'month_short' => 'MMM',
+            'weekday' => $french ? 'dddd LL' : 'dddd, LL',
+            'weekday_short' => 'ddd',
+            'time' => 'HH:mm',
+            'datetime' => 'll, HH:mm',
+            'day_time' => $french ? 'D MMM, HH:mm' : 'MMM D, HH:mm',
+            'weekday_time' => $french ? 'ddd D MMM, HH:mm' : 'ddd MMM D, HH:mm',
+            default => 'll',
+        };
+
+        return $carbon->isoFormat($pattern);
+    }
+}
+
+if (!function_exists('number_local')) {
+    /**
+     * Write a number in the current language: 125 000 / 12,5 (fr), 125,000 / 12.5 (en).
+     */
+    function number_local(int|float|string|null $number, int $decimals = 0): string
+    {
+        $formatter = new NumberFormatter(number_locale(), NumberFormatter::DECIMAL);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+
+        return (string) $formatter->format((float) ($number ?? 0));
+    }
+}
+
+if (!function_exists('percent_local')) {
+    /**
+     * Write a percentage given in percent: 12.5 → 12,5 % (fr), 12.5% (en).
+     */
+    function percent_local(int|float|string|null $percent, int $maxDecimals = 1): string
+    {
+        $formatter = new NumberFormatter(number_locale(), NumberFormatter::PERCENT);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $maxDecimals);
+
+        return (string) $formatter->format(((float) ($percent ?? 0)) / 100);
+    }
+}
+
+if (!function_exists('money')) {
+    /**
+     * Write an amount of money in the current language.
+     *
+     * Amounts are major units (250000 means 250 000 FCFA, not 2 500).
+     * XAF and XOF have no decimals: 125 000 FCFA (fr), FCFA 125,000 (en).
+     */
+    function money(BrickMoney|float|int|string|null $amount, ?string $currency = null): string
+    {
+        if (!$amount instanceof BrickMoney) {
+            $amount = BrickMoney::of(
+                is_float($amount) ? sprintf('%.4F', $amount) : ($amount ?? 0),
+                $currency ?? (string) config('app.currency'),
+                roundingMode: RoundingMode::HalfUp,
+            );
+        }
+
+        return $amount->formatToLocale(number_locale());
+    }
+}
+
 if (!function_exists('money_text')) {
     /**
-     * Format major currency units with the locale used by Money casts.
-     * For example, 250000 means 250,000 currency units, not 2,500.
+     * Format major currency units in the current language. Kept for older
+     * views; new code calls money().
      */
     function money_text(BrickMoney|float|int|string|null $amount): string
     {
-        if ($amount instanceof BrickMoney) {
-            return $amount->formatToLocale(app()->getLocale());
-        }
-
-        $money = BrickMoney::of(
-            is_float($amount) ? sprintf('%.4F', $amount) : ($amount ?? 0),
-            config('app.currency'),
-            roundingMode: RoundingMode::HalfUp,
-        );
-
-        return $money->formatToLocale(app()->getLocale());
+        return money($amount);
     }
 }
 

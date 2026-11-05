@@ -21,7 +21,7 @@
             </div>
             <div>
                 <dt class="text-sm text-muted-foreground">Credit held</dt>
-                <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$credit->isPositive()]) id="account-credit">{{ $credit->formatToLocale($locale) }}</dd>
+                <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$credit->isPositive()]) id="account-credit">{{ money($credit) }}</dd>
             </div>
         </dl>
 
@@ -50,7 +50,7 @@
 
         @if ($canRefund && $isRefunding && $credit->isPositive())
             <form wire:submit="refund" class="flex flex-col gap-3" aria-labelledby="refund-heading">
-                <h2 id="refund-heading" class="text-base font-semibold">Give money back <span class="font-normal text-muted-foreground">· up to {{ $credit->formatToLocale($locale) }}</span></h2>
+                <h2 id="refund-heading" class="text-base font-semibold">Give money back <span class="font-normal text-muted-foreground">· up to {{ money($credit) }}</span></h2>
                 <div class="grid gap-3 sm:grid-cols-[10rem_12rem_1fr]">
                     <div>
                         <label for="refund-amount" class="mb-1.5 block text-sm font-medium">Amount</label>
@@ -114,10 +114,10 @@
                                 <td class="py-3 pr-4 font-medium">
                                     <a href="{{ route('fee-invoices.show', $invoice->id) }}" class="hover:underline">{{ $invoice->name }}</a>
                                 </td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-muted-foreground">{{ $invoice->due_date?->format('j M Y') ?? '—' }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $invoice->amount->plus($invoice->fine)->minus($invoice->waiver)->formatToLocale($locale) }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $invoice->paid->formatToLocale($locale) }}</td>
-                                <td @class(['whitespace-nowrap py-3 pr-4 text-right tabular-nums', 'font-medium' => $invoice->balance->isPositive(), 'text-muted-foreground' => !$invoice->balance->isPositive()])>{{ $invoice->balance->formatToLocale($locale) }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-muted-foreground">{{ local_date($invoice->due_date, 'medium') ?? '—' }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ money($invoice->amount->plus($invoice->fine)->minus($invoice->waiver)) }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ money($invoice->paid) }}</td>
+                                <td @class(['whitespace-nowrap py-3 pr-4 text-right tabular-nums', 'font-medium' => $invoice->balance->isPositive(), 'text-muted-foreground' => !$invoice->balance->isPositive()])>{{ money($invoice->balance) }}</td>
                                 <td class="py-2 text-right">
                                     <div class="flex items-center justify-end gap-1">
                                         @if ($canTakeMoney && $invoice->balance->isPositive())
@@ -159,7 +159,7 @@
                             <select id="relief-line" wire:model="reliefLineId" class="{{ $controlClasses }}" {{ field_error_bindings('reliefLineId') }}>
                                 <option value="">Choose the fee</option>
                                 @foreach ($owedLines as $line)
-                                    <option value="{{ $line->id }}">{{ $line->fee?->name ?? 'Fee' }} · {{ $line->outstanding->formatToLocale($locale) }} owed</option>
+                                    <option value="{{ $line->id }}">{{ $line->fee?->name ?? 'Fee' }} · {{ money($line->outstanding) }} owed</option>
                                 @endforeach
                             </select>
                         </div>
@@ -207,7 +207,7 @@
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0 text-sm">
                                 <p class="flex flex-wrap items-baseline gap-x-2">
-                                    <span @class(['font-semibold tabular-nums', 'line-through text-muted-foreground' => $payment->isReversed()])>{{ $payment->amount->formatToLocale($locale) }}</span>
+                                    <span @class(['font-semibold tabular-nums', 'line-through text-muted-foreground' => $payment->isReversed()])>{{ money($payment->amount) }}</span>
                                     <span class="text-muted-foreground">{{ $payment->methodLabel() }}</span>
                                     @if ($payment->isReversal())
                                         <span class="text-destructive">Reversal</span>
@@ -216,7 +216,7 @@
                                     @endif
                                 </p>
                                 <p class="text-muted-foreground">
-                                    {{ $payment->received_on?->format('j M Y') }}
+                                    {{ local_date($payment->received_on, 'medium') }}
                                     @if ($payment->reference)
                                         · {{ $payment->reference }}
                                     @endif
@@ -233,7 +233,7 @@
                             </div>
                             <april:dropdown-menu>
                                 <slot:trigger>
-                                    <april:button type="button" variant="ghost" size="icon" class="size-11 shrink-0 select-none" aria-label="Actions for the payment of {{ $payment->amount->formatToLocale($locale) }} on {{ $payment->received_on?->format('j M Y') }}">
+                                    <april:button type="button" variant="ghost" size="icon" class="size-11 shrink-0 select-none" aria-label="Actions for the payment of {{ money($payment->amount) }} on {{ local_date($payment->received_on, 'medium') }}">
                                         <x-lucide-ellipsis class="size-4" />
                                     </april:button>
                                 </slot:trigger>

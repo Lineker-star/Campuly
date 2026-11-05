@@ -22,7 +22,7 @@
             </div>
             <div>
                 <dt class="text-sm text-muted-foreground">Happened</dt>
-                <dd class="font-medium">{{ $incident->occurred_at->format('j M Y, H:i') }}</dd>
+                <dd class="font-medium">{{ local_date($incident->occurred_at, 'datetime') }}</dd>
                 @if (filled($incident->location))
                     <dd class="text-sm text-muted-foreground">{{ $incident->location }}</dd>
                 @endif
@@ -96,9 +96,9 @@
                             <p class="text-muted-foreground">{{ $action->description }}</p>
                             <p class="text-xs text-muted-foreground">
                                 {{ $action->assignedTo?->name ?? 'Nobody yet' }}
-                                · {{ $action->due_on?->format('j M Y') ?? 'No date' }}
+                                · {{ local_date($action->due_on, 'medium') ?? 'No date' }}
                                 @if (!$action->isOutstanding())
-                                    · Done {{ school_time($action->completed_at)?->format('j M Y') }}
+                                    · Done {{ local_date(school_time($action->completed_at), 'medium') }}
                                 @endif
                             </p>
                         </div>
@@ -160,7 +160,7 @@
                     <li wire:key="note-{{ $note->id }}" class="py-3 text-sm">
                         <p class="flex flex-wrap items-center gap-x-2 text-muted-foreground">
                             <span class="font-medium text-foreground">{{ $note->writtenBy?->name ?? 'Unknown person' }}</span>
-                            <span>{{ school_time($note->created_at)?->format('j M Y H:i') }}</span>
+                            <span>{{ local_date(school_time($note->created_at), 'datetime') }}</span>
                             @if ($note->is_restricted)
                                 <span class="inline-flex items-center gap-1 text-xs"><x-lucide-lock class="size-3" aria-hidden="true" /> Private</span>
                             @endif
@@ -193,13 +193,13 @@
         <ol class="flex flex-col gap-3 border-l pl-4 text-sm">
             <li>
                 <p class="font-medium">Reported</p>
-                <p class="text-muted-foreground">{{ school_time($incident->created_at)?->format('j M Y') }} · {{ $incident->reportedBy?->name ?? 'Unknown person' }}</p>
+                <p class="text-muted-foreground">{{ local_date(school_time($incident->created_at), 'medium') }} · {{ $incident->reportedBy?->name ?? 'Unknown person' }}</p>
             </li>
             @foreach ($incident->statusChanges as $change)
                 <li wire:key="change-{{ $change->id }}">
                     <p class="font-medium">{{ $change->from_status->label() }} → {{ $change->to_status->label() }}</p>
                     <p class="text-muted-foreground">
-                        {{ school_time($change->created_at)?->format('j M Y') }} · {{ $change->changedBy?->name ?? 'Unknown person' }}
+                        {{ local_date(school_time($change->created_at), 'medium') }} · {{ $change->changedBy?->name ?? 'Unknown person' }}
                         @if (filled($change->reason))
                             · {{ $change->reason }}
                         @endif

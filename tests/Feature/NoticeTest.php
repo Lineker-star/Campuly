@@ -60,8 +60,8 @@ class NoticeTest extends TestCase
             ->set('search', 'Exam week timings')
             ->assertSee('From')
             ->assertSee('Until')
-            ->assertSee('12 Oct 2026')
-            ->assertSee('16 Oct 2026')
+            ->assertSee('Oct 12, 2026')
+            ->assertSee('Oct 16, 2026')
             ->assertDontSee(' ago');
     }
 
@@ -106,7 +106,7 @@ class NoticeTest extends TestCase
 
         $this->get(route('notices.show', $notice))
             ->assertOk()
-            ->assertSee('Shows 16 Oct 2026 to 30 Oct 2026')
+            ->assertSee('Shows Oct 16, 2026 to Oct 30, 2026')
             ->assertSee('For Classes / levels: Grade 10, with guardians')
             ->assertSee('Also sent by email');
     }

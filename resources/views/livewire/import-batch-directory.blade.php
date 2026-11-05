@@ -82,7 +82,7 @@
                                     </span>
                                 </april:data-table-cell>
                                 <april:data-table-cell class="whitespace-nowrap text-muted-foreground">
-                                    {{ school_time($batch->created_at)?->format('j M Y') }}
+                                    {{ local_date(school_time($batch->created_at), 'medium') }}
                                     <span class="block text-xs">{{ $batch->createdBy?->name ?? 'Unknown person' }}</span>
                                 </april:data-table-cell>
                                 <april:data-table-cell class="text-right">

@@ -53,22 +53,22 @@
                                 <div class="flex items-start justify-between gap-3">
                                     <h3 class="min-w-0 break-words font-medium">{{ $invoice->name }}</h3>
                                     <p class="shrink-0 text-right font-semibold">
-                                        {{ $invoice->balance->formatToLocale(app()->getLocale()) }}
+                                        {{ money($invoice->balance) }}
                                         <span class="block text-xs font-normal text-muted-foreground">Balance</span>
                                     </p>
                                 </div>
                                 <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                                     <div>
                                         <dt class="text-muted-foreground">Issued</dt>
-                                        <dd class="mt-1">{{ $invoice->issue_date?->format('j M Y') }}</dd>
+                                        <dd class="mt-1">{{ local_date($invoice->issue_date, 'medium') }}</dd>
                                     </div>
                                     <div>
                                         <dt class="text-muted-foreground">Due</dt>
-                                        <dd class="mt-1">{{ $invoice->due_date?->format('j M Y') }}</dd>
+                                        <dd class="mt-1">{{ local_date($invoice->due_date, 'medium') }}</dd>
                                     </div>
                                     <div class="col-span-2">
                                         <dt class="text-muted-foreground">Total</dt>
-                                        <dd class="mt-1">{{ $invoice->amount->plus($invoice->fine)->minus($invoice->waiver)->formatToLocale(app()->getLocale()) }}</dd>
+                                        <dd class="mt-1">{{ money($invoice->amount->plus($invoice->fine)->minus($invoice->waiver)) }}</dd>
                                     </div>
                                 </dl>
                             </article>
@@ -90,10 +90,10 @@
                                 @foreach ($invoices as $invoice)
                                     <tr class="border-b last:border-0">
                                         <td class="p-4 font-medium">{{ $invoice->name }}</td>
-                                        <td class="p-4 text-muted-foreground">{{ $invoice->issue_date?->format('j M Y') }}</td>
-                                        <td class="p-4 text-muted-foreground">{{ $invoice->due_date?->format('j M Y') }}</td>
-                                        <td class="p-4 text-right">{{ $invoice->amount->plus($invoice->fine)->minus($invoice->waiver)->formatToLocale(app()->getLocale()) }}</td>
-                                        <td class="p-4 text-right">{{ $invoice->balance->formatToLocale(app()->getLocale()) }}</td>
+                                        <td class="p-4 text-muted-foreground">{{ local_date($invoice->issue_date, 'medium') }}</td>
+                                        <td class="p-4 text-muted-foreground">{{ local_date($invoice->due_date, 'medium') }}</td>
+                                        <td class="p-4 text-right">{{ money($invoice->amount->plus($invoice->fine)->minus($invoice->waiver)) }}</td>
+                                        <td class="p-4 text-right">{{ money($invoice->balance) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

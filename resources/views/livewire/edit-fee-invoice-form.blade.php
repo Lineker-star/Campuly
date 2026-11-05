@@ -16,7 +16,7 @@
             @if ($section !== null)
                 <span>· {{ $section->academicLevel?->name }} {{ $section->label ?? $section->name }}</span>
             @endif
-            <span>· Issued {{ $feeInvoice->issue_date->format('j M Y') }}</span>
+            <span>· Issued {{ local_date($feeInvoice->issue_date, 'medium') }}</span>
         </p>
 
         <form wire:submit="saveDetails" class="flex flex-col gap-3" aria-label="Due date and note">
@@ -67,14 +67,14 @@
                             <div class="min-w-0 text-sm">
                                 <p class="truncate font-medium">{{ $record->fee?->name ?? $dash }}</p>
                                 <p class="tabular-nums text-muted-foreground">
-                                    {{ $record->amount->formatToLocale($locale) }}
-                                    @if ($record->waiver->isPositive()) · {{ $record->waiver->formatToLocale($locale) }} waived @endif
-                                    @if ($record->fine->isPositive()) · {{ $record->fine->formatToLocale($locale) }} fine @endif
-                                    @if ($record->paid->isPositive()) · {{ $record->paid->formatToLocale($locale) }} paid @endif
+                                    {{ money($record->amount) }}
+                                    @if ($record->waiver->isPositive()) · {{ money($record->waiver) }} waived @endif
+                                    @if ($record->fine->isPositive()) · {{ money($record->fine) }} fine @endif
+                                    @if ($record->paid->isPositive()) · {{ money($record->paid) }} paid @endif
                                 </p>
                             </div>
                             <div class="flex shrink-0 items-center gap-2">
-                                <span class="text-sm font-medium tabular-nums">{{ $record->payable->formatToLocale($locale) }}</span>
+                                <span class="text-sm font-medium tabular-nums">{{ money($record->payable) }}</span>
                                 @if ($canEditLine || $canRemoveLine)
                                     <april:dropdown-menu>
                                         <slot:trigger>
@@ -87,7 +87,7 @@
                                                 <april:dropdown-menu-item wire:click="startEditingLine({{ $record->id }})"><x-lucide-pencil class="mr-2 size-4" />Change</april:dropdown-menu-item>
                                             @endif
                                             @if ($canRemoveLine)
-                                                <april:dropdown-menu-item class="text-destructive" wire:click="removeLine({{ $record->id }})" wire:confirm="Remove {{ $record->fee?->name }}? The invoice will ask for {{ $record->payable->formatToLocale($locale) }} less.">
+                                                <april:dropdown-menu-item class="text-destructive" wire:click="removeLine({{ $record->id }})" wire:confirm="Remove {{ $record->fee?->name }}? The invoice will ask for {{ money($record->payable) }} less.">
                                                     <x-lucide-trash-2 class="mr-2 size-4" />Remove
                                                 </april:dropdown-menu-item>
                                             @endif

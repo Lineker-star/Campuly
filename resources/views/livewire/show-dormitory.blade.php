@@ -50,7 +50,7 @@
                 @foreach ($away as $leave)
                     <li wire:key="away-{{ $leave->id }}" class="flex flex-wrap justify-between gap-x-4 py-3 text-sm">
                         <span class="font-medium">{{ $leave->studentRecord?->user?->name }}</span>
-                        <span class="text-muted-foreground">{{ $leave->destination }} · back {{ $leave->returns_on?->format('j M') }}</span>
+                        <span class="text-muted-foreground">{{ $leave->destination }} · back {{ local_date($leave->returns_on, 'day') }}</span>
                     </li>
                 @endforeach
             </ul>

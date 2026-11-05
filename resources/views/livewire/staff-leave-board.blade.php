@@ -149,7 +149,7 @@
                     <dl class="mt-4 grid gap-3 sm:grid-cols-3">
                         <div>
                             <dt class="text-xs font-medium text-muted-foreground">Days</dt>
-                            <dd class="text-sm">{{ $leave->starts_on->format('j M Y') }} to {{ $leave->ends_on->format('j M Y') }} · {{ $leave->days() }} {{ Str::plural('day', $leave->days()) }}</dd>
+                            <dd class="text-sm">{{ local_date($leave->starts_on, 'medium') }} to {{ local_date($leave->ends_on, 'medium') }} · {{ $leave->days() }} {{ Str::plural('day', $leave->days()) }}</dd>
                         </div>
                         <div>
                             <dt class="text-xs font-medium text-muted-foreground">Kind of leave</dt>
@@ -159,7 +159,7 @@
                             <dt class="text-xs font-medium text-muted-foreground">Answer</dt>
                             <dd class="text-sm">
                                 @if ($leave->decided_at !== null)
-                                    {{ $leave->decidedBy?->name ?? 'Unknown person' }} · {{ school_time($leave->decided_at)?->format('j M Y') }}
+                                    {{ $leave->decidedBy?->name ?? 'Unknown person' }} · {{ local_date(school_time($leave->decided_at), 'medium') }}
                                 @else
                                     Waiting for an answer
                                 @endif

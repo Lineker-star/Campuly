@@ -54,7 +54,7 @@
                             </div>
                             <div>
                                 <dt class="text-muted-foreground">Who has it</dt>
-                                <dd class="mt-1 break-words font-medium">{{ $loan !== null ? $loan->borrower?->name.' · due '.$loan->due_on?->format('j M') : '—' }}</dd>
+                                <dd class="mt-1 break-words font-medium">{{ $loan !== null ? $loan->borrower?->name.' · due '.local_date($loan->due_on, 'day') : '—' }}</dd>
                             </div>
                         </dl>
                         @if ($canManage && $loan === null && $copy->status->isHeld())
@@ -88,7 +88,7 @@
                                 <td class="p-4">{{ $loan !== null ? 'Out on loan' : $copy->status->label() }}</td>
                                 <td class="p-4 text-muted-foreground">
                                     @if ($loan !== null)
-                                        {{ $loan->borrower?->name }} &middot; due {{ $loan->due_on?->format('j M') }}
+                                        {{ $loan->borrower?->name }} &middot; due {{ local_date($loan->due_on, 'day') }}
                                     @else
                                         &mdash;
                                     @endif

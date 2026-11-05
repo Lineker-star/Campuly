@@ -35,8 +35,8 @@
                                     <tr>
                                         <td class="py-2 pr-3 font-medium">{{ $result->courseOffering?->subject?->name ?? '—' }}</td>
                                         <td class="py-2 pr-3">{{ $result->courseOffering?->academicPeriod?->name ?? '—' }}</td>
-                                        <td class="py-2 pr-3 text-right tabular-nums">{{ $result->percentage === null ? '—' : rtrim(rtrim(number_format($result->percentage, 2), '0'), '.').'%' }}</td>
-                                        <td class="py-2 whitespace-nowrap">{{ $result->approved_at?->format('j M Y') ?? '—' }}</td>
+                                        <td class="py-2 pr-3 text-right tabular-nums">{{ $result->percentage === null ? '—' : rtrim(rtrim(number_local($result->percentage, 2), '0'), '.').'%' }}</td>
+                                        <td class="py-2 whitespace-nowrap">{{ local_date($result->approved_at, 'medium') ?? '—' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -82,7 +82,7 @@
                     <april:button type="button" variant="outline" wire:click="moveDay(1)" :disabled="$isTodayOrLater">
                         Next day <x-lucide-chevron-right class="ml-1 size-4" />
                     </april:button>
-                    <span class="w-full text-sm text-muted-foreground sm:ml-auto sm:w-auto">{{ \Illuminate\Support\Carbon::parse($attendedOn)->format('l, j F Y') }}</span>
+                    <span class="w-full text-sm text-muted-foreground sm:ml-auto sm:w-auto">{{ local_date(\Illuminate\Support\Carbon::parse($attendedOn), 'weekday') }}</span>
                 </div>
             @endif
         </slot:content>
@@ -135,7 +135,7 @@
             <slot:title>{{ $section->academicLevel?->name }} · {{ $section->label ?? $section->name }}</slot:title>
             <slot:content>
                 <x-empty-state icon="lucide-calendar-off" title="Shut for {{ $closure->title }}"
-                    description="The calendar closes the school on {{ \Illuminate\Support\Carbon::parse($attendedOn)->format('j F Y') }}, so that day has no register." />
+                    description="The calendar closes the school on {{ local_date(\Illuminate\Support\Carbon::parse($attendedOn), 'long') }}, so that day has no register." />
             </slot:content>
         </april:card>
     @elseif ($students->isEmpty())

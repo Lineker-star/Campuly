@@ -73,19 +73,19 @@
         <dl class="grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4">
             <div>
                 <dt class="text-sm text-muted-foreground">Issued</dt>
-                <dd class="font-medium">{{ $feeInvoice->issue_date?->format('j M Y') ?? $dash }}</dd>
+                <dd class="font-medium">{{ local_date($feeInvoice->issue_date, 'medium') ?? $dash }}</dd>
             </div>
             <div>
                 <dt class="text-sm text-muted-foreground">Due</dt>
-                <dd @class(['font-medium', 'text-destructive' => $isOverdue])>{{ $feeInvoice->due_date?->format('j M Y') ?? $dash }}</dd>
+                <dd @class(['font-medium', 'text-destructive' => $isOverdue])>{{ local_date($feeInvoice->due_date, 'medium') ?? $dash }}</dd>
             </div>
             <div>
                 <dt class="text-sm text-muted-foreground">Charged</dt>
-                <dd class="font-medium tabular-nums">{{ $charged->formatToLocale($locale) }}</dd>
+                <dd class="font-medium tabular-nums">{{ money($charged) }}</dd>
             </div>
             <div class="col-span-2 sm:col-span-1">
                 <dt class="text-sm text-muted-foreground">Owed</dt>
-                <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$feeInvoice->balance->isPositive()]) id="invoice-owed">{{ $feeInvoice->balance->formatToLocale($locale) }}</dd>
+                <dd @class(['text-2xl font-semibold tabular-nums tracking-tight', 'text-muted-foreground' => !$feeInvoice->balance->isPositive()]) id="invoice-owed">{{ money($feeInvoice->balance) }}</dd>
             </div>
         </dl>
 
@@ -123,22 +123,22 @@
                         @foreach ($feeInvoice->feeInvoiceRecords as $record)
                             <tr wire:key="line-{{ $record->id }}">
                                 <td class="py-3 pr-4 font-medium">{{ $record->fee?->name ?? $dash }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ $record->amount->formatToLocale($locale) }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->waiver->isPositive() ? $record->waiver->formatToLocale($locale) : $dash }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->fine->isPositive() ? $record->fine->formatToLocale($locale) : $dash }}</td>
-                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->paid->isPositive() ? $record->paid->formatToLocale($locale) : $dash }}</td>
-                                <td @class(['whitespace-nowrap py-3 text-right tabular-nums', 'font-medium' => $record->outstanding->isPositive(), 'text-muted-foreground' => !$record->outstanding->isPositive()])>{{ $record->outstanding->formatToLocale($locale) }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ money($record->amount) }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->waiver->isPositive() ? money($record->waiver) : $dash }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->fine->isPositive() ? money($record->fine) : $dash }}</td>
+                                <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums text-muted-foreground">{{ $record->paid->isPositive() ? money($record->paid) : $dash }}</td>
+                                <td @class(['whitespace-nowrap py-3 text-right tabular-nums', 'font-medium' => $record->outstanding->isPositive(), 'text-muted-foreground' => !$record->outstanding->isPositive()])>{{ money($record->outstanding) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr class="border-t font-medium">
                             <td class="py-3 pr-4">Total</td>
-                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ $feeInvoice->amount->formatToLocale($locale) }}</td>
-                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ $feeInvoice->waiver->formatToLocale($locale) }}</td>
-                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ $feeInvoice->fine->formatToLocale($locale) }}</td>
-                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ $feeInvoice->paid->formatToLocale($locale) }}</td>
-                            <td class="whitespace-nowrap py-3 text-right tabular-nums">{{ $feeInvoice->balance->formatToLocale($locale) }}</td>
+                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ money($feeInvoice->amount) }}</td>
+                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ money($feeInvoice->waiver) }}</td>
+                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ money($feeInvoice->fine) }}</td>
+                            <td class="whitespace-nowrap py-3 pr-4 text-right tabular-nums">{{ money($feeInvoice->paid) }}</td>
+                            <td class="whitespace-nowrap py-3 text-right tabular-nums">{{ money($feeInvoice->balance) }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -157,9 +157,9 @@
                         <li wire:key="payment-{{ $row['payment']->id }}" class="flex items-center justify-between gap-4 py-2">
                             <div class="min-w-0 text-sm">
                                 <p class="flex flex-wrap items-baseline gap-x-2">
-                                    <span @class(['font-semibold tabular-nums', 'line-through text-muted-foreground' => $row['payment']->isReversed()])>{{ $row['amount']->formatToLocale($locale) }}</span>
+                                    <span @class(['font-semibold tabular-nums', 'line-through text-muted-foreground' => $row['payment']->isReversed()])>{{ money($row['amount']) }}</span>
                                     @if (!$row['amount']->isEqualTo($row['payment']->amount))
-                                        <span class="text-muted-foreground">of {{ $row['payment']->amount->abs()->formatToLocale($locale) }} {{ $row['payment']->isReversal() ? 'taken back' : 'received' }}</span>
+                                        <span class="text-muted-foreground">of {{ money($row['payment']->amount->abs()) }} {{ $row['payment']->isReversal() ? 'taken back' : 'received' }}</span>
                                     @endif
                                     <span class="text-muted-foreground">{{ $row['payment']->methodLabel() }}</span>
                                     @if ($row['payment']->isReversal())
@@ -170,7 +170,7 @@
                                     @endif
                                 </p>
                                 <p class="text-muted-foreground">
-                                    {{ $row['payment']->received_on?->format('j M Y') }}
+                                    {{ local_date($row['payment']->received_on, 'medium') }}
                                     @if ($row['payment']->reference)
                                         · {{ $row['payment']->reference }}
                                     @endif

@@ -81,7 +81,7 @@
                         </div>
                         <div>
                             <dt class="text-xs font-medium text-muted-foreground">Joined</dt>
-                            <dd class="mt-1 text-sm">{{ $profile->joined_on?->format('j M Y') ?? 'No date' }}</dd>
+                            <dd class="mt-1 text-sm">{{ local_date($profile->joined_on, 'medium') ?? 'No date' }}</dd>
                         </div>
                     </dl>
 

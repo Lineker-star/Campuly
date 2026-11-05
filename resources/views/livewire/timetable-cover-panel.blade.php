@@ -37,7 +37,7 @@
                             <select id="lesson" wire:model="lesson" required class="{{ $controlClasses }}" {{ field_error_bindings('lesson') }}>
                                 <option value="">Choose a lesson</option>
                                 @foreach ($lessons as $entry)
-                                    <option value="{{ $entry->timetable_time_slot_id }}:{{ $entry->weekday_id }}">{{ $entry->weekday_name }} · {{ \Illuminate\Support\Carbon::parse($entry->start_time)->format('H:i') }}–{{ \Illuminate\Support\Carbon::parse($entry->stop_time)->format('H:i') }}{{ $entry->timetableRecordable ? ' · '.$entry->timetableRecordable->name : '' }}</option>
+                                    <option value="{{ $entry->timetable_time_slot_id }}:{{ $entry->weekday_id }}">{{ $entry->weekday_name }} · {{ local_date(\Illuminate\Support\Carbon::parse($entry->start_time), 'time') }}–{{ local_date(\Illuminate\Support\Carbon::parse($entry->stop_time), 'time') }}{{ $entry->timetableRecordable ? ' · '.$entry->timetableRecordable->name : '' }}</option>
                                 @endforeach
                             </select>
                             <x-field-error name="lesson" class="mt-1" />
@@ -79,7 +79,7 @@
                     <li wire:key="cover-{{ $substitution->id }}" class="flex items-center gap-3 py-3">
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-medium">
-                                {{ $substitution->substituted_on->format('D j M Y') }} · {{ $substitution->timeSlot?->start_time ?? '—' }}–{{ $substitution->timeSlot?->stop_time ?? '—' }}
+                                {{ local_date($substitution->substituted_on, 'weekday') }} · {{ $substitution->timeSlot?->start_time ?? '—' }}–{{ $substitution->timeSlot?->stop_time ?? '—' }}
                             </p>
                             <p class="truncate text-xs text-muted-foreground">
                                 {{ $substitution->replacementTeacher?->name ?? '—' }} covers · {{ $substitution->reason }} · approved by {{ $substitution->approvedBy?->name ?? '—' }}
@@ -88,7 +88,7 @@
                         @if ($canWithdraw && !$substitution->substituted_on->lt(school_today()))
                             <april:dropdown-menu>
                                 <slot:trigger>
-                                    <april:button type="button" variant="ghost" size="icon" class="size-11 select-none" aria-label="More for the cover on {{ $substitution->substituted_on->format('j M') }}">
+                                    <april:button type="button" variant="ghost" size="icon" class="size-11 select-none" aria-label="More for the cover on {{ local_date($substitution->substituted_on, 'day') }}">
                                         <x-lucide-ellipsis class="size-4" />
                                     </april:button>
                                 </slot:trigger>

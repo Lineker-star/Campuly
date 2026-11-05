@@ -101,8 +101,8 @@
                                     </span>
                                 </april:data-table-cell>
                                 <april:data-table-cell class="whitespace-nowrap text-muted-foreground">
-                                    {{ $incident->occurred_at->format('j M Y') }}
-                                    <span class="block text-xs">{{ $incident->occurred_at->format('H:i') }}</span>
+                                    {{ local_date($incident->occurred_at, 'medium') }}
+                                    <span class="block text-xs">{{ local_date($incident->occurred_at, 'time') }}</span>
                                 </april:data-table-cell>
                                 <april:data-table-cell class="text-muted-foreground">
                                     {{ $incident->assignedTo?->name ?? 'Nobody yet' }}

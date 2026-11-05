@@ -76,7 +76,7 @@
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-medium">{{ $holderName($member) }}</p>
                             <p class="truncate text-xs text-muted-foreground">
-                                {{ $member->studentRecord?->admission_number ?? '—' }} · joined {{ $member->joined_on?->format('j M Y') ?? '—' }}
+                                {{ $member->studentRecord?->admission_number ?? '—' }} · joined {{ local_date($member->joined_on, 'medium') ?? '—' }}
                             </p>
                         </div>
                         @if ($canWrite)
@@ -129,7 +129,7 @@
                 @foreach ($past as $member)
                     <li wire:key="past-{{ $member->id }}" class="py-3 text-sm">
                         <p class="truncate font-medium">{{ $holderName($member) }}</p>
-                        <p class="text-xs text-muted-foreground">{{ $member->joined_on?->format('j M Y') ?? '—' }} to {{ $member->left_on->format('j M Y') }}</p>
+                        <p class="text-xs text-muted-foreground">{{ local_date($member->joined_on, 'medium') ?? '—' }} to {{ local_date($member->left_on, 'medium') }}</p>
                     </li>
                 @endforeach
             </ul>

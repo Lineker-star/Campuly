@@ -103,7 +103,7 @@ class TakeInvoicePayment extends Component
         $credit = $payment->unallocated();
 
         session()->flash('success', $credit->isPositive()
-            ? 'Payment recorded. '.$credit->formatToLocale(app()->getLocale()).' is held as credit.'
+            ? 'Payment recorded. '.money($credit).' is held as credit.'
             : 'Payment recorded.');
 
         $this->redirectRoute('fee-invoices.show', $this->feeInvoice);

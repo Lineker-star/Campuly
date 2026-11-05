@@ -30,9 +30,9 @@
                 <p class="eyebrow">{{ $isReceipt ? 'Receipt' : 'Invoice' }}</p>
                 <h2>{{ $feeInvoice->name }}</h2>
                 <p class="muted">
-                    Issued {{ $feeInvoice->issue_date?->format('j M Y') ?? $dash }}
+                    Issued {{ local_date($feeInvoice->issue_date, 'medium') ?? $dash }}
                     @unless ($isReceipt)
-                        · Due {{ $feeInvoice->due_date?->format('j M Y') ?? $dash }}
+                        · Due {{ local_date($feeInvoice->due_date, 'medium') ?? $dash }}
                     @endunless
                 </p>
             </div>
@@ -41,7 +41,7 @@
             @else
                 <div class="amount-due">
                     <span>Amount due</span>
-                    <strong>{{ $feeInvoice->balance->formatToLocale($locale) }}</strong>
+                    <strong>{{ money($feeInvoice->balance) }}</strong>
                 </div>
             @endif
         </div>
@@ -82,11 +82,11 @@
                     @forelse ($feeInvoice->feeInvoiceRecords as $record)
                         <tr>
                             <td>{{ $record->fee?->name ?? $dash }}</td>
-                            <td class="num">{{ $record->amount->formatToLocale($locale) }}</td>
-                            <td class="num">{{ $record->waiver->isPositive() ? $record->waiver->formatToLocale($locale) : $dash }}</td>
-                            <td class="num">{{ $record->fine->isPositive() ? $record->fine->formatToLocale($locale) : $dash }}</td>
-                            <td class="num">{{ $record->paid->isPositive() ? $record->paid->formatToLocale($locale) : $dash }}</td>
-                            <td class="num">{{ $record->outstanding->formatToLocale($locale) }}</td>
+                            <td class="num">{{ money($record->amount) }}</td>
+                            <td class="num">{{ $record->waiver->isPositive() ? money($record->waiver) : $dash }}</td>
+                            <td class="num">{{ $record->fine->isPositive() ? money($record->fine) : $dash }}</td>
+                            <td class="num">{{ $record->paid->isPositive() ? money($record->paid) : $dash }}</td>
+                            <td class="num">{{ money($record->outstanding) }}</td>
                         </tr>
                     @empty
                         <tr><td colspan="6" class="muted">No fees are on this invoice yet.</td></tr>
@@ -96,11 +96,11 @@
                     <tfoot>
                         <tr>
                             <th>Total</th>
-                            <th class="num">{{ $feeInvoice->amount->formatToLocale($locale) }}</th>
-                            <th class="num">{{ $feeInvoice->waiver->formatToLocale($locale) }}</th>
-                            <th class="num">{{ $feeInvoice->fine->formatToLocale($locale) }}</th>
-                            <th class="num">{{ $feeInvoice->paid->formatToLocale($locale) }}</th>
-                            <th class="num">{{ $feeInvoice->balance->formatToLocale($locale) }}</th>
+                            <th class="num">{{ money($feeInvoice->amount) }}</th>
+                            <th class="num">{{ money($feeInvoice->waiver) }}</th>
+                            <th class="num">{{ money($feeInvoice->fine) }}</th>
+                            <th class="num">{{ money($feeInvoice->paid) }}</th>
+                            <th class="num">{{ money($feeInvoice->balance) }}</th>
                         </tr>
                     </tfoot>
                 @endif
@@ -123,11 +123,11 @@
                     <tbody>
                         @foreach ($payments as $row)
                             <tr>
-                                <td class="nowrap">{{ $row['payment']->received_on?->format('j M Y') ?? $dash }}</td>
+                                <td class="nowrap">{{ local_date($row['payment']->received_on, 'medium') ?? $dash }}</td>
                                 <td>#{{ $row['payment']->id }}</td>
                                 <td>{{ $row['payment']->methodLabel() }}</td>
                                 <td>{{ $row['payment']->reference ?: $dash }}</td>
-                                <td class="num">{{ $row['amount']->formatToLocale($locale) }}</td>
+                                <td class="num">{{ money($row['amount']) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -147,7 +147,7 @@
                 <span></span>
                 {{ $isReceipt ? 'Received by' : 'Authorised by' }} · signature and school stamp
             </div>
-            <p class="muted">Printed {{ school_now()->format('j M Y, H:i') }} by {{ auth()->user()->name }}</p>
+            <p class="muted">Printed {{ local_date(school_now(), 'datetime') }} by {{ auth()->user()->name }}</p>
         </footer>
     </div>
 @endsection

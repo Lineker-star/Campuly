@@ -110,7 +110,7 @@
                             · {{ $formatNumber($gradeItem->weight) }}×
                             · {{ $gradeItem->category?->name ?? 'No category' }}
                             @if ($gradeItem->due_on !== null)
-                                · due {{ $gradeItem->due_on->format('j M') }}
+                                · due {{ local_date($gradeItem->due_on, 'day') }}
                             @endif
                         </p>
                     </div>

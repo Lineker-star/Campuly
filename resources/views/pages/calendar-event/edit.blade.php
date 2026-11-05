@@ -20,12 +20,12 @@
                 <div>
                     <dt class="text-sm text-muted-foreground">Date</dt>
                     <dd class="font-medium">
-                        {{ $event->starts_at->format('j M Y') }}@if ($event->ends_at->toDateString() !== $event->starts_at->toDateString()) – {{ $event->ends_at->format('j M Y') }}@endif
+                        {{ local_date($event->starts_at, 'medium') }}@if ($event->ends_at->toDateString() !== $event->starts_at->toDateString()) – {{ local_date($event->ends_at, 'medium') }}@endif
                     </dd>
                 </div>
                 <div>
                     <dt class="text-sm text-muted-foreground">Time</dt>
-                    <dd class="font-medium">{{ $event->is_all_day ? 'All day' : $event->starts_at->format('H:i').' – '.$event->ends_at->format('H:i') }}</dd>
+                    <dd class="font-medium">{{ $event->is_all_day ? 'All day' : local_date($event->starts_at, 'time').' – '.local_date($event->ends_at, 'time') }}</dd>
                 </div>
                 <div>
                     <dt class="text-sm text-muted-foreground">Where</dt>

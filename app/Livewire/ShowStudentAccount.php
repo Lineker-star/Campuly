@@ -82,7 +82,7 @@ class ShowStudentAccount extends Component
             return;
         }
 
-        $this->notify(BrickMoney::ofMinor($applied, config('app.currency'))->formatToLocale(app()->getLocale()).' of credit was used against fees owed.');
+        $this->notify(money(BrickMoney::ofMinor($applied, config('app.currency'))).' of credit was used against fees owed.');
     }
 
     public function startReversing(int $paymentId): void

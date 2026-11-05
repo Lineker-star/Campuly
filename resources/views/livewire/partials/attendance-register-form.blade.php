@@ -7,7 +7,7 @@
 <form wire:submit="save">
     <april:card>
         <slot:title>{{ $registerTitle }}</slot:title>
-        <slot:description>{{ $students->count() }} {{ Str::plural('learner', $students->count()) }} · {{ \Illuminate\Support\Carbon::parse($attendedOn)->format('j F Y') }}</slot:description>
+        <slot:description>{{ $students->count() }} {{ Str::plural('learner', $students->count()) }} · {{ local_date(\Illuminate\Support\Carbon::parse($attendedOn), 'long') }}</slot:description>
         <slot:content>
             <div class="flex flex-wrap items-center gap-2 border-b border-border pb-4" aria-live="polite" aria-label="Attendance totals">
                 <april:badge variant="secondary">Present <span class="ml-1 font-bold">{{ $counts->get('present', 0) }}</span></april:badge>

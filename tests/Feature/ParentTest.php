@@ -85,7 +85,7 @@ class ParentTest extends TestCase
             ->get("dashboard/parents/$parent->id")
             ->assertOk()
             ->assertSee('Email address')
-            ->assertSee('10 Apr 1985');
+            ->assertSee('Apr 10, 1985');
     }
 
     public function test_a_parent_profile_lists_the_learners_linked_here(): void
