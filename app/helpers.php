@@ -158,7 +158,11 @@ if (!function_exists('school_terms')) {
      */
     function school_terms(string $key, string $fallback): string
     {
-        return Str::plural(school_term($key, $fallback));
+        $custom = current_school()?->operatingProfile?->labels[$key] ?? null;
+
+        // Pluralise the English default, then translate it: French plurals
+        // ("années scolaires") are not English plurals of a translation.
+        return $custom === null ? __(Str::plural($fallback)) : Str::plural(__($custom));
     }
 }
 

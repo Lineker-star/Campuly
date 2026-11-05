@@ -36,6 +36,16 @@ class ShellTranslationTest extends TestCase
         }
     }
 
+    public function test_the_dashboard_page_itself_is_french(): void
+    {
+        $html = $this->frenchDashboard();
+
+        $this->assertStringNotContainsString('>Dashboard</h1>', $html);
+        $this->assertStringContainsString('Tableau de bord</h1>', $html);
+        $this->assertStringNotContainsString('>Teachers</dt>', $html);
+        $this->assertStringContainsString('Enseignants</dt>', $html);
+    }
+
     public function test_the_school_s_own_vocabulary_passes_through_unchanged(): void
     {
         $this->assertSame('Form 1 students', __('Form 1 students'));

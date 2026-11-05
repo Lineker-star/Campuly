@@ -58,7 +58,7 @@ class SchoolTrends
             $days = $totals->get($weekStart->toDateString(), collect());
 
             return [
-                'week' => $weekStart->format('M j'),
+                'week' => local_date($weekStart, 'day'),
                 'recorded' => (int) $days->sum('recorded'),
                 'present' => (int) $days->sum('present'),
             ];
@@ -111,7 +111,7 @@ class SchoolTrends
             $key = $month->format('Y-m');
 
             return [
-                'month' => $month->format('M'),
+                'month' => local_date($month, 'month_short'),
                 'billed' => (int) ($billed[$key] ?? 0) / 100,
                 'collected' => (int) ($collected[$key] ?? 0) / 100,
             ];
@@ -142,11 +142,11 @@ class SchoolTrends
             ->pluck('total', 'bucket');
 
         return collect([
-            'current' => 'Not due yet',
-            'late30' => '1–30 days late',
-            'late60' => '31–60 days late',
-            'late90' => '61–90 days late',
-            'late90plus' => 'Over 90 days late',
+            'current' => __('Not due yet'),
+            'late30' => __('1–30 days late'),
+            'late60' => __('31–60 days late'),
+            'late90' => __('61–90 days late'),
+            'late90plus' => __('Over 90 days late'),
         ])->map(fn (string $label, string $bucket): array => [
             'label' => $label,
             'owed' => (int) ($totals[$bucket] ?? 0) / 100,
@@ -183,7 +183,7 @@ class SchoolTrends
             $key = $firstMonth->addMonths($offset)->format('Y-m');
 
             return [
-                'month' => $firstMonth->addMonths($offset)->format('M'),
+                'month' => local_date($firstMonth->addMonths($offset), 'month_short'),
                 'received' => (int) ($received[$key] ?? 0) / 100,
                 'spent' => round((float) ($spent[$key] ?? 0), 2),
             ];
@@ -214,7 +214,7 @@ class SchoolTrends
             $weekStart = $firstWeek->addWeeks($offset);
 
             return [
-                'week' => $weekStart->format('M j'),
+                'week' => local_date($weekStart, 'day'),
                 'incidents' => $counts->get($weekStart->toDateString(), 0),
             ];
         })->all();

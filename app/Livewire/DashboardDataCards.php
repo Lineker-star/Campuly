@@ -16,7 +16,6 @@ use App\Models\Notice;
 use App\Models\User;
 use App\Services\Attendance\AttendanceSummary;
 use App\Services\School\SchoolSetupPhaseService;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Livewire\Attributes\Locked;
@@ -141,12 +140,12 @@ class DashboardDataCards extends Component
         if (!$schoolSetupPhases->acknowledge($school, $actor)) {
             $setupState = $schoolSetupPhases->for($school);
             $this->setupChecklist = $setupState['show_dashboard_card'] ? $setupState : null;
-            $this->notify('Setup needs attention again. Finish the steps it lists first.', 'danger');
+            $this->notify(__('Setup needs attention again. Finish the steps it lists first.'), 'danger');
 
             return;
         }
 
-        session()->flash('success', 'Your school is ready for daily work.');
+        session()->flash('success', __('Your school is ready for daily work.'));
         $this->redirectRoute('dashboard');
     }
 
@@ -193,8 +192,8 @@ class DashboardDataCards extends Component
                 $present = $dayRecords->filter(fn (AttendanceRecord $record): bool => $record->status->countsAsPresent())->count();
 
                 return [
-                    'label' => $date->format('D'),
-                    'date' => $date->format('M j'),
+                    'label' => local_date($date, 'weekday_short'),
+                    'date' => local_date($date, 'day'),
                     'rate' => $dayRecords->isEmpty() ? null : round(($present / $dayRecords->count()) * 100, 1),
                     'registered' => $dayRecords->count(),
                 ];
@@ -217,7 +216,7 @@ class DashboardDataCards extends Component
             ->map(fn (CalendarEvent $event): array => [
                 'title' => $event->title,
                 'type' => $event->type->label(),
-                'time' => $event->is_all_day ? 'All day' : $event->starts_at->format('g:i A'),
+                'time' => $event->is_all_day ? __('All day') : local_date($event->starts_at, 'time'),
                 'location' => $event->location,
             ])
             ->all();
@@ -232,8 +231,8 @@ class DashboardDataCards extends Component
             ->map(fn (CalendarEvent $event): array => [
                 'title' => $event->title,
                 'type' => $event->type->label(),
-                'date' => $event->starts_at->format('D, M j'),
-                'time' => $event->is_all_day ? 'All day' : $event->starts_at->format('g:i A'),
+                'date' => local_date($event->starts_at, 'day'),
+                'time' => $event->is_all_day ? __('All day') : local_date($event->starts_at, 'time'),
             ])
             ->all();
     }
@@ -256,7 +255,7 @@ class DashboardDataCards extends Component
             ->get(['id', 'title', 'stop_date'])
             ->map(fn (Notice $notice): array => [
                 'title' => $notice->title,
-                'until' => Carbon::parse($notice->stop_date)->format('M j'),
+                'until' => local_date($notice->stop_date, 'day'),
                 'url' => route('notices.show', $notice),
             ])
             ->all();

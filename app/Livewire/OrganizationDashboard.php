@@ -102,7 +102,7 @@ class OrganizationDashboard extends Component
      */
     public function academicPeriodStatus(?AcademicPeriodStatus $status): string
     {
-        return $status?->label() ?? 'Not set';
+        return $status?->label() ?? __('Not set');
     }
 
     public function render(): View
