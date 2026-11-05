@@ -38,7 +38,7 @@ STEP 0.4 allowed a fresh "baseline" migration set if fixing history became unsaf
 ```bash
 composer test:mysql     # Sail / CI MySQL (host "mysql", user "sail")
 composer test:pgsql     # PostgreSQL on 127.0.0.1:5432, user sail / password
-composer test:sqlite    # database/testing.sqlite (WAL, no fsync: tests only)
+composer test:sqlite    # database/testing.sqlite (no fsync: tests only)
 
 # another port or user, for example:
 DB_PORT=5433 DB_USERNAME=campuly DB_PASSWORD= composer test:pgsql
