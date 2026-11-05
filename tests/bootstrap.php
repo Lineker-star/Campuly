@@ -13,10 +13,16 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
     define('PHPUNIT_COMPOSER_INSTALL', dirname(__DIR__).'/vendor/autoload.php');
 }
 
-$parentCommand = @file_get_contents('/proc/'.posix_getppid().'/cmdline');
+/*
+ * Windows has no posix extension and no /proc, so a child process cannot be
+ * told apart from the parent there; the lock is skipped so that a
+ * #[RunInSeparateProcess] child never waits on its own parent's lock.
+ */
+$canDetectParent = function_exists('posix_getppid');
+$parentCommand = $canDetectParent ? @file_get_contents('/proc/'.posix_getppid().'/cmdline') : false;
 $isChildProcess = is_string($parentCommand)
     && (str_contains($parentCommand, 'phpunit') || str_contains($parentCommand, 'pest'));
-$skipLock = getenv('SKUUL_SKIP_TEST_LOCK') === '1';
+$skipLock = getenv('SKUUL_SKIP_TEST_LOCK') === '1' || !$canDetectParent;
 $lock = null;
 
 if (!$isChildProcess && !$skipLock) {
