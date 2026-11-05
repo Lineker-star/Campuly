@@ -148,8 +148,8 @@ class School extends Model
 
     public function getLogoUrlAttribute(): string
     {
-        return $this->logo_path && Storage::disk('public')->exists($this->logo_path)
-            ? Storage::url($this->logo_path)
+        return $this->logo_path && Storage::disk(config('filesystems.public_disk'))->exists($this->logo_path)
+            ? Storage::disk(config('filesystems.public_disk'))->url($this->logo_path)
             : asset(config('app.logo'));
     }
 

@@ -34,7 +34,7 @@ class SyllabusService
             throw new InvalidValueException('This course offering is archived. Choose an offering that is still in use.');
         }
 
-        $file = isset($data['file']) ? $data['file']->store('syllabus', 'public') : null;
+        $file = isset($data['file']) ? $data['file']->store('syllabus', config('filesystems.public_disk')) : null;
 
         return DB::transaction(fn (): Syllabus => Syllabus::create([
             'name' => $data['name'],
@@ -57,7 +57,7 @@ class SyllabusService
         $file = $previousFile;
 
         if (isset($data['file'])) {
-            $file = $data['file']->store('syllabus', 'public') ?: null;
+            $file = $data['file']->store('syllabus', config('filesystems.public_disk')) ?: null;
         } elseif ($data['remove_file'] ?? false) {
             $file = null;
         }
@@ -154,6 +154,6 @@ class SyllabusService
             return;
         }
 
-        Storage::disk('public')->delete($file);
+        Storage::disk(config('filesystems.public_disk'))->delete($file);
     }
 }

@@ -35,21 +35,47 @@ Set in `.env` (local) or the platform's environment settings (production). Never
 
 ## Files
 
+Every file the app writes goes to one of two disks (`config/filesystems.php`):
+
+| Variable | Default | Holds |
+|---|---|---|
+| `FILESYSTEM_PUBLIC_DISK` | `public` | Files a browser loads directly: school logos, profile photos. `s3-public` for object storage. |
+| `FILESYSTEM_PRIVATE_DISK` | `local` | Files only an authorised person downloads: notice attachments, built reports. `s3` for object storage. A notice remembers the disk its attachment went to, so changing this later keeps old attachments downloadable. |
+| `FILESYSTEM_DISK` | `local` | Laravel's default disk (Livewire's temporary uploads). |
+
+Local disks need `php artisan storage:link`. Backups use their own disk (`BACKUP_DISK`, below).
+
+S3-compatible storage:
+
 | Variable | Example | Notes |
 |---|---|---|
-| `FILESYSTEM_DISK` | `local` or `s3` | `s3` for any S3-compatible storage |
-| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | | Server-side only |
-| `AWS_DEFAULT_REGION` | `eu-west-1` / `auto` (R2) | |
-| `AWS_BUCKET` | `campuly` | Private bucket |
-| `AWS_ENDPOINT` | `https://<ref>.storage.supabase.co/storage/v1/s3` | Omit for AWS S3 |
-| `AWS_USE_PATH_STYLE_ENDPOINT` | `true` | Supabase, MinIO, R2 |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | | Server-side only; also used by SES mail |
+| `AWS_DEFAULT_REGION` | `eu-west-1`; `auto` for R2 | |
+| `AWS_BUCKET` | `campuly-private` | Private bucket |
+| `AWS_ENDPOINT` | see table below | Omit for AWS S3 |
+| `AWS_USE_PATH_STYLE_ENDPOINT` | `true` | Supabase, MinIO; `false` for AWS, R2, Spaces, B2 |
+| `AWS_URL` | | Public base URL of the private bucket (rarely needed) |
+| `AWS_PUBLIC_BUCKET` | `campuly-public` | Unset: public files share `AWS_BUCKET` |
+| `AWS_PUBLIC_URL` | `https://cdn.example.com` | URL that serves the public bucket |
+| `AWS_PUBLIC_VISIBILITY` | `public` | `private` on services without object ACLs (R2, Supabase): make the bucket itself public instead |
+
+| Service | `AWS_ENDPOINT` | Region | Path style |
+|---|---|---|---|
+| AWS S3 | (empty) | bucket region | `false` |
+| Cloudflare R2 | `https://<account-id>.r2.cloudflarestorage.com` | `auto` | `false` |
+| Supabase Storage | `https://<project-ref>.supabase.co/storage/v1/s3` | project region | `true` |
+| DigitalOcean Spaces | `https://<region>.digitaloceanspaces.com` | e.g. `fra1` | `false` |
+| Backblaze B2 | `https://s3.<region>.backblazeb2.com` | e.g. `eu-central-003` | `false` |
+| MinIO | `http://<host>:9000` | `us-east-1` | `true` |
+
+`tests/Feature/S3CompatibleStorageTest.php` round-trips files through a real S3-compatible server when `S3_TEST_ENDPOINT`, `S3_TEST_KEY` and `S3_TEST_SECRET` are set (CI starts MinIO for it).
 
 ## Queue, cache, sessions
 
 | Variable | Simple hosting | With Redis |
 |---|---|---|
-| `QUEUE_CONNECTION` | `database` | `redis` |
-| `CACHE_STORE` (`CACHE_DRIVER` in older config) | `database` / `file` | `redis` |
+| `QUEUE_CONNECTION` | `database` (run `php artisan queue:work --tries=3`) | `redis` |
+| `CACHE_STORE` (`CACHE_DRIVER` still read) | `database` / `file` | `redis` |
 | `SESSION_DRIVER` | `database` | `redis` |
 | `SESSION_LIFETIME` | `120` | |
 | `SESSION_SECURE_COOKIE` | `true` (HTTPS) | |
@@ -57,7 +83,16 @@ Set in `.env` (local) or the platform's environment settings (production). Never
 
 ## Mail
 
-`MAIL_MAILER` (`smtp`, `resend`, `mailgun`, `postmark`, `ses`, `log`), `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `MAIL_REPLY_ADDRESS`, `MAIL_REPLY_NAME`.
+Common to all: `MAIL_MAILER`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`, `MAIL_REPLY_ADDRESS`, `MAIL_REPLY_NAME`.
+
+| `MAIL_MAILER` | Also set | Notes |
+|---|---|---|
+| `smtp` | `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION` | Any provider's SMTP relay |
+| `mailgun` | `MAILGUN_DOMAIN`, `MAILGUN_SECRET`, `MAILGUN_ENDPOINT` (`api.eu.mailgun.net` for EU) | |
+| `resend` | `RESEND_KEY` | |
+| `postmark` | `POSTMARK_TOKEN` | |
+| `ses` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` | Verified sender domain required |
+| `log` | | Writes mail to the log (development) |
 
 ## Backups and monitoring (existing)
 

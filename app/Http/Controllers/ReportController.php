@@ -39,7 +39,7 @@ class ReportController extends Controller
 
         abort_unless($reportRun->isReady(), 404, 'This report is not ready yet.');
         abort_unless(
-            $reportRun->file_path !== null && Storage::disk('local')->exists($reportRun->file_path),
+            $reportRun->file_path !== null && Storage::disk(config('filesystems.private_disk'))->exists($reportRun->file_path),
             410,
             'This report file is no longer stored. Build the report again.',
         );
@@ -49,7 +49,7 @@ class ReportController extends Controller
         $format = $this->formats->get($reportRun->format);
 
         return response()->streamDownload(
-            fn () => print (string) Storage::disk('local')->get($reportRun->file_path),
+            fn () => print (string) Storage::disk(config('filesystems.private_disk'))->get($reportRun->file_path),
             $reportRun->type.'.'.$format->extension(),
             ['Content-Type' => $format->mimeType()],
         );

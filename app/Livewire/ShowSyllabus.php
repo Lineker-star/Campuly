@@ -35,9 +35,9 @@ class ShowSyllabus extends Component
     {
         Gate::authorize('view', $this->syllabus);
 
-        abort_if($this->syllabus->file === null || !Storage::disk('public')->exists($this->syllabus->file), 404);
+        abort_if($this->syllabus->file === null || !Storage::disk(config('filesystems.public_disk'))->exists($this->syllabus->file), 404);
 
-        return Storage::disk('public')->download($this->syllabus->file, Str::slug($this->syllabus->name).'.pdf');
+        return Storage::disk(config('filesystems.public_disk'))->download($this->syllabus->file, Str::slug($this->syllabus->name).'.pdf');
     }
 
     public function render(SyllabusCoverageService $coverage): View

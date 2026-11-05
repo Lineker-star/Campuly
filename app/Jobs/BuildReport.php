@@ -55,7 +55,7 @@ class BuildReport implements ShouldQueue
             ]));
 
             $path = "reports/$run->school_id/$run->id-$run->type.".$format->extension();
-            Storage::disk('local')->put($path, $format->render($report->title(), $report->columns(), $rows));
+            Storage::disk(config('filesystems.private_disk'))->put($path, $format->render($report->title(), $report->columns(), $rows));
 
             $run->file_path = $path;
             $run->row_count = $rows->count();

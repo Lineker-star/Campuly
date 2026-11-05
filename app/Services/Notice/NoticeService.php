@@ -43,9 +43,10 @@ class NoticeService
         $attachment = $data['attachment'] ?? null;
         $schoolId = current_school_id();
         $attachmentPath = null;
+        $disk = (string) config('filesystems.private_disk');
 
         if ($attachment instanceof UploadedFile) {
-            $attachmentPath = $attachment->store("notice-attachments/$schoolId", 'local');
+            $attachmentPath = $attachment->store("notice-attachments/$schoolId", $disk);
         }
 
         try {
@@ -55,7 +56,7 @@ class NoticeService
                 'start_date' => $data['start_date'],
                 'stop_date' => $data['stop_date'],
                 'attachment' => $attachmentPath,
-                'attachment_disk' => $attachmentPath === null ? null : 'local',
+                'attachment_disk' => $attachmentPath === null ? null : $disk,
                 'attachment_name' => $attachment?->getClientOriginalName(),
                 'attachment_mime_type' => $attachment?->getMimeType(),
                 'attachment_size' => $attachment?->getSize(),
@@ -65,7 +66,7 @@ class NoticeService
             ]);
         } catch (\Throwable $exception) {
             if ($attachmentPath !== null) {
-                Storage::disk('local')->delete($attachmentPath);
+                Storage::disk($disk)->delete($attachmentPath);
             }
 
             throw $exception;

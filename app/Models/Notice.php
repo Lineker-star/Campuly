@@ -142,10 +142,15 @@ class Notice extends Model
 
     /**
      * Check whether the notice has a private attachment managed by this app.
+     *
+     * The disk it was written to is recorded with it, so changing
+     * FILESYSTEM_PRIVATE_DISK later keeps older attachments downloadable.
      */
     public function hasManagedAttachment(): bool
     {
-        return $this->attachment !== null && $this->attachment_disk === 'local';
+        return $this->attachment !== null
+            && $this->attachment_disk !== null
+            && config("filesystems.disks.{$this->attachment_disk}") !== null;
     }
 
     /**

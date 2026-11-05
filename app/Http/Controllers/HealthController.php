@@ -49,7 +49,7 @@ class HealthController extends Controller
                 return Cache::get('health:check') === 'ok';
             }),
             'queue' => $this->check(fn (): bool => Queue::size() >= 0 && $this->workersAreTakingJobs()),
-            'storage' => $this->check(fn () => Storage::disk('public')->directoryExists('') || is_writable(storage_path())),
+            'storage' => $this->check(fn () => Storage::disk(config('filesystems.public_disk'))->directoryExists('') || is_writable(storage_path())),
             'scheduler' => $this->check(fn () => $this->isFresh(self::SCHEDULER_KEY)),
         ];
 

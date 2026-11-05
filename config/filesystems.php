@@ -17,6 +17,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Campuly disks
+    |--------------------------------------------------------------------------
+    |
+    | Every file the application writes goes to one of two disks. The public
+    | disk holds what a browser may load directly (school logos, profile
+    | photos). The private disk holds what only an authorised person may
+    | download (notice attachments, syllabus files, built reports). Point them
+    | at "s3-public" and "s3" to keep files in AWS S3, Cloudflare R2, Supabase
+    | Storage, DigitalOcean Spaces, Backblaze B2 or MinIO.
+    |
+    */
+
+    'public_disk' => env('FILESYSTEM_PUBLIC_DISK', 'public'),
+
+    'private_disk' => env('FILESYSTEM_PRIVATE_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -42,15 +60,35 @@ return [
             'visibility' => 'public',
         ],
 
+        // Private files. Any S3-compatible service: set AWS_ENDPOINT for R2,
+        // Supabase Storage, Spaces, B2 or MinIO (see docs/ENVIRONMENT_VARIABLES.md).
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
+        // Public files. A public bucket, or the same bucket with public ACLs.
+        // Services without object ACLs (R2, Supabase Storage) make the whole
+        // bucket public instead: set AWS_PUBLIC_VISIBILITY=private there.
+        's3-public' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'bucket' => env('AWS_PUBLIC_BUCKET', env('AWS_BUCKET')),
+            'url' => env('AWS_PUBLIC_URL', env('AWS_URL')),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => env('AWS_PUBLIC_VISIBILITY', 'public'),
+            'throw' => true,
         ],
 
     ],

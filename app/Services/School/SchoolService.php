@@ -79,7 +79,7 @@ class SchoolService
         $record['code'] = $this->generateSchoolCode();
 
         if (isset($record['logo'])) {
-            $record['logo_path'] = Storage::disk('public')->put('schools', $record['logo']);
+            $record['logo_path'] = Storage::disk(config('filesystems.public_disk'))->put('schools', $record['logo']);
             unset($record['logo']);
         }
 
@@ -113,14 +113,14 @@ class SchoolService
 
         if (isset($record['logo'])) {
             $replacedLogo = $school->logo_path;
-            $school->logo_path = Storage::disk('public')->put('schools', $record['logo']);
+            $school->logo_path = Storage::disk(config('filesystems.public_disk'))->put('schools', $record['logo']);
         }
 
         $school->save();
 
         // The old logo has no other reader, so it goes once the new one is in use.
         if ($replacedLogo !== null && $replacedLogo !== $school->logo_path) {
-            Storage::disk('public')->delete($replacedLogo);
+            Storage::disk(config('filesystems.public_disk'))->delete($replacedLogo);
         }
 
         return $school;

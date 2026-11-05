@@ -21,9 +21,9 @@ class NoticeAttachmentController extends Controller
         $person = $request->user();
 
         abort_unless($person instanceof User && $this->mayDownload($person, $notice), 403);
-        abort_unless($notice->hasManagedAttachment() && Storage::disk('local')->exists($notice->attachment), 404);
+        abort_unless($notice->hasManagedAttachment() && Storage::disk($notice->attachment_disk)->exists($notice->attachment), 404);
 
-        return Storage::disk('local')->download(
+        return Storage::disk($notice->attachment_disk)->download(
             $notice->attachment,
             $notice->attachment_name ?? 'notice-attachment',
             ['Content-Type' => $notice->attachment_mime_type ?? 'application/octet-stream'],

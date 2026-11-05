@@ -19,12 +19,17 @@
         "laravel/prompts": "^0.3.11",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^4.0",
         "mallardduck/blade-lucide-icons": "^2.0",
         "nnjeim/world": "^1.1",
         "opcodesio/log-viewer": "^3.1.1",
+        "resend/resend-php": "^1.18",
         "spatie/laravel-model-status": "^1.11",
         "spatie/laravel-permission": "^8.0",
+        "symfony/http-client": "^8.1",
+        "symfony/mailgun-mailer": "^8.1",
+        "symfony/postmark-mailer": "^8.1",
         "yungifez/april-ui": "^1.0"
     },
     "require-dev": {
