@@ -53,12 +53,12 @@ class TransferPackage extends Model
             $allowed = ['received_at', 'received_by', 'received_student_record_id', 'updated_at'];
 
             if (array_diff(array_keys($package->getDirty()), $allowed) !== []) {
-                throw new RuntimeException('A transfer package cannot be changed after it is built.');
+                throw new RuntimeException(__('A transfer package cannot be changed after it is built.'));
             }
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A transfer package cannot be deleted.');
+            throw new RuntimeException(__('A transfer package cannot be deleted.'));
         });
     }
 

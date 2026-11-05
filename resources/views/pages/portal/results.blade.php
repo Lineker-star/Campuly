@@ -4,30 +4,29 @@
     ['text' => 'Results', 'active'],
 ]])
 
-@section('title', 'Results')
-@section('page_heading', 'Results')
+@section('title', __('Results'))
+@section('page_heading', __('Results'))
 
 @section('content')
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-5">
         <p class="text-sm text-muted-foreground">
-            The approved result of each course of {{ $studentRecord->user?->name }} · {{ $studentRecord->school?->name }}.
-            A mark the school is still checking is not shown.
+            {{ __('The approved result of each course of :name · :name2. A mark the school is still checking is not shown.', ['name' => $studentRecord->user?->name, 'name2' => $studentRecord->school?->name]) }}
         </p>
 
         <april:card>
             <slot:content>
                 @if ($results->isEmpty())
-                    <x-empty-state icon="lucide-graduation-cap" title="No approved results yet"
-                        description="Results appear here when the school approves them." />
+                    <x-empty-state icon="lucide-graduation-cap" title="{{ __('No approved results yet') }}"
+                        :description="__('Results appear here when the school approves them.')" />
                 @else
                     <div class="overflow-x-auto beautify-scrollbar">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b text-left text-muted-foreground">
-                                    <th scope="col" class="py-2 pr-3 font-medium">Subject</th>
-                                    <th scope="col" class="py-2 pr-3 font-medium">Term</th>
-                                    <th scope="col" class="py-2 pr-3 text-right font-medium">Score</th>
-                                    <th scope="col" class="py-2 font-medium">Approved</th>
+                                    <th scope="col" class="py-2 pr-3 font-medium">{{ __('Subject') }}</th>
+                                    <th scope="col" class="py-2 pr-3 font-medium">{{ __('Term') }}</th>
+                                    <th scope="col" class="py-2 pr-3 text-right font-medium">{{ __('Score') }}</th>
+                                    <th scope="col" class="py-2 font-medium">{{ __('Approved') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y">

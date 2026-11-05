@@ -22,15 +22,15 @@ class PublishAcademicCalendar
     public function publish(AcademicYear $academicYear, ?User $actor = null): AcademicYear
     {
         if ($academicYear->status !== AcademicPeriodStatus::Draft) {
-            throw new InvalidValueException('Only a draft calendar can be published.');
+            throw new InvalidValueException(__('Only a draft calendar can be published.'));
         }
 
         if ($academicYear->starts_on === null || $academicYear->ends_on === null) {
-            throw new InvalidValueException('Give the school calendar a start and end date before publishing it.');
+            throw new InvalidValueException(__('Give the school calendar a start and end date before publishing it.'));
         }
 
         if ($academicYear->topLevelPeriods()->doesntExist()) {
-            throw new InvalidValueException('Add at least one reporting period before publishing the school calendar.');
+            throw new InvalidValueException(__('Add at least one reporting period before publishing the school calendar.'));
         }
 
         return DB::transaction(function () use ($academicYear, $actor): AcademicYear {
@@ -58,7 +58,7 @@ class PublishAcademicCalendar
     private function publishPeriod(AcademicPeriod $period, ?User $actor): void
     {
         if ($period->starts_on === null || $period->ends_on === null) {
-            throw new InvalidValueException("{$period->displayName} needs dates before this calendar can be published.");
+            throw new InvalidValueException(__(':name needs dates before this calendar can be published.', ['name' => $period->displayName]));
         }
 
         $status = $this->statusFor($period->starts_on, $period->ends_on);

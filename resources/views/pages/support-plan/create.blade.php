@@ -4,8 +4,8 @@
     ['text' => 'Open a plan', 'active'],
 ]])
 
-@section('title', 'Open a support plan')
-@section('page_heading', 'Open a support plan')
+@section('title', __('Open a support plan'))
+@section('page_heading', __('Open a support plan'))
 
 @section('content')
     @livewire('create-support-plan')

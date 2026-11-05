@@ -45,7 +45,7 @@ class BrowserRenderer implements DocumentRenderer
         $address = $this->address();
 
         if ($address === '') {
-            throw new InvalidValueException('No browser renderer is set up on this installation.');
+            throw new InvalidValueException(__('No browser renderer is set up on this installation.'));
         }
 
         $response = $this->request()
@@ -53,7 +53,7 @@ class BrowserRenderer implements DocumentRenderer
             ->post($address, $this->paperFor($options));
 
         if ($response->failed()) {
-            throw new InvalidValueException('The renderer could not print this document. Try again in a moment.');
+            throw new InvalidValueException(__('The renderer could not print this document. Try again in a moment.'));
         }
 
         return $response->body();

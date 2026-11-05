@@ -3,14 +3,14 @@
     ['href' => route('cohorts.index'), 'text' => 'Groups', 'active'],
 ]])
 
-@section('title', 'Groups')
-@section('page_heading', 'Groups')
+@section('title', __('Groups'))
+@section('page_heading', __('Groups'))
 
 @section('page_actions')
     @can('create', App\Models\Cohort::class)
         <april:button-link href="{{ route('cohorts.create') }}">
             <x-lucide-plus class="mr-2 size-4" />
-            Make a group
+            {{ __('Make a group') }}
         </april:button-link>
     @endcan
 @endsection

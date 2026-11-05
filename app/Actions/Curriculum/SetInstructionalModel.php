@@ -105,8 +105,7 @@ class SetInstructionalModel
         }
 
         throw new InvalidValueException(
-            "The instructional model of {$academicYear->name} cannot change here, because the cycle has already started. "
-            .'Choose the model for a cycle that has not started, or move this one with the audited migration workflow.'
+            __('The instructional model of :name cannot change here, because the cycle has already started. Choose the model for a cycle that has not started, or move this one with the audited migration workflow.', ['name' => $academicYear->name])
         );
     }
 }

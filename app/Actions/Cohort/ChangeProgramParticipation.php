@@ -39,7 +39,7 @@ class ChangeProgramParticipation
         ?User $actor = null,
     ): ProgramParticipation {
         if ($program->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('A student can only join a programme in their own school.');
+            throw new InvalidValueException(__('A student can only join a programme in their own school.'));
         }
 
         return DB::transaction(function () use ($program, $enrollment, $startsOn, $staff, $schedule, $actor): ProgramParticipation {
@@ -93,7 +93,7 @@ class ChangeProgramParticipation
             $current = $participation->status;
 
             if ($seen !== null && $current !== $seen) {
-                throw new InvalidValueException("Somebody else already moved this place to {$current->label()}.");
+                throw new InvalidValueException(__('Somebody else already moved this place to :label.', ['label' => $current->label()]));
             }
 
             if ($current === $status) {
@@ -101,7 +101,7 @@ class ChangeProgramParticipation
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException("A place cannot move from {$current->label()} to {$status->label()}.");
+                throw new InvalidValueException(__('A place cannot move from :label to :label2.', ['label' => $current->label(), 'label2' => $status->label()]));
             }
 
             if ($status->isRunning() && !$current->isRunning()) {
@@ -109,7 +109,7 @@ class ChangeProgramParticipation
                 $this->refuseAClosedDoor($program, $enrollment);
 
                 if ($this->runningPlace($program, $enrollment) !== null) {
-                    throw new InvalidValueException('The learner already holds another place in this programme.');
+                    throw new InvalidValueException(__('The learner already holds another place in this programme.'));
                 }
             }
 
@@ -174,15 +174,15 @@ class ChangeProgramParticipation
     private function refuseAClosedDoor(Program $program, StudentRecord $enrollment): void
     {
         if ($program->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('A student can only join a programme in their own school.');
+            throw new InvalidValueException(__('A student can only join a programme in their own school.'));
         }
 
         if (!$program->is_active) {
-            throw new InvalidValueException('This programme is closed.');
+            throw new InvalidValueException(__('This programme is closed.'));
         }
 
         if ($enrollment->status !== EnrollmentStatus::Active) {
-            throw new InvalidValueException('A programme needs an active enrollment.');
+            throw new InvalidValueException(__('A programme needs an active enrollment.'));
         }
     }
 

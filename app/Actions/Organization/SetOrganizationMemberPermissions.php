@@ -46,7 +46,7 @@ class SetOrganizationMemberPermissions
                 ->first();
 
             if ($membership === null) {
-                throw new RuntimeException("{$user->name} does not administer {$organization->name}.");
+                throw new RuntimeException(__(':name does not administer :name2.', ['name' => $user->name, 'name2' => $organization->name]));
             }
 
             $previous = $membership->permissions;
@@ -61,7 +61,7 @@ class SetOrganizationMemberPermissions
                 && $membership->grants(OrganizationPermission::ManageMembers)
                 && !$organization->hasAnotherMemberManager($user)) {
                 throw new InvalidValueException(
-                    "{$organization->name} would be left with nobody who can manage its members. Give somebody else that permission first."
+                    __(':name would be left with nobody who can manage its members. Give somebody else that permission first.', ['name' => $organization->name])
                 );
             }
 
@@ -120,7 +120,7 @@ class SetOrganizationMemberPermissions
         $changed = array_merge(array_diff($before, $after), array_diff($after, $before));
 
         if (array_diff($changed, $held) !== []) {
-            throw new InvalidValueException('You can only give or take away permissions you hold yourself.');
+            throw new InvalidValueException(__('You can only give or take away permissions you hold yourself.'));
         }
     }
 

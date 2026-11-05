@@ -40,15 +40,15 @@ class RecordExpense
         ?User $actor = null,
     ): Expense {
         if ($account->school_id !== current_school_id()) {
-            throw new InvalidValueException('That expense account belongs to another school.');
+            throw new InvalidValueException(__('That expense account belongs to another school.'));
         }
 
         if (!$account->type->isExpense()) {
-            throw new InvalidValueException('Choose an expense account.');
+            throw new InvalidValueException(__('Choose an expense account.'));
         }
 
         if ($amount <= 0) {
-            throw new InvalidValueException('An expense must be more than nothing.');
+            throw new InvalidValueException(__('An expense must be more than nothing.'));
         }
 
         $channel = $this->channels->get($method);

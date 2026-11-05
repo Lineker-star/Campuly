@@ -50,11 +50,11 @@ class PaymentAllocation extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('An allocation cannot be changed. Record its reversal instead.');
+            throw new RuntimeException(__('An allocation cannot be changed. Record its reversal instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('An allocation cannot be deleted. Record its reversal instead.');
+            throw new RuntimeException(__('An allocation cannot be deleted. Record its reversal instead.'));
         });
     }
 

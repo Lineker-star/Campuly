@@ -64,7 +64,7 @@ class RoleAuthority
 
         if ($refused !== []) {
             throw new InvalidValueException(
-                'You cannot put something in a role that you do not hold yourself: '.implode(', ', $refused).'.'
+                __('You cannot put something in a role that you do not hold yourself: :refused.', ['refused' => implode(', ', $refused)])
             );
         }
     }
@@ -80,11 +80,11 @@ class RoleAuthority
     public function mustBelongTo(CampusRole $role, School $school): void
     {
         if ($role->school_id !== null && $role->school_id !== $school->id) {
-            throw new InvalidValueException('That role belongs to another campus.');
+            throw new InvalidValueException(__('That role belongs to another campus.'));
         }
 
         if ($role->isSystemScoped()) {
-            throw new InvalidValueException("$role->name is given by the platform, not by a campus.");
+            throw new InvalidValueException(__(':name is given by the platform, not by a campus.', ['name' => $role->name]));
         }
     }
 
@@ -99,11 +99,11 @@ class RoleAuthority
     public function mustBeAssignableAt(CampusRole $role, School $school): void
     {
         if ($role->school_id !== null && $role->school_id !== $school->id) {
-            throw new InvalidValueException('That role belongs to another campus.');
+            throw new InvalidValueException(__('That role belongs to another campus.'));
         }
 
         if ($role->isSystemScoped()) {
-            throw new InvalidValueException("$role->name is given by the platform, not by a campus.");
+            throw new InvalidValueException(__(':name is given by the platform, not by a campus.', ['name' => $role->name]));
         }
     }
 
@@ -115,7 +115,7 @@ class RoleAuthority
     public function mustNotBeBuiltIn(CampusRole $role): void
     {
         if ($role->isBuiltIn()) {
-            throw new InvalidValueException("$role->name is a built-in role. Copy it and change the copy instead.");
+            throw new InvalidValueException(__(':name is a built-in role. Copy it and change the copy instead.', ['name' => $role->name]));
         }
     }
 
@@ -189,7 +189,7 @@ class RoleAuthority
                 $result = $change();
 
                 if ($hadOne && !$this->campusHasARoleManager($school)) {
-                    throw new InvalidValueException('Nobody at this campus could manage roles after that. Give somebody else role management first.');
+                    throw new InvalidValueException(__('Nobody at this campus could manage roles after that. Give somebody else role management first.'));
                 }
 
                 return $result;

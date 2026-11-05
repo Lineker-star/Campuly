@@ -136,7 +136,7 @@ class SchoolService
         $user = auth()->user();
 
         if (!$this->systemPermissionScope->allows($user, PlatformPermission::AccessAllSchools) && !$user->belongsToSchool($school)) {
-            abort(403, 'You do not have access to that school.');
+            abort(403, __('You do not have access to that school.'));
         }
 
         app(SchoolContext::class)->set($school);
@@ -164,14 +164,14 @@ class SchoolService
     public function deleteSchool(School $school)
     {
         if ($school->users->isNotEmpty()) {
-            throw new ResourceNotEmptyException('Remove all users from this school and make sure school is not set for any super admin');
+            throw new ResourceNotEmptyException(__('Remove all users from this school and make sure school is not set for any super admin'));
         }
 
         $hasHistory = collect(['school_memberships', 'student_records', 'ledger_transactions'])
             ->contains(fn (string $table): bool => DB::table($table)->where('school_id', $school->id)->exists());
 
         if ($hasHistory) {
-            throw new ResourceNotEmptyException('This school keeps the records of people and money it once held, so it cannot be deleted.');
+            throw new ResourceNotEmptyException(__('This school keeps the records of people and money it once held, so it cannot be deleted.'));
         }
 
         $school->delete();

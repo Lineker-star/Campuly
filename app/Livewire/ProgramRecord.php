@@ -98,7 +98,7 @@ class ProgramRecord extends Component
         }
 
         $this->isEditing = false;
-        $this->notify('The programme was saved.');
+        $this->notify(__('The programme was saved.'));
     }
 
     public function givePlace(ChangeProgramParticipation $changeParticipation): void
@@ -135,13 +135,13 @@ class ProgramRecord extends Component
         }
 
         if (!$place->wasRecentlyCreated) {
-            $this->addError('studentRecordId', "{$enrollment->user?->name} already has a place in this programme.");
+            $this->addError('studentRecordId', __(':name already has a place in this programme.', ['name' => $enrollment->user?->name]));
 
             return;
         }
 
         $this->reset('studentRecordId', 'schedule', 'staffId');
-        $this->notify("{$enrollment->user?->name} has a place.");
+        $this->notify(__(':name has a place.', ['name' => $enrollment->user?->name]));
     }
 
     public function movePlace(int $participationId, string $status, string $seen, ChangeProgramParticipation $changeParticipation): void
@@ -153,7 +153,7 @@ class ProgramRecord extends Component
         $seen = ParticipationStatus::tryFrom($seen);
 
         if ($status === null || $seen === null) {
-            $this->notify('Choose a state from the list.', 'danger');
+            $this->notify(__('Choose a state from the list.'), 'danger');
 
             return;
         }
@@ -166,7 +166,7 @@ class ProgramRecord extends Component
             return;
         }
 
-        $this->notify('The place is now '.$place->status->label().'.');
+        $this->notify(__('The place is now :label.', ['label' => $place->status->label()]));
     }
 
     public function render(): View

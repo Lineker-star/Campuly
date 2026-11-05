@@ -4,8 +4,8 @@
     ['href' => route('boarding-rolls.index'), 'text' => 'Boarding rolls', 'active'],
 ]])
 
-@section('title', 'Boarding rolls')
-@section('page_heading', 'Boarding rolls')
+@section('title', __('Boarding rolls'))
+@section('page_heading', __('Boarding rolls'))
 
 @section('content')
 <div class="mx-auto flex w-full max-w-5xl flex-col gap-6">

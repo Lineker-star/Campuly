@@ -45,7 +45,7 @@ class PublishNotice
             }
 
             if (!$notice->status->canMoveTo(NoticeStatus::Published)) {
-                throw new InvalidValueException('This notice cannot be published from its current state.');
+                throw new InvalidValueException(__('This notice cannot be published from its current state.'));
             }
 
             $previousRevision = $notice->revision_of_id === null
@@ -53,7 +53,7 @@ class PublishNotice
                 : Notice::query()->lockForUpdate()->findOrFail($notice->revision_of_id);
 
             if ($previousRevision !== null && $previousRevision->status !== NoticeStatus::Published) {
-                throw new InvalidValueException('This notice revision has already been superseded.');
+                throw new InvalidValueException(__('This notice revision has already been superseded.'));
             }
 
             $people = $this->audience->resolve($notice);
@@ -104,7 +104,7 @@ class PublishNotice
             $notice->setRawAttributes(Notice::query()->lockForUpdate()->findOrFail($notice->id)->getAttributes(), true);
 
             if (!$notice->status->canMoveTo(NoticeStatus::Scheduled)) {
-                throw new InvalidValueException('This notice cannot be scheduled from its current state.');
+                throw new InvalidValueException(__('This notice cannot be scheduled from its current state.'));
             }
 
             $notice->status = NoticeStatus::Scheduled;

@@ -48,7 +48,7 @@ class FeeInvoiceService
                 ->get();
 
             if ($fees->count() !== $feeIds->count()) {
-                throw new InvalidValueException('Some fees are not from this school.');
+                throw new InvalidValueException(__('Some fees are not from this school.'));
             }
 
             $enrollmentIds = collect($records['student_records'] ?? [])
@@ -57,7 +57,7 @@ class FeeInvoiceService
                 ->values();
 
             if ($enrollmentIds->isEmpty()) {
-                throw new InvalidValueException('Add at least one enrolled student.');
+                throw new InvalidValueException(__('Add at least one enrolled student.'));
             }
 
             $enrollments = StudentRecord::query()
@@ -69,7 +69,7 @@ class FeeInvoiceService
                 ->keyBy('id');
 
             if ($enrollments->count() !== $enrollmentIds->count()) {
-                throw new InvalidValueException('Some selected students are not enrolled in this school.');
+                throw new InvalidValueException(__('Some selected students are not enrolled in this school.'));
             }
 
             $period = $this->periods->openFor($schoolId, $records['issue_date']);
@@ -143,7 +143,7 @@ class FeeInvoiceService
     public function updateFeeInvoice(FeeInvoice $feeInvoice, array $records): FeeInvoice
     {
         if ($records['issue_date'] !== $feeInvoice->issue_date->format('Y-m-d')) {
-            throw new InvalidValueException('The issue date cannot change after an invoice is posted.');
+            throw new InvalidValueException(__('The issue date cannot change after an invoice is posted.'));
         }
 
         $feeInvoice->update([
@@ -192,7 +192,7 @@ class FeeInvoiceService
         $feeInvoice->loadMissing(['ledgerTransaction', 'allocations']);
 
         if ($feeInvoice->ledgerTransaction !== null || $feeInvoice->allocations->isNotEmpty()) {
-            throw new InvalidValueException('Posted invoices cannot be deleted. Reverse or correct the invoice instead.');
+            throw new InvalidValueException(__('Posted invoices cannot be deleted. Reverse or correct the invoice instead.'));
         }
 
         $feeInvoice->delete();

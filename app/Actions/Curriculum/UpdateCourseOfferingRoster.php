@@ -46,15 +46,15 @@ class UpdateCourseOfferingRoster
                 ->findOrFail($courseOffering->id);
 
             if ($courseOffering->status === CourseOfferingStatus::Archived) {
-                throw new InvalidValueException('An archived course offering cannot be changed.');
+                throw new InvalidValueException(__('An archived course offering cannot be changed.'));
             }
 
             if (!$courseOffering->academicLevel->allowsRosterMode($rosterMode)) {
-                throw new InvalidValueException('A level group has no sections of its own. Choose the whole group or named learners.');
+                throw new InvalidValueException(__('A level group has no sections of its own. Choose the whole group or named learners.'));
             }
 
             if ($courseOffering->academicYear->isClosed() || $courseOffering->academicPeriod->isClosed()) {
-                throw new InvalidValueException('Reopen the academic cycle before changing this course offering.');
+                throw new InvalidValueException(__('Reopen the academic cycle before changing this course offering.'));
             }
 
             $cycleSections = AcademicCycleSection::inSchool()
@@ -75,24 +75,24 @@ class UpdateCourseOfferingRoster
             $academicLevel = $this->resolveAcademicLevel($courseOffering, $rosterMode, $academicLevelId, $cycleSections, $studentRecords);
 
             if ($cycleSections->count() !== count($academicCycleSectionIds)) {
-                throw new InvalidValueException('Every selected section must belong to this class and school year.');
+                throw new InvalidValueException(__('Every selected section must belong to this class and school year.'));
             }
 
             if ($studentRecords->count() !== count($studentRecordIds)) {
-                throw new InvalidValueException('Every named learner must actively attend this class in this school.');
+                throw new InvalidValueException(__('Every named learner must actively attend this class in this school.'));
             }
 
             if (
                 !instructional_model($courseOffering->academicYear)->allowsRosterMode($rosterMode)
                 && !$this->exceptions->allows($courseOffering->academicYear, $courseOffering->subject, $academicLevel, $rosterMode)
             ) {
-                throw new InvalidValueException('The teaching setup does not allow this way of choosing learners for the academic cycle.');
+                throw new InvalidValueException(__('The teaching setup does not allow this way of choosing learners for the academic cycle.'));
             }
 
             $this->validateRoster($rosterMode, $academicCycleSectionIds, $studentRecordIds, $courseOffering->status);
 
             if ($courseOffering->capacity !== null && $studentRecords->count() > $courseOffering->capacity) {
-                throw new InvalidValueException("This subject has room for {$courseOffering->capacity} learners. Name fewer learners or raise the capacity.");
+                throw new InvalidValueException(__('This subject has room for :capacity learners. Name fewer learners or raise the capacity.', ['capacity' => $courseOffering->capacity]));
             }
 
             $activeKey = null;
@@ -101,7 +101,7 @@ class UpdateCourseOfferingRoster
                 $activeKey = $courseOffering->activeKeyForRoster($academicCycleSectionIds, $studentRecordIds);
 
                 if (CourseOffering::query()->where('active_key', $activeKey)->whereKeyNot($courseOffering->id)->exists()) {
-                    throw new InvalidValueException('An active offering already exists for this subject, period, class, and roster.');
+                    throw new InvalidValueException(__('An active offering already exists for this subject, period, class, and roster.'));
                 }
             }
 
@@ -140,21 +140,21 @@ class UpdateCourseOfferingRoster
         $academicLevel = AcademicLevel::inSchool()->find($academicLevelId ?: $courseOffering->academic_level_id);
 
         if (!$academicLevel instanceof AcademicLevel) {
-            throw new InvalidValueException('Select a class level.');
+            throw new InvalidValueException(__('Select a class level.'));
         }
 
         if ($rosterMode === RosterMode::AcademicLevel && $academicLevel->id !== $courseOffering->academic_level_id) {
-            throw new InvalidValueException('The class level of an existing offering cannot be changed.');
+            throw new InvalidValueException(__('The class level of an existing offering cannot be changed.'));
         }
 
         if ($rosterMode->usesHomeSections() && $cycleSections->contains(fn (AcademicCycleSection $section): bool => $section->academic_level_id !== $academicLevel->id)) {
-            throw new InvalidValueException('Select sections from this class level only.');
+            throw new InvalidValueException(__('Select sections from this class level only.'));
         }
 
         $learnerLevelIds = $academicLevel->teachingScopeIds();
 
         if ($rosterMode === RosterMode::IndividualRoster && $studentRecords->contains(fn (StudentRecord $student): bool => !in_array($student->academicCycleSection?->academic_level_id, $learnerLevelIds, true))) {
-            throw new InvalidValueException('Select learners from this class level only.');
+            throw new InvalidValueException(__('Select learners from this class level only.'));
         }
 
         return $academicLevel;
@@ -212,11 +212,11 @@ class UpdateCourseOfferingRoster
     private function requireIndividual(array $sectionIds, array $studentRecordIds, CourseOfferingStatus $status): void
     {
         if ($sectionIds !== []) {
-            throw new InvalidValueException('A named-learner roster does not select sections.');
+            throw new InvalidValueException(__('A named-learner roster does not select sections.'));
         }
 
         if ($status === CourseOfferingStatus::Active && $studentRecordIds === []) {
-            throw new InvalidValueException('Add at least one named learner before changing an active offering.');
+            throw new InvalidValueException(__('Add at least one named learner before changing an active offering.'));
         }
     }
 }

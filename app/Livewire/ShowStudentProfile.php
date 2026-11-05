@@ -116,7 +116,7 @@ class ShowStudentProfile extends Component
 
         $this->statusReason = '';
         $this->managing = '';
-        $this->notify('Enrollment status updated.');
+        $this->notify(__('Enrollment status updated.'));
         $this->refreshEnrollment();
     }
 
@@ -143,7 +143,7 @@ class ShowStudentProfile extends Component
             ->first();
 
         if ($academicCycleSection === null) {
-            $this->addError('placementCycleSectionId', 'That section does not belong to the working '.strtolower(school_term('academic_year', 'school year')).'.');
+            $this->addError('placementCycleSectionId', __('That section does not belong to the working :term.', ['term' => strtolower(school_term('academic_year', 'school year'))]));
 
             return;
         }
@@ -165,7 +165,7 @@ class ShowStudentProfile extends Component
 
         $this->placementReason = '';
         $this->managing = '';
-        $this->notify('Enrollment placement updated.');
+        $this->notify(__('Enrollment placement updated.'));
         $this->refreshEnrollment();
     }
 
@@ -200,7 +200,7 @@ class ShowStudentProfile extends Component
             ->first();
 
         if ($academicCycleSection === null) {
-            $this->addError('campusCycleSectionId', 'That section does not belong to a campus of this organization.');
+            $this->addError('campusCycleSectionId', __('That section does not belong to a campus of this organization.'));
 
             return;
         }
@@ -210,7 +210,7 @@ class ShowStudentProfile extends Component
         $movesFreely = $campusMoveAuthority->movesFreely($actor, $academicCycleSection->school);
 
         if (!$movesFreely && !$campusMoveAuthority->canRequest($actor, $this->studentRecord->school)) {
-            $this->addError('campusCycleSectionId', 'You cannot move a student to another campus.');
+            $this->addError('campusCycleSectionId', __('You cannot move a student to another campus.'));
 
             return;
         }
@@ -259,7 +259,7 @@ class ShowStudentProfile extends Component
         }
 
         if (!$campusMoveAuthority->canCancel(auth()->user(), $this->openCampusMoveRequest)) {
-            $this->addError('campusCycleSectionId', 'You cannot take this request back.');
+            $this->addError('campusCycleSectionId', __('You cannot take this request back.'));
 
             return;
         }
@@ -267,13 +267,13 @@ class ShowStudentProfile extends Component
         try {
             $requestCampusMove->cancel($this->openCampusMoveRequest, auth()->user());
         } catch (InvalidValueException $exception) {
-            $this->notify('The other campus already decided this request.', 'danger');
+            $this->notify(__('The other campus already decided this request.'), 'danger');
             $this->refreshEnrollment();
 
             return;
         }
 
-        $this->notify('The campus move request was taken back.');
+        $this->notify(__('The campus move request was taken back.'));
         $this->refreshEnrollment();
     }
 

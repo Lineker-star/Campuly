@@ -31,7 +31,7 @@ class SendAccountInvitation
     public function send(User $user, ?User $invitedBy = null): AccountInvitation
     {
         if ($user->account_status === AccountStatus::Archived) {
-            throw new RuntimeException('An archived account cannot be invited. Reinstate the account first.');
+            throw new RuntimeException(__('An archived account cannot be invited. Reinstate the account first.'));
         }
 
         $token = Str::random(64);

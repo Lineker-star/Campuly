@@ -4,13 +4,13 @@
     ['text' => 'Syllabi', 'active'],
 ]])
 
-@section('title', 'Syllabi')
-@section('page_heading', 'Syllabi')
+@section('title', __('Syllabi'))
+@section('page_heading', __('Syllabi'))
 
 @section('content')
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-5">
         <p class="text-sm text-muted-foreground">
-            What each course of {{ $studentRecord->user?->name }} plans to teach, week by week, and what the class has covered · {{ $studentRecord->school?->name }}.
+            {{ __('What each course of :name plans to teach, week by week, and what the class has covered · :name2.', ['name' => $studentRecord->user?->name, 'name2' => $studentRecord->school?->name]) }}
         </p>
 
         @forelse ($syllabi as $syllabus)
@@ -23,11 +23,11 @@
                 <slot:content>
                     @if ($state['summary'])
                         <p class="mb-3 text-sm">
-                            <span class="font-semibold">{{ $state['summary']['covered'] }} of {{ $state['summary']['total'] }}</span> topics covered
+                            <span class="font-semibold">{{ __(':covered of :total', ['covered' => $state['summary']['covered'], 'total' => $state['summary']['total']]) }}</span> {{ __('topics covered') }}
                             @if ($state['summary']['behind'] > 0)
-                                · {{ $state['summary']['behind'] }} behind the plan
+                                {{ __('· :behind behind the plan', ['behind' => $state['summary']['behind']]) }}
                             @elseif ($state['summary']['expected'] > 0)
-                                · on track
+                                {{ __('· on track') }}
                             @endif
                         </p>
                     @endif
@@ -42,7 +42,7 @@
                                     <span class="text-muted-foreground">{{ $topic->week ? 'Week '.$topic->week : 'Unscheduled' }} ·</span>
                                     <span class="font-medium">{{ $topic->title }}</span>
                                     @if ($state['currentWeek'] !== null && $topic->week === $state['currentWeek'])
-                                        <span class="text-xs font-medium text-primary-foreground">This week</span>
+                                        <span class="text-xs font-medium text-primary-foreground">{{ __('This week') }}</span>
                                     @endif
                                     @if ($topic->objectives)
                                         <span class="block text-muted-foreground">{{ $topic->objectives }}</span>
@@ -57,7 +57,7 @@
         @empty
             <april:card>
                 <slot:content>
-                    <p class="text-sm text-muted-foreground">No syllabus is published yet for these courses.</p>
+                    <p class="text-sm text-muted-foreground">{{ __('No syllabus is published yet for these courses.') }}</p>
                 </slot:content>
             </april:card>
         @endforelse

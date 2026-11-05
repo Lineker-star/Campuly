@@ -70,12 +70,12 @@ class ResultSnapshot extends Model
             $approvalFields = ['approval_status', 'approved_at', 'approved_by', 'approval_reason'];
 
             if (array_diff(array_keys($snapshot->getDirty()), $approvalFields) !== []) {
-                throw new RuntimeException('A published result cannot be changed. Publish the next revision instead.');
+                throw new RuntimeException(__('A published result cannot be changed. Publish the next revision instead.'));
             }
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A published result cannot be deleted. Publish the next revision instead.');
+            throw new RuntimeException(__('A published result cannot be deleted. Publish the next revision instead.'));
         });
     }
 

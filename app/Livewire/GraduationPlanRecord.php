@@ -136,7 +136,7 @@ class GraduationPlanRecord extends Component
         }
 
         $this->isEditing = false;
-        $this->notify('The plan was saved.');
+        $this->notify(__('The plan was saved.'));
     }
 
     public function addStage(ManageGraduationPlan $manageGraduationPlan): void
@@ -170,7 +170,7 @@ class GraduationPlanRecord extends Component
         }
 
         $this->reset('stageName', 'stageCompletionOperator', 'stageRequiredCount', 'stageRequiredCredits', 'stageIsNegated');
-        $this->notify("{$stage->name} was added to the plan.");
+        $this->notify(__(':name was added to the plan.', ['name' => $stage->name]));
     }
 
     public function addRequirement(ManageGraduationPlan $manageGraduationPlan): void
@@ -203,7 +203,7 @@ class GraduationPlanRecord extends Component
         ], auth()->user());
 
         $this->reset('requirementDescription', 'requirementSubjectId', 'requirementIsNegated');
-        $this->notify('The requirement was added to the plan.');
+        $this->notify(__('The requirement was added to the plan.'));
     }
 
     public function removeRequirement(int $requirementId, ManageGraduationPlan $manageGraduationPlan): void
@@ -211,7 +211,7 @@ class GraduationPlanRecord extends Component
         Gate::authorize('update', $this->plan);
 
         $manageGraduationPlan->removeRequirement($this->plan->requirements()->findOrFail($requirementId), auth()->user());
-        $this->notify('The requirement was removed from the plan.');
+        $this->notify(__('The requirement was removed from the plan.'));
     }
 
     public function excuse(int $requirementId, ManageGraduationPlan $manageGraduationPlan): void
@@ -231,7 +231,7 @@ class GraduationPlanRecord extends Component
         $manageGraduationPlan->excuse($requirement, $learner, $this->reasons[$requirementId], auth()->user());
 
         unset($this->reasons[$requirementId]);
-        $this->notify('The learner was excused from that requirement.');
+        $this->notify(__('The learner was excused from that requirement.'));
     }
 
     public function takeBack(int $exemptionId, ManageGraduationPlan $manageGraduationPlan): void
@@ -243,7 +243,7 @@ class GraduationPlanRecord extends Component
             ->findOrFail($exemptionId);
 
         $manageGraduationPlan->takeBack($exemption, auth()->user());
-        $this->notify('The excusal was taken back.');
+        $this->notify(__('The excusal was taken back.'));
     }
 
     public function render(GraduationProgress $graduationProgress): View

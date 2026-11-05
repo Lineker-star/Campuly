@@ -50,7 +50,7 @@ class ReportIncident
         $when = Carbon::parse($occurredAt ?? now());
 
         if ($when->isFuture()) {
-            throw new InvalidValueException('A case cannot be recorded for a time that has not happened.');
+            throw new InvalidValueException(__('A case cannot be recorded for a time that has not happened.'));
         }
 
         return DB::transaction(function () use ($summary, $category, $description, $when, $participants, $reporter, $assignee, $location): Incident {
@@ -116,7 +116,7 @@ class ReportIncident
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException('A case cannot move from '.$current->label().' to '.$status->label().'.');
+                throw new InvalidValueException(__('A case cannot move from :label to :label2.', ['label' => $current->label(), 'label2' => $status->label()]));
             }
 
             $incident->status = $status;
@@ -155,7 +155,7 @@ class ReportIncident
         ?User $actor = null,
     ): IncidentAction {
         if (!$incident->status->isOpen()) {
-            throw new InvalidValueException('This case is finished. Reopen it before you add an action.');
+            throw new InvalidValueException(__('This case is finished. Reopen it before you add an action.'));
         }
 
         return IncidentAction::create([

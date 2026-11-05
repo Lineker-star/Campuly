@@ -33,7 +33,7 @@
         <div class="flex flex-col gap-4 border-y py-4 lg:flex-row lg:items-center lg:justify-between">
             <dl class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:flex sm:flex-wrap">
                 <div>
-                    <dt class="text-muted-foreground">Dates</dt>
+                    <dt class="text-muted-foreground">{{ __('Dates') }}</dt>
                     <dd @class(['font-medium tabular-nums', 'text-muted-foreground' => $academicYear->starts_on === null && $academicYear->ends_on === null])>{{ $dateRange($academicYear->starts_on, $academicYear->ends_on) }}</dd>
                 </div>
                 <div>
@@ -41,8 +41,8 @@
                     <dd class="font-medium tabular-nums">{{ $topLevelPeriods->count() }}</dd>
                 </div>
                 <div>
-                    <dt class="text-muted-foreground">Teaching setup</dt>
-                    <dd><a href="{{ route('academic-years.instructional-model.edit', $academicYear) }}" class="font-medium underline-offset-4 hover:underline">Edit</a></dd>
+                    <dt class="text-muted-foreground">{{ __('Teaching setup') }}</dt>
+                    <dd><a href="{{ route('academic-years.instructional-model.edit', $academicYear) }}" class="font-medium underline-offset-4 hover:underline">{{ __('Edit') }}</a></dd>
                 </div>
             </dl>
 
@@ -50,18 +50,18 @@
                 @if ($canRollForwardSetup)
                     <april:button type="button" variant="ghost" wire:click="openSetupRolloverDialog" wire:loading.attr="disabled">
                         <x-lucide-copy-plus class="mr-2 size-4" />
-                        Copy setup from {{ $previousAcademicYear->name }}
+                        {{ __('Copy setup from :name', ['name' => $previousAcademicYear->name]) }}
                     </april:button>
                 @endif
                 @if ($isDraft && $canEditCalendar)
-                    <april:button-link href="{{ route('academic-years.edit', $academicYear) }}" variant="outline">Edit draft</april:button-link>
+                    <april:button-link href="{{ route('academic-years.edit', $academicYear) }}" variant="outline">{{ __('Edit draft') }}</april:button-link>
                     <button type="button" wire:click="publishCalendar" wire:loading.attr="disabled" @class([
                         'inline-flex h-10 select-none items-center justify-center rounded-md px-4 text-sm font-medium disabled:opacity-50',
                         'border border-input bg-background hover:bg-accent' => $canContinueSetup,
                         'bg-primary text-primary-foreground hover:bg-primary/90' => !$canContinueSetup,
                     ])>
-                        <span wire:loading.remove wire:target="publishCalendar">Publish calendar</span>
-                        <span wire:loading wire:target="publishCalendar">Publishing…</span>
+                        <span wire:loading.remove wire:target="publishCalendar">{{ __('Publish calendar') }}</span>
+                        <span wire:loading wire:target="publishCalendar">{{ __('Publishing…') }}</span>
                     </button>
                 @endif
                 <livewire:academic-period-status-control :period="$academicYear" :show-status="false" :key="'year-status-'.$academicYear->id" />
@@ -72,9 +72,9 @@
 
         @if ($canContinueSetup)
             <div class="flex flex-wrap items-center justify-between gap-3">
-                <p class="text-sm"><span class="text-muted-foreground">Continue setup · Next:</span> <span class="font-medium">{{ $nextSetupStep->label() }}</span></p>
+                <p class="text-sm"><span class="text-muted-foreground">{{ __('Continue setup · Next:') }}</span> <span class="font-medium">{{ $nextSetupStep->label() }}</span></p>
                 <april:button-link href="{{ route('academic-years.setup', [$academicYear, $nextSetupStep->value]) }}">
-                    Continue to {{ strtolower($nextSetupStep->label()) }}
+                    {{ __('Continue to :label', ['label' => strtolower($nextSetupStep->label())]) }}
                     <x-lucide-arrow-right class="ml-1.5 size-4" />
                 </april:button-link>
             </div>
@@ -87,13 +87,13 @@
             @if ($canCreatePeriods)
                 <april:button-link href="{{ route('academic-periods.create') }}" variant="outline" size="sm">
                     <x-lucide-plus class="mr-1.5 size-4" />
-                    Add {{ strtolower(school_term('period', 'period')) }}
+                    {{ __('Add :term', ['term' => strtolower(school_term('period', 'period'))]) }}
                 </april:button-link>
             @endif
         </div>
 
         @if ($topLevelPeriods->isEmpty())
-            <p class="border-y py-4 text-sm text-muted-foreground">No {{ strtolower(school_terms('period', 'periods')) }} yet.</p>
+            <p class="border-y py-4 text-sm text-muted-foreground">{{ __('No :term yet.', ['term' => strtolower(school_terms('period', 'periods'))]) }}</p>
         @else
             <ul class="divide-y border-y">
                 @foreach ($topLevelPeriods as $period)
@@ -124,12 +124,12 @@
                                     <slot:content>
                                         @if ($canUpdatePeriod)
                                             <april:dropdown-menu-item x-on:click="window.location.href = '{{ route('academic-periods.edit', $period) }}'">
-                                                <x-lucide-calendar-cog class="mr-2 size-4" />Edit dates
+                                                <x-lucide-calendar-cog class="mr-2 size-4" />{{ __('Edit dates') }}
                                             </april:dropdown-menu-item>
                                         @endif
                                         @if ($canClosePeriod)
                                             <april:dropdown-menu-item wire:click="beginClosingPeriod({{ $period->id }})">
-                                                <x-lucide-lock class="mr-2 size-4" />Start closing
+                                                <x-lucide-lock class="mr-2 size-4" />{{ __('Start closing') }}
                                             </april:dropdown-menu-item>
                                         @endif
                                     </slot:content>
@@ -151,18 +151,18 @@
 
     <section class="space-y-2" aria-labelledby="calendar-exams-heading">
         <div class="flex min-h-10 flex-wrap items-center justify-between gap-2">
-            <h2 id="calendar-exams-heading" class="font-semibold">Exams</h2>
+            <h2 id="calendar-exams-heading" class="font-semibold">{{ __('Exams') }}</h2>
             @if ($canCreateExams)
                 <april:button-link href="{{ route('exams.create', ['academic_year_id' => $academicYear->id]) }}" variant="outline" size="sm">
                     <x-lucide-plus class="mr-1.5 size-4" />
-                    Add exam
+                    {{ __('Add exam') }}
                 </april:button-link>
             @endif
         </div>
         <div wire:key="{{ $id }}-{{ $this->tableRevision }}">
             <april:data-table id="{{ $id }}" :data="$data" :columns="$columns" :pagination="$pagination" :per-page-options="$perPageOptions" row-key="{{ $rowKey }}" :searchable="$searchable" @query-change="$wire.updateTable($event.detail)">
                 <slot:empty>
-                    <p>No exams yet.</p>
+                    <p>{{ __('No exams yet.') }}</p>
                 </slot:empty>
                 <slot:actions>
                     <x-table-actions :items="array_filter([
@@ -177,8 +177,8 @@
     <april:dialog dismissable x-effect="open = $wire.showSetupRolloverDialog">
         <slot:content class="sm:max-w-2xl">
             <april:dialog-header>
-                <slot:title>Review setup from {{ $previousAcademicYear?->name }}</slot:title>
-                <slot:description>Nothing is created until you confirm. Existing setup in {{ $academicYear->name }} is left unchanged.</slot:description>
+                <slot:title>{{ __('Review setup from :name', ['name' => $previousAcademicYear?->name]) }}</slot:title>
+                <slot:description>{{ __('Nothing is created until you confirm. Existing setup in :name is left unchanged.', ['name' => $academicYear->name]) }}</slot:description>
             </april:dialog-header>
 
             @if ($setupRolloverPreview !== null)
@@ -193,7 +193,7 @@
                                 @if ($item['will_create'])
                                     <april:badge variant="secondary">{{ $item['count'] }} {{ $item['count'] === 1 ? 'item' : 'items' }}</april:badge>
                                 @else
-                                    <april:badge variant="outline">No changes</april:badge>
+                                    <april:badge variant="outline">{{ __('No changes') }}</april:badge>
                                 @endif
                             </div>
                             <ul class="mt-3 space-y-1 text-sm">
@@ -206,19 +206,19 @@
                 </div>
 
                 <div class="mt-4 text-sm">
-                    <p class="font-medium">Never copied</p>
-                    <p class="mt-1 text-muted-foreground">Learners, placements, teacher assignments, {{ strtolower(school_terms('class_level', 'classes')) }}, subjects, exams, timetables, attendance and results. Set those up for this year when you are ready.</p>
+                    <p class="font-medium">{{ __('Never copied') }}</p>
+                    <p class="mt-1 text-muted-foreground">{{ __('Learners, placements, teacher assignments, :term, subjects, exams, timetables, attendance and results. Set those up for this year when you are ready.', ['term' => strtolower(school_terms('class_level', 'classes'))]) }}</p>
                 </div>
             @endif
 
             <april:dialog-footer>
                 <april:button type="button" variant="outline" wire:click="$set('showSetupRolloverDialog', false)">
-                    Cancel
+                    {{ __('Cancel') }}
                 </april:button>
                 @if (($setupRolloverPreview['create_count'] ?? 0) > 0)
                     <april:button type="button" wire:click="rollForwardSetup" wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="rollForwardSetup">Create listed setup</span>
-                        <span wire:loading wire:target="rollForwardSetup">Creating setup…</span>
+                        <span wire:loading.remove wire:target="rollForwardSetup">{{ __('Create listed setup') }}</span>
+                        <span wire:loading wire:target="rollForwardSetup">{{ __('Creating setup…') }}</span>
                     </april:button>
                 @endif
             </april:dialog-footer>

@@ -44,7 +44,7 @@ class FeeCategoryService
     public function deleteFeeCategory(FeeCategory $feeCategory): ?bool
     {
         if ($feeCategory->fees()->exists()) {
-            throw new InvalidValueException('This category holds fees, so it cannot be deleted. Delete the fees in it first.');
+            throw new InvalidValueException(__('This category holds fees, so it cannot be deleted. Delete the fees in it first.'));
         }
 
         return $feeCategory->delete();

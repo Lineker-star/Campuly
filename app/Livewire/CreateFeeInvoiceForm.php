@@ -96,7 +96,7 @@ class CreateFeeInvoiceForm extends Component
             ->all();
 
         if ($ids === []) {
-            $this->addError('studentRecordIds', 'No active students there.');
+            $this->addError('studentRecordIds', __('No active students there.'));
 
             return;
         }

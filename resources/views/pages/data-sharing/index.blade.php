@@ -3,14 +3,14 @@
     ['href' => route('data-sharing-requests.index'), 'text' => 'Record sharing', 'active'],
 ]])
 
-@section('title', 'Record sharing')
-@section('page_heading', 'Record sharing')
+@section('title', __('Record sharing'))
+@section('page_heading', __('Record sharing'))
 
 @section('page_actions')
     @can('create', App\Models\DataSharingRequest::class)
         <april:button-link href="{{ route('data-sharing-requests.create') }}">
             <x-lucide-plus class="mr-2 size-4" />
-            Ask another school
+            {{ __('Ask another school') }}
         </april:button-link>
     @endcan
 @endsection
@@ -20,32 +20,31 @@
         @if ($waitingCount > 0)
             <april:alert>
                 <slot:icon><x-lucide-inbox class="size-4" /></slot:icon>
-                <slot:title>{{ $waitingCount }} {{ Str::plural('school', $waitingCount) }} {{ $waitingCount === 1 ? 'is' : 'are' }} waiting for your answer</slot:title>
+                <slot:title>{{ __(':waiting_count :waiting_count2 :are waiting for your answer', ['waiting_count' => $waitingCount, 'waiting_count2' => Str::plural('school', $waitingCount), 'are' => $waitingCount === 1 ? 'is' : 'are']) }}</slot:title>
                 <slot:description>
-                    Another school has asked for a learner's records. Nothing leaves this school until you agree,
-                    and agreeing still does not hand anything over.
+                    {{ __('Another school has asked for a learner\'s records. Nothing leaves this school until you agree, and agreeing still does not hand anything over.') }}
                 </slot:description>
             </april:alert>
         @endif
 
         <april:card>
-            <slot:title>Asked of this school</slot:title>
+            <slot:title>{{ __('Asked of this school') }}</slot:title>
             <slot:description>
-                Requests from other schools for records this school holds. Only this school decides.
+                {{ __('Requests from other schools for records this school holds. Only this school decides.') }}
             </slot:description>
             <slot:content>
                 @if ($received->isEmpty())
-                    <x-empty-state icon="lucide-inbox" title="Nobody has asked this school for records"
-                        description="A request arrives here when another school asks about a learner who studied here." />
+                    <x-empty-state icon="lucide-inbox" title="{{ __('Nobody has asked this school for records') }}"
+                        :description="__('A request arrives here when another school asks about a learner who studied here.')" />
                 @else
                     <april:data-table>
                         <slot:header>
                             <april:data-table-row>
-                                <april:data-table-head>Learner</april:data-table-head>
-                                <april:data-table-head>Asked by</april:data-table-head>
-                                <april:data-table-head>What they want</april:data-table-head>
-                                <april:data-table-head>State</april:data-table-head>
-                                <april:data-table-head class="text-right">Actions</april:data-table-head>
+                                <april:data-table-head>{{ __('Learner') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('Asked by') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('What they want') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('State') }}</april:data-table-head>
+                                <april:data-table-head class="text-right">{{ __('Actions') }}</april:data-table-head>
                             </april:data-table-row>
                         </slot:header>
                         <slot:body>
@@ -57,7 +56,7 @@
                                     </april:data-table-cell>
                                     <april:data-table-cell>{{ $request->requestingSchool?->name ?? 'Unknown school' }}</april:data-table-cell>
                                     <april:data-table-cell class="text-muted-foreground">
-                                        {{ count($request->categories) }} {{ Str::plural('kind', count($request->categories)) }} of record
+                                        {{ __(':count :categories of record', ['count' => count($request->categories), 'categories' => Str::plural('kind', count($request->categories))]) }}
                                     </april:data-table-cell>
                                     <april:data-table-cell>
                                         <span class="inline-flex whitespace-nowrap items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
@@ -68,7 +67,7 @@
                                         <april:button-link href="{{ route('data-sharing-requests.show', $request) }}" variant="outline" size="sm"
                                             aria-label="Open the request for {{ $request->studentRecord?->user?->name ?? 'an unnamed learner' }}">
                                             <x-lucide-eye class="mr-1 size-4" />
-                                            Open
+                                            {{ __('Open') }}
                                         </april:button-link>
                                     </april:data-table-cell>
                                 </april:data-table-row>
@@ -80,28 +79,27 @@
         </april:card>
 
         <april:card>
-            <slot:title>Asked by this school</slot:title>
+            <slot:title>{{ __('Asked by this school') }}</slot:title>
             <slot:description>
-                Records this school asked another school for. The other school decides, and you take the records
-                in when they arrive.
+                {{ __('Records this school asked another school for. The other school decides, and you take the records in when they arrive.') }}
             </slot:description>
             <slot:content>
                 @if ($asked->isEmpty())
-                    <x-empty-state icon="lucide-send" title="This school has asked for nothing"
-                        description="Ask another school when a learner arrives from one and you need their records.">
+                    <x-empty-state icon="lucide-send" title="{{ __('This school has asked for nothing') }}"
+                        :description="__('Ask another school when a learner arrives from one and you need their records.')">
                         @can('create', App\Models\DataSharingRequest::class)
-                            <april:button-link href="{{ route('data-sharing-requests.create') }}">Ask another school</april:button-link>
+                            <april:button-link href="{{ route('data-sharing-requests.create') }}">{{ __('Ask another school') }}</april:button-link>
                         @endcan
                     </x-empty-state>
                 @else
                     <april:data-table>
                         <slot:header>
                             <april:data-table-row>
-                                <april:data-table-head>Learner</april:data-table-head>
-                                <april:data-table-head>Asked of</april:data-table-head>
-                                <april:data-table-head>Runs out</april:data-table-head>
-                                <april:data-table-head>State</april:data-table-head>
-                                <april:data-table-head class="text-right">Actions</april:data-table-head>
+                                <april:data-table-head>{{ __('Learner') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('Asked of') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('Runs out') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('State') }}</april:data-table-head>
+                                <april:data-table-head class="text-right">{{ __('Actions') }}</april:data-table-head>
                             </april:data-table-row>
                         </slot:header>
                         <slot:body>
@@ -123,7 +121,7 @@
                                         <april:button-link href="{{ route('data-sharing-requests.show', $request) }}" variant="outline" size="sm"
                                             aria-label="Open the request for {{ $request->studentRecord?->admission_number ?? 'an unknown learner' }}">
                                             <x-lucide-eye class="mr-1 size-4" />
-                                            Open
+                                            {{ __('Open') }}
                                         </april:button-link>
                                     </april:data-table-cell>
                                 </april:data-table-row>

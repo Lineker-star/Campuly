@@ -81,7 +81,7 @@ class Timetable extends Model
     {
         static::saving(function (self $timetable): void {
             if ($timetable->academic_cycle_section_id !== null && $timetable->course_offering_id !== null) {
-                throw new InvalidValueException('A timetable belongs to one section or one subject, not both.');
+                throw new InvalidValueException(__('A timetable belongs to one section or one subject, not both.'));
             }
 
             if (!$timetable->exists || $timetable->getRawOriginal('status') !== TimetableStatus::Published->value) {
@@ -91,13 +91,13 @@ class Timetable extends Model
             $allowed = ['status', 'published_at', 'published_by', 'updated_at'];
 
             if (array_diff($timetable->getDirtyKeys(), $allowed) !== []) {
-                throw new InvalidValueException('This timetable is published. Create a revision to change it.');
+                throw new InvalidValueException(__('This timetable is published. Create a revision to change it.'));
             }
         });
 
         static::deleting(function (self $timetable): void {
             if ($timetable->status === TimetableStatus::Published) {
-                throw new InvalidValueException('A published timetable cannot be deleted. Archive it instead.');
+                throw new InvalidValueException(__('A published timetable cannot be deleted. Archive it instead.'));
             }
         });
     }

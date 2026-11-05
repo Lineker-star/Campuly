@@ -22,7 +22,7 @@ class AcademicPeriodController extends Controller
         $academicYear = current_academic_year();
 
         return $academicYear === null
-            ? to_route('academic-years.index')->with('info', 'Choose a working school year before opening reporting periods.')
+            ? to_route('academic-years.index')->with('info', __('Choose a working school year before opening reporting periods.'))
             : to_route('academic-years.show', $academicYear);
     }
 
@@ -54,7 +54,7 @@ class AcademicPeriodController extends Controller
         $academicPeriod = $this->academicPeriod->createAcademicPeriod($request->validated());
 
         return to_route('academic-years.show', $academicPeriod->academic_year_id)
-            ->with('success', 'Academic period created.');
+            ->with('success', __('Academic period created.'));
     }
 
     /**
@@ -65,6 +65,6 @@ class AcademicPeriodController extends Controller
         $this->academicPeriod->updateAcademicPeriod($academicPeriod, $request->validated());
 
         return to_route('academic-years.show', $academicPeriod->academic_year_id)
-            ->with('success', 'Academic period updated.');
+            ->with('success', __('Academic period updated.'));
     }
 }

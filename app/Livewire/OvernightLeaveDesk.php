@@ -102,7 +102,7 @@ class OvernightLeaveDesk extends Component
         }
 
         $this->resetAskForm();
-        $this->notify('The request is waiting for a decision.');
+        $this->notify(__('The request is waiting for a decision.'));
     }
 
     public function approve(int $leaveId, DecideOvernightLeave $decideOvernightLeave): void

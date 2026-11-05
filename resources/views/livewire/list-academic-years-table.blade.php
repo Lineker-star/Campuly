@@ -1,6 +1,6 @@
 <april:card>
     <slot:title>{{ school_terms('academic_year', 'School years') }}</slot:title>
-    <slot:description>Each {{ strtolower(school_term('academic_year', 'school year')) }} carries its dates, reporting periods, and lifecycle state.</slot:description>
+    <slot:description>{{ __('Each :term carries its dates, reporting periods, and lifecycle state.', ['term' => strtolower(school_term('academic_year', 'school year'))]) }}</slot:description>
     <slot:content>
         <div wire:key="{{ $id }}-{{ $this->tableRevision }}">
             <april:data-table
@@ -15,8 +15,8 @@
             >
                 <slot:empty>
                     <div class="space-y-1">
-                        <p class="font-medium text-foreground">No {{ strtolower(school_terms('academic_year', 'school years')) }} yet</p>
-                        <p>Set up {{ with_indefinite_article(strtolower(school_term('academic_year', 'school year'))) }} to define the reporting periods staff will use.</p>
+                        <p class="font-medium text-foreground">{{ __('No :term yet', ['term' => strtolower(school_terms('academic_year', 'school years'))]) }}</p>
+                        <p>{{ __('Set up :year to define the reporting periods staff will use.', ['year' => with_indefinite_article(strtolower(school_term('academic_year', 'school year')))]) }}</p>
                     </div>
                 </slot:empty>
 

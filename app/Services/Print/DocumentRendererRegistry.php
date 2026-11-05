@@ -65,7 +65,7 @@ class DocumentRendererRegistry
             }
         }
 
-        throw new InvalidValueException("There is no renderer called $key.");
+        throw new InvalidValueException(__('There is no renderer called :key.', ['key' => $key]));
     }
 
     /**

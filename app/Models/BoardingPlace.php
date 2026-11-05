@@ -50,11 +50,11 @@ class BoardingPlace extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Boarding history cannot be changed. Record the next place instead.');
+            throw new RuntimeException(__('Boarding history cannot be changed. Record the next place instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Boarding history cannot be deleted. Record the next place instead.');
+            throw new RuntimeException(__('Boarding history cannot be deleted. Record the next place instead.'));
         });
     }
 

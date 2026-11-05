@@ -92,17 +92,17 @@ class AcademicYearService
         $academicYear = academic_period_context()->allowedAcademicYear(school_context()->schoolOrFail(), $academicYearId);
 
         if ($academicYear === null) {
-            throw new InvalidValueException('That academic year does not belong to this school');
+            throw new InvalidValueException(__('That academic year does not belong to this school'));
         }
 
         if ($academicYear->status === AcademicPeriodStatus::Draft) {
-            throw new InvalidValueException('Publish the school calendar before making it the working calendar.');
+            throw new InvalidValueException(__('Publish the school calendar before making it the working calendar.'));
         }
 
         $academicPeriod = $academicYear->topLevelPeriods()->first();
 
         if ($academicPeriod === null) {
-            throw new InvalidValueException('This school calendar has no reporting periods.');
+            throw new InvalidValueException(__('This school calendar has no reporting periods.'));
         }
 
         $preference = UserAcademicPeriodPreference::firstOrCreate(

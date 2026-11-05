@@ -76,7 +76,7 @@ class CalendarTemplateCampuses extends Component
         }
 
         $this->startsOn = '';
-        $this->notify("Drafted {$year->name} for {$school->name} from {$this->calendarTemplate->name}.");
+        $this->notify(__('Drafted :name for :name2 from :name3.', ['name' => $year->name, 'name2' => $school->name, 'name3' => $this->calendarTemplate->name]));
     }
 
     public function startChanging(int $schoolId): void

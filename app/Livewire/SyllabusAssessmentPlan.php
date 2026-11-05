@@ -63,7 +63,7 @@ class SyllabusAssessmentPlan extends Component
             return;
         }
 
-        $this->notify("Saved the topics that {$item->name} tests.");
+        $this->notify(__('Saved the topics that :name tests.', ['name' => $item->name]));
         $this->cancel();
     }
 

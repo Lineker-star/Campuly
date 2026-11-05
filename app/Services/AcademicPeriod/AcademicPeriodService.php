@@ -89,7 +89,7 @@ class AcademicPeriodService
         $academicYear = academic_period_context()->academicYear();
 
         if ($academicYear === null || $academicPeriod->academic_year_id !== $academicYear->id) {
-            throw new InvalidValueException('AcademicPeriod not in current academic year');
+            throw new InvalidValueException(__('AcademicPeriod not in current academic year'));
         }
 
         $resolutionError = academic_period_context()->resolutionError();
@@ -99,11 +99,11 @@ class AcademicPeriodService
         }
 
         if ($academicPeriod->parent_id !== null) {
-            throw new InvalidValueException('Choose a top-level reporting period as your working period.');
+            throw new InvalidValueException(__('Choose a top-level reporting period as your working period.'));
         }
 
         if ($academicPeriod->school_id !== current_school_id()) {
-            throw new InvalidValueException('AcademicPeriod not in current school');
+            throw new InvalidValueException(__('AcademicPeriod not in current school'));
         }
 
         UserAcademicPeriodPreference::updateOrCreate(
@@ -162,11 +162,11 @@ class AcademicPeriodService
         }
 
         if ($startsOn === null || $endsOn === null) {
-            throw new InvalidValueException('Give the period both a start date and an end date.');
+            throw new InvalidValueException(__('Give the period both a start date and an end date.'));
         }
 
         if ($endsOn->lessThan($startsOn)) {
-            throw new InvalidValueException('The period cannot end before it starts.');
+            throw new InvalidValueException(__('The period cannot end before it starts.'));
         }
 
         if ($academicYear === null) {
@@ -182,7 +182,7 @@ class AcademicPeriodService
             ->first();
 
         if ($overlapping !== null) {
-            throw new InvalidValueException("These dates overlap $overlapping->name.");
+            throw new InvalidValueException(__('These dates overlap :name.', ['name' => $overlapping->name]));
         }
     }
 

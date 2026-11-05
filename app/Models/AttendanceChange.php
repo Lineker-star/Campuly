@@ -46,11 +46,11 @@ class AttendanceChange extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Attendance history cannot be changed. Record the next correction instead.');
+            throw new RuntimeException(__('Attendance history cannot be changed. Record the next correction instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Attendance history cannot be deleted.');
+            throw new RuntimeException(__('Attendance history cannot be deleted.'));
         });
     }
 

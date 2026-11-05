@@ -4,8 +4,8 @@
     ['text' => 'Attendance', 'active'],
 ]])
 
-@section('title', 'Attendance')
-@section('page_heading', 'Attendance')
+@section('title', __('Attendance'))
+@section('page_heading', __('Attendance'))
 
 @php
     $rate = $attendance['rate'];
@@ -25,17 +25,17 @@
     <div class="space-y-6">
         <april:card>
             <slot:title>{{ $studentRecord->user?->name ?? $studentRecord->admission_number }}</slot:title>
-            <slot:description>The school counts only the {{ Str::plural($unit) }} it took a register. {{ ucfirst(with_indefinite_article($unit)) }} with no register does not count as an absence.</slot:description>
+            <slot:description>{{ __('The school counts only the :unit it took a register. :unit2 with no register does not count as an absence.', ['unit' => Str::plural($unit), 'unit2' => ucfirst(with_indefinite_article($unit))]) }}</slot:description>
             <slot:content>
                 @if ($recorded === 0)
-                    <x-empty-state icon="lucide-calendar-off" title="No attendance recorded yet"
+                    <x-empty-state icon="lucide-calendar-off" title="{{ __('No attendance recorded yet') }}"
                         description="Once the school starts taking the register, the {{ Str::plural($unit) }} appear here." />
                 @else
                     <div class="space-y-6">
                         <div>
                             <div class="flex flex-wrap items-baseline justify-between gap-2">
-                                <p class="text-sm text-muted-foreground">Attendance rate</p>
-                                <p class="text-sm text-muted-foreground">{{ $recorded }} {{ Str::plural($unit, $recorded) }} recorded</p>
+                                <p class="text-sm text-muted-foreground">{{ __('Attendance rate') }}</p>
+                                <p class="text-sm text-muted-foreground">{{ __(':recorded :recorded2 recorded', ['recorded' => $recorded, 'recorded2' => Str::plural($unit, $recorded)]) }}</p>
                             </div>
                             <p class="text-4xl font-semibold">{{ $rate === null ? '—' : $rate.'%' }}</p>
                             @if ($rate !== null)

@@ -24,13 +24,13 @@ class SaveCalendarTemplate
     public function save(Organization $organization, array $attributes, ?CalendarTemplate $template = null, ?User $actor = null): CalendarTemplate
     {
         if ($template !== null && $template->organization_id !== $organization->id) {
-            throw new InvalidValueException('That calendar template belongs to another organization.');
+            throw new InvalidValueException(__('That calendar template belongs to another organization.'));
         }
 
         $periods = $this->periods($attributes['periods']);
 
         if ($periods === []) {
-            throw new InvalidValueException('Add at least one period to the calendar template.');
+            throw new InvalidValueException(__('Add at least one period to the calendar template.'));
         }
 
         $this->failIfPeriodsDoNotFit($periods, (int) $attributes['cycle_length_days']);
@@ -117,20 +117,20 @@ class SaveCalendarTemplate
             $parentIndex = filled($row['parent_index'] ?? null) ? (int) $row['parent_index'] : null;
 
             if ($parentIndex !== null && ($parentIndex >= $rowNumber || !isset($rows[$parentIndex]))) {
-                throw new InvalidValueException("Row $rowNumber must name an earlier, filled row as its parent.");
+                throw new InvalidValueException(__('Row :row_number must name an earlier, filled row as its parent.', ['row_number' => $rowNumber]));
             }
 
             if ($end >= $cycleLengthDays) {
-                throw new InvalidValueException("Row $rowNumber ends after the school year ends. Shorten it or start it earlier.");
+                throw new InvalidValueException(__('Row :row_number ends after the school year ends. Shorten it or start it earlier.', ['row_number' => $rowNumber]));
             }
 
             if ($parentIndex !== null && ($start < $spans[$parentIndex]['start'] || $end > $spans[$parentIndex]['end'])) {
-                throw new InvalidValueException("Row $rowNumber must fall inside row $parentIndex, its parent.");
+                throw new InvalidValueException(__('Row :row_number must fall inside row :parent_index, its parent.', ['row_number' => $rowNumber, 'parent_index' => $parentIndex]));
             }
 
             foreach ($spans as $otherNumber => $other) {
                 if ($other['parent'] === $parentIndex && $start <= $other['end'] && $end >= $other['start']) {
-                    throw new InvalidValueException("Rows $otherNumber and $rowNumber share days. Periods side by side must not overlap.");
+                    throw new InvalidValueException(__('Rows :other_number and :row_number share days. Periods side by side must not overlap.', ['other_number' => $otherNumber, 'row_number' => $rowNumber]));
                 }
             }
 
@@ -151,7 +151,7 @@ class SaveCalendarTemplate
             $parentIndex = filled($row['parent_index'] ?? null) ? (int) $row['parent_index'] : null;
 
             if ($parentIndex !== null && !isset($written[$parentIndex])) {
-                throw new InvalidValueException('Each sub-period must name an earlier period in the template as its parent.');
+                throw new InvalidValueException(__('Each sub-period must name an earlier period in the template as its parent.'));
             }
 
             $written[$rowNumber] = $template->periods()->create([

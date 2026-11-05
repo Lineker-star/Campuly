@@ -51,11 +51,11 @@ class RelieveStudentFees
         ?User $actor = null,
     ): LedgerTransaction {
         if ($amount <= 0) {
-            throw new InvalidValueException('The amount must be more than nothing.');
+            throw new InvalidValueException(__('The amount must be more than nothing.'));
         }
 
         if (trim($reason) === '') {
-            throw new InvalidValueException('Say why the fee is being taken off.');
+            throw new InvalidValueException(__('Say why the fee is being taken off.'));
         }
 
         return DB::transaction(function () use ($line, $amount, $writeOff, $reason, $actor): LedgerTransaction {
@@ -63,7 +63,7 @@ class RelieveStudentFees
             $enrollment = $invoice->studentRecord;
 
             if ($enrollment === null || $invoice->ledger_transaction_id === null) {
-                throw new InvalidValueException('Only an invoice in the books can be waived. Change an unposted invoice instead.');
+                throw new InvalidValueException(__('Only an invoice in the books can be waived. Change an unposted invoice instead.'));
             }
 
             // Every change to a learner's money locks their record first, so
@@ -75,7 +75,7 @@ class RelieveStudentFees
             $owedAtCampus = (int) round($this->ledger->balance($enrollment, $invoice->school_id) * 100);
 
             if ($amount > min($owedOnLine, $owedAtCampus)) {
-                throw new InvalidValueException('That is more than is still owed on this fee.');
+                throw new InvalidValueException(__('That is more than is still owed on this fee.'));
             }
 
             $line->waiver = $line->waiver->plus(BrickMoney::ofMinor($amount, config('app.currency')));
@@ -153,7 +153,7 @@ class RelieveStudentFees
         ?int $schoolId = null,
     ): LedgerTransaction {
         if ($amount <= 0) {
-            throw new InvalidValueException('The amount must be more than nothing.');
+            throw new InvalidValueException(__('The amount must be more than nothing.'));
         }
 
         $schoolId ??= $enrollment->school_id;

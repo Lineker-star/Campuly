@@ -36,23 +36,23 @@ class GrantOfferingException
         ?User $actor = null,
     ): InstructionalModelException {
         if (trim($reason) === '') {
-            throw new InvalidValueException('Say why this subject is taught differently.');
+            throw new InvalidValueException(__('Say why this subject is taught differently.'));
         }
 
         if ($subject->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('That subject belongs to another campus.');
+            throw new InvalidValueException(__('That subject belongs to another campus.'));
         }
 
         if ($academicLevel !== null && $academicLevel->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('That level belongs to another campus.');
+            throw new InvalidValueException(__('That level belongs to another campus.'));
         }
 
         if (instructional_model($academicYear)->allowsRosterMode($rosterMode)) {
-            throw new InvalidValueException('The campus model already allows this, so no exception is needed.');
+            throw new InvalidValueException(__('The campus model already allows this, so no exception is needed.'));
         }
 
         if ($academicYear->isClosed()) {
-            throw new InvalidValueException('This cycle is closed.');
+            throw new InvalidValueException(__('This cycle is closed.'));
         }
 
         $existing = InstructionalModelException::query()
@@ -104,7 +104,7 @@ class GrantOfferingException
     public function revoke(InstructionalModelException $exception, ?User $actor = null): InstructionalModelException
     {
         if (!$exception->isRunning()) {
-            throw new InvalidValueException('This exception was already taken back.');
+            throw new InvalidValueException(__('This exception was already taken back.'));
         }
 
         $exception->revoked_at = now();

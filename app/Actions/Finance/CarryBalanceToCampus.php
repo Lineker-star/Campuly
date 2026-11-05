@@ -155,7 +155,7 @@ class CarryBalanceToCampus
     {
         if (!$from->billsWith($to)) {
             throw new InvalidValueException(
-                "$from->name and $to->name keep separate books, so money cannot be moved between them."
+                __(':name and :name2 keep separate books, so money cannot be moved between them.', ['name' => $from->name, 'name2' => $to->name])
             );
         }
 

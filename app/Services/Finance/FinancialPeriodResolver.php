@@ -27,13 +27,13 @@ class FinancialPeriodResolver
             ->get();
 
         if ($periods->isEmpty()) {
-            throw new InvalidValueException('Create a financial period for this date before recording finance activity.');
+            throw new InvalidValueException(__('Create a financial period for this date before recording finance activity.'));
         }
 
         $closed = $periods->first(fn (FinancialPeriod $period): bool => !$period->isOpen());
 
         if ($closed !== null) {
-            throw new InvalidValueException("Financial period {$closed->name} is closed.");
+            throw new InvalidValueException(__('Financial period :name is closed.', ['name' => $closed->name]));
         }
 
         return $periods->first();

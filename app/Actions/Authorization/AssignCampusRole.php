@@ -39,19 +39,19 @@ class AssignCampusRole
         }
 
         if (!$person->belongsToSchool($school->id)) {
-            throw new InvalidValueException('That person does not work at this campus.');
+            throw new InvalidValueException(__('That person does not work at this campus.'));
         }
 
         if ($person->studentRecords()->enrolled()->exists()) {
-            throw new InvalidValueException("$person->name is a learner. A learner cannot hold a campus role.");
+            throw new InvalidValueException(__(':name is a learner. A learner cannot hold a campus role.', ['name' => $person->name]));
         }
 
         if ($role->isArchived()) {
-            throw new InvalidValueException("$role->name is no longer offered at this campus.");
+            throw new InvalidValueException(__(':name is no longer offered at this campus.', ['name' => $role->name]));
         }
 
         if ($this->authority->tailoredCopyOf($role, $school) !== null) {
-            throw new InvalidValueException("This campus keeps its own $role->name. Give that one instead.");
+            throw new InvalidValueException(__('This campus keeps its own :name. Give that one instead.', ['name' => $role->name]));
         }
 
         if ($this->authority->holdersAt($role, $school)->whereKey($person->id)->exists()) {
@@ -84,7 +84,7 @@ class AssignCampusRole
         // Taking a role away is as strong as giving it. Somebody who could not
         // give the role cannot strip it from the people who hold it.
         if ($actor !== null && $this->authority->grantableBy($actor, $school)->intersect($role->permissions->pluck('name'))->count() !== $role->permissions->count()) {
-            throw new InvalidValueException("$role->name holds more than you do, so you cannot take it away.");
+            throw new InvalidValueException(__(':name holds more than you do, so you cannot take it away.', ['name' => $role->name]));
         }
 
         if (!$this->authority->holdersAt($role, $school)->whereKey($person->id)->exists()) {

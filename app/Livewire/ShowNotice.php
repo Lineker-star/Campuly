@@ -26,7 +26,7 @@ class ShowNotice extends Component
 
         try {
             $this->notice = $publishNotice->publish($this->notice, auth()->user());
-            $this->notify('Notice published successfully');
+            $this->notify(__('Notice published successfully'));
         } catch (InvalidValueException $exception) {
             $this->addError('notice', $exception->getMessage());
         }

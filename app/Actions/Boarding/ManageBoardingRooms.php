@@ -56,7 +56,7 @@ class ManageBoardingRooms
                     ->groupBy('student_record_id');
             });
         })->exists()) {
-            throw new InvalidValueException('Move the current boarders before taking this room out of use.');
+            throw new InvalidValueException(__('Move the current boarders before taking this room out of use.'));
         }
 
         return DB::transaction(function () use ($room, $name, $floor, $isActive): DormitoryRoom {
@@ -93,7 +93,7 @@ class ManageBoardingRooms
     public function updateBed(DormitoryBed $bed, string $name, DormitoryBedStatus $status, ?string $reason = null): DormitoryBed
     {
         if ($bed->isTaken() && !$status->isAssignable()) {
-            throw new InvalidValueException('Move the current boarder before making this bed unavailable.');
+            throw new InvalidValueException(__('Move the current boarder before making this bed unavailable.'));
         }
 
         return DB::transaction(function () use ($bed, $name, $status, $reason): DormitoryBed {

@@ -49,7 +49,7 @@ class PaymentChannelRegistry
             }
         }
 
-        throw new InvalidValueException("There is no way to pay called $key.");
+        throw new InvalidValueException(__('There is no way to pay called :key.', ['key' => $key]));
     }
 
     /**

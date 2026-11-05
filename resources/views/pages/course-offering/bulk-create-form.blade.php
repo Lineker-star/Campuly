@@ -5,8 +5,8 @@
     ['text' => 'Set up across levels', 'active'],
 ]])
 
-@section('title', 'Set up across levels')
-@section('page_heading', 'Set up across levels')
+@section('title', __('Set up across levels'))
+@section('page_heading', __('Set up across levels'))
 
 @section('content')
     <livewire:set-up-subject-across-levels :academic-year="$selectedAcademicYear" :subject-id="request()->integer('subject_id') ?: null" :setup="request()->boolean('setup')" />

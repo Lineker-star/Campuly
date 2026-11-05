@@ -48,7 +48,7 @@ class SyllabusController extends Controller
     {
         $syllabus = $this->syllabus->createSyllabus($request->validated());
 
-        return redirect()->route('syllabi.edit', $syllabus)->with('success', 'Syllabus draft created. Add the weekly topics, then send it for review.');
+        return redirect()->route('syllabi.edit', $syllabus)->with('success', __('Syllabus draft created. Add the weekly topics, then send it for review.'));
     }
 
     public function show(Syllabus $syllabus): View
@@ -72,7 +72,7 @@ class SyllabusController extends Controller
     public function edit(Syllabus $syllabus): View|RedirectResponse
     {
         if ($syllabus->status !== SyllabusStatus::Draft) {
-            return redirect()->route('syllabi.show', $syllabus)->with('info', 'Only a draft can be edited. Create a revised draft to change this syllabus.');
+            return redirect()->route('syllabi.show', $syllabus)->with('info', __('Only a draft can be edited. Create a revised draft to change this syllabus.'));
         }
 
         $syllabus->load('courseOffering.subject', 'courseOffering.academicPeriod', 'courseOffering.academicLevel', 'revisionOf');
@@ -87,14 +87,14 @@ class SyllabusController extends Controller
             'remove_file' => $request->boolean('remove_file'),
         ]);
 
-        return redirect()->route('syllabi.edit', $syllabus)->with('success', 'Syllabus details saved.');
+        return redirect()->route('syllabi.edit', $syllabus)->with('success', __('Syllabus details saved.'));
     }
 
     public function destroy(Syllabus $syllabus): RedirectResponse
     {
         $this->syllabus->deleteSyllabus($syllabus);
 
-        return redirect()->route('syllabi.index')->with('success', 'Syllabus deleted.');
+        return redirect()->route('syllabi.index')->with('success', __('Syllabus deleted.'));
     }
 
     /**

@@ -247,7 +247,7 @@ class AcademicCalendarForm extends Component
     {
         $ability = $this->academicYear === null ? 'create' : 'update';
         abort_unless(auth()->user()?->can($ability, $this->academicYear ?? AcademicYear::class), 403);
-        abort_unless($this->canEdit(), 422, 'Only draft school calendars can be edited here.');
+        abort_unless($this->canEdit(), 422, __('Only draft school calendars can be edited here.'));
     }
 
     /**

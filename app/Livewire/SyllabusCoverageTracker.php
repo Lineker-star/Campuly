@@ -61,7 +61,7 @@ class SyllabusCoverageTracker extends Component
         $note = trim(mb_substr($note, 0, 1000));
 
         if ($existing === null) {
-            $this->notify('Mark how far the topic was taught before adding a note.', 'danger');
+            $this->notify(__('Mark how far the topic was taught before adding a note.'), 'danger');
 
             return;
         }
@@ -74,7 +74,7 @@ class SyllabusCoverageTracker extends Component
             return;
         }
 
-        $this->notify("Saved the note on {$topic->title}.");
+        $this->notify(__('Saved the note on :title.', ['title' => $topic->title]));
     }
 
     public function render(SyllabusCoverageService $coverage): View

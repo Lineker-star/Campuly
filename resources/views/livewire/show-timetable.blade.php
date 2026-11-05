@@ -6,9 +6,9 @@
                 @if ($showDescription && filled($timetable->description))
                     {{ $timetable->description }}
                 @elseif ($showCalendar)
-                    Scan this timetable by month, week, or day.
+                    {{ __('Scan this timetable by month, week, or day.') }}
                 @else
-                    {{ $grid['filled_count'] }} of {{ $grid['slot_count'] }} places on the week are taken.
+                    {{ __(':filled_count of :slot_count places on the week are taken.', ['filled_count' => $grid['filled_count'], 'slot_count' => $grid['slot_count']]) }}
                 @endif
             </slot:description>
             <slot:content>

@@ -43,7 +43,7 @@ class SqliteDumper implements DatabaseDumper
         $out = fopen($path, 'wb');
 
         if ($out === false) {
-            throw new InvalidValueException("The file [$path] could not be written.");
+            throw new InvalidValueException(__('The file [:path] could not be written.', ['path' => $path]));
         }
 
         $pdo->beginTransaction();
@@ -87,7 +87,7 @@ class SqliteDumper implements DatabaseDumper
         $sql = file_get_contents($path);
 
         if ($sql === false) {
-            throw new InvalidValueException("The file [$path] could not be read.");
+            throw new InvalidValueException(__('The file [:path] could not be read.', ['path' => $path]));
         }
 
         $this->open($database)->exec($sql);
@@ -132,11 +132,11 @@ class SqliteDumper implements DatabaseDumper
         $database = (string) ($connection['database'] ?? '');
 
         if ($database === '' || $database === ':memory:') {
-            throw new InvalidValueException('An in-memory SQLite database has no file to back up or restore into.');
+            throw new InvalidValueException(__('An in-memory SQLite database has no file to back up or restore into.'));
         }
 
         if ($mustExist && !is_file($database)) {
-            throw new InvalidValueException("The SQLite database file [$database] does not exist.");
+            throw new InvalidValueException(__('The SQLite database file [:database] does not exist.', ['database' => $database]));
         }
 
         return $database;

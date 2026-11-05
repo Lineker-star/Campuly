@@ -157,7 +157,7 @@ class RollForwardAcademicYearSetup
             }
 
             if (!$progress) {
-                throw new InvalidValueException('The previous school year has an invalid reporting-period structure.');
+                throw new InvalidValueException(__('The previous school year has an invalid reporting-period structure.'));
             }
         }
 
@@ -209,15 +209,15 @@ class RollForwardAcademicYearSetup
     private function validateYears(AcademicYear $source, AcademicYear $target): void
     {
         if ($source->school_id !== $target->school_id) {
-            throw new InvalidValueException('Academic years from different schools cannot share setup.');
+            throw new InvalidValueException(__('Academic years from different schools cannot share setup.'));
         }
 
         if ($source->id === $target->id) {
-            throw new InvalidValueException('Choose a different academic year to receive the setup.');
+            throw new InvalidValueException(__('Choose a different academic year to receive the setup.'));
         }
 
         if ($target->status->isFrozen()) {
-            throw new InvalidValueException('The target academic year is closed.');
+            throw new InvalidValueException(__('The target academic year is closed.'));
         }
     }
 }

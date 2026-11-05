@@ -90,15 +90,15 @@ class SaveExam
         $stopsOn = Carbon::parse($attributes['stop_date'])->startOfDay();
 
         if ($stopsOn->lt($startsOn)) {
-            throw new InvalidValueException('An exam cannot end before it starts.');
+            throw new InvalidValueException(__('An exam cannot end before it starts.'));
         }
 
         if ($period->starts_on !== null && $startsOn->lt($period->starts_on->copy()->startOfDay())) {
-            throw new InvalidValueException("The exam starts before {$period->displayName} starts on {$period->starts_on->format('j M Y')}.");
+            throw new InvalidValueException(__('The exam starts before :name starts on :date.', ['name' => $period->displayName, 'date' => $period->starts_on->format('j M Y')]));
         }
 
         if ($period->ends_on !== null && $stopsOn->gt($period->ends_on->copy()->startOfDay())) {
-            throw new InvalidValueException("The exam ends after {$period->displayName} ends on {$period->ends_on->format('j M Y')}.");
+            throw new InvalidValueException(__('The exam ends after :name ends on :date.', ['name' => $period->displayName, 'date' => $period->ends_on->format('j M Y')]));
         }
     }
 
@@ -114,7 +114,7 @@ class SaveExam
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException("{$period->displayName} already has an exam with that name.");
+            throw new InvalidValueException(__(':name already has an exam with that name.', ['name' => $period->displayName]));
         }
     }
 }

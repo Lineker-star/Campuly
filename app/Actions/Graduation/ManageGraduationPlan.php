@@ -149,7 +149,7 @@ class ManageGraduationPlan
         $plan = $requirement->graduationPlan()->firstOrFail();
 
         if ($enrollment->school_id !== $plan->school_id) {
-            throw new InvalidValueException('Only a learner of this school can be excused.');
+            throw new InvalidValueException(__('Only a learner of this school can be excused.'));
         }
 
         return DB::transaction(function () use ($requirement, $enrollment, $reason, $actor, $plan): GraduationExemption {
@@ -200,7 +200,7 @@ class ManageGraduationPlan
     private function settleTheRule(array $attributes): array
     {
         if (!in_array($attributes['completion_operator'], self::OPERATORS, true)) {
-            throw new InvalidValueException('Choose how the items count.');
+            throw new InvalidValueException(__('Choose how the items count.'));
         }
 
         $attributes['uses_credits'] = $attributes['uses_credits'] || $attributes['completion_operator'] === 'at_least_credits';
@@ -208,13 +208,13 @@ class ManageGraduationPlan
         if ($attributes['completion_operator'] !== 'at_least') {
             $attributes['required_count'] = null;
         } elseif ($attributes['required_count'] === null) {
-            throw new InvalidValueException('Say how many items are needed.');
+            throw new InvalidValueException(__('Say how many items are needed.'));
         }
 
         if (!$attributes['uses_credits']) {
             $attributes['required_credits'] = null;
         } elseif ($attributes['required_credits'] === null) {
-            throw new InvalidValueException('A plan that counts credits must say how many are needed.');
+            throw new InvalidValueException(__('A plan that counts credits must say how many are needed.'));
         }
 
         return $attributes;
@@ -237,7 +237,7 @@ class ManageGraduationPlan
                 return $write();
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has a plan or stage with that name.');
+            throw new InvalidValueException(__('This school already has a plan or stage with that name.'));
         }
     }
 
@@ -253,7 +253,7 @@ class ManageGraduationPlan
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException('This school already has a plan or stage with that name.');
+            throw new InvalidValueException(__('This school already has a plan or stage with that name.'));
         }
     }
 }

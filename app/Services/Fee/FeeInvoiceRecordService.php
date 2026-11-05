@@ -28,7 +28,7 @@ class FeeInvoiceRecordService
         }
 
         if ($feeInvoice->ledgerTransaction !== null) {
-            throw new InvalidValueException('A posted invoice cannot have lines added to it. Create a correcting invoice instead.');
+            throw new InvalidValueException(__('A posted invoice cannot have lines added to it. Create a correcting invoice instead.'));
         }
 
         $feeInvoiceRecord = FeeInvoiceRecord::create([
@@ -48,7 +48,7 @@ class FeeInvoiceRecordService
     public function updateFeeInvoiceRecord(FeeInvoiceRecord $feeInvoiceRecord, $records): FeeInvoiceRecord
     {
         if ($feeInvoiceRecord->feeInvoice?->ledgerTransaction !== null) {
-            throw new InvalidValueException('A posted invoice cannot have its lines changed. Create a correcting invoice instead.');
+            throw new InvalidValueException(__('A posted invoice cannot have its lines changed. Create a correcting invoice instead.'));
         }
 
         // The form asks for whole units, and the column keeps minor units,
@@ -58,7 +58,7 @@ class FeeInvoiceRecordService
         $fine = Money::of($records['fine'] ?? 0, config('app.currency'));
 
         if ($this->isPaymentHigherThanDue($amount, $feeInvoiceRecord->paid, $waiver, $fine)) {
-            throw new InvalidValueException('Due Cannot be less than amount already paid');
+            throw new InvalidValueException(__('Due Cannot be less than amount already paid'));
         }
 
         $feeInvoiceRecord->update([
@@ -76,11 +76,11 @@ class FeeInvoiceRecordService
     public function deleteFeeInvoiceRecord(FeeInvoiceRecord $feeInvoiceRecord): void
     {
         if ($feeInvoiceRecord->feeInvoice?->ledgerTransaction !== null) {
-            throw new InvalidValueException('A posted invoice cannot have its lines removed. Create a correcting invoice instead.');
+            throw new InvalidValueException(__('A posted invoice cannot have its lines removed. Create a correcting invoice instead.'));
         }
 
         if ($feeInvoiceRecord->paid->isPositive()) {
-            throw new InvalidValueException('This fee has money against it, so it cannot be removed. Set its waiver to cover what is left instead.');
+            throw new InvalidValueException(__('This fee has money against it, so it cannot be removed. Set its waiver to cover what is left instead.'));
         }
 
         $feeInvoiceRecord->delete();

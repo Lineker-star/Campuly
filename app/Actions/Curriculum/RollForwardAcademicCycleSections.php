@@ -81,7 +81,7 @@ class RollForwardAcademicCycleSections
             $target = AcademicYear::inSchool()->whereKey($target->id)->lockForUpdate()->firstOrFail();
 
             if ($target->isClosed()) {
-                throw new InvalidValueException('The target academic cycle is closed.');
+                throw new InvalidValueException(__('The target academic cycle is closed.'));
             }
 
             /** @var Collection<int, AcademicCycleSection> $created */
@@ -163,11 +163,11 @@ class RollForwardAcademicCycleSections
     private function failIfCyclesDoNotFit(AcademicYear $source, AcademicYear $target): void
     {
         if ($source->school_id !== $target->school_id) {
-            throw new InvalidValueException('Academic cycles from different schools cannot share sections.');
+            throw new InvalidValueException(__('Academic cycles from different schools cannot share sections.'));
         }
 
         if ($source->id === $target->id) {
-            throw new InvalidValueException('Choose a different academic cycle to receive the sections.');
+            throw new InvalidValueException(__('Choose a different academic cycle to receive the sections.'));
         }
     }
 }

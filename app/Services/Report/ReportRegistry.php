@@ -64,7 +64,7 @@ class ReportRegistry
             }
         }
 
-        throw new InvalidValueException("There is no report called $key.");
+        throw new InvalidValueException(__('There is no report called :key.', ['key' => $key]));
     }
 
     /**

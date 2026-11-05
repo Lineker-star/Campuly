@@ -152,22 +152,22 @@ class MigrateInstructionalModel
     ): void {
         if ($academicYear->status->isFrozen()) {
             throw new InvalidValueException(
-                "{$academicYear->name} is finished, so how it was taught cannot change. Reopen the cycle first if it was closed by mistake."
+                __(':name is finished, so how it was taught cannot change. Reopen the cycle first if it was closed by mistake.', ['name' => $academicYear->name])
             );
         }
 
         if (!$this->canBeMigrated($academicYear)) {
             throw new InvalidValueException(
-                "{$academicYear->name} has not started yet, so choose its model on the teaching setup form instead."
+                __(':name has not started yet, so choose its model on the teaching setup form instead.', ['name' => $academicYear->name])
             );
         }
 
         if ($current === $model) {
-            throw new InvalidValueException("{$academicYear->name} already teaches with: {$model->label()}");
+            throw new InvalidValueException(__(':name already teaches with: :label', ['name' => $academicYear->name, 'label' => $model->label()]));
         }
 
         if ($reason === '') {
-            throw new InvalidValueException('Say why this cycle is moving to another model.');
+            throw new InvalidValueException(__('Say why this cycle is moving to another model.'));
         }
     }
 }

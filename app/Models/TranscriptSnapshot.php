@@ -25,10 +25,10 @@ class TranscriptSnapshot extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('An issued transcript cannot be changed. Issue a new revision instead.');
+            throw new RuntimeException(__('An issued transcript cannot be changed. Issue a new revision instead.'));
         });
         static::deleting(function (): void {
-            throw new RuntimeException('An issued transcript cannot be deleted.');
+            throw new RuntimeException(__('An issued transcript cannot be deleted.'));
         });
     }
 

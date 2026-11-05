@@ -53,7 +53,7 @@ class RevokeOrganizationMembership
             if ($membership->grants(OrganizationPermission::ManageMembers)
                 && !$organization->hasAnotherMemberManager($user)) {
                 throw new InvalidValueException(
-                    "{$organization->name} would be left with nobody who can manage its members. Grant a replacement first."
+                    __(':name would be left with nobody who can manage its members. Grant a replacement first.', ['name' => $organization->name])
                 );
             }
 
@@ -109,7 +109,7 @@ class RevokeOrganizationMembership
         $held = $values($this->organizationPermissionScope->permissionsFor($actor, $organization));
 
         if (array_diff($values($membership->grantedPermissions()), $held) !== []) {
-            throw new InvalidValueException('This person holds more of the organization than you do, so only somebody holding as much can remove them.');
+            throw new InvalidValueException(__('This person holds more of the organization than you do, so only somebody holding as much can remove them.'));
         }
     }
 }

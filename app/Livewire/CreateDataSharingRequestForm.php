@@ -77,7 +77,7 @@ class CreateDataSharingRequestForm extends Component
 
         if ($unreadable->isNotEmpty()) {
             $names = $unreadable->map(fn (DataCategory $category): string => $category->label())->join(', ', ' and ');
-            $this->addError('categories', "You cannot ask for {$names}. You need the permission to read them at this campus.");
+            $this->addError('categories', __('You cannot ask for :names. You need the permission to read them at this campus.', ['names' => $names]));
 
             return;
         }
@@ -86,7 +86,7 @@ class CreateDataSharingRequestForm extends Component
 
         if (RateLimiter::tooManyAttempts($guessKey, self::MissedLookupsPerHour)) {
             $minutes = (int) ceil(RateLimiter::availableIn($guessKey) / 60);
-            $this->addError('admissionNumber', "Too many admission numbers were not found. Try again in {$minutes} minutes.");
+            $this->addError('admissionNumber', __('Too many admission numbers were not found. Try again in :minutes minutes.', ['minutes' => $minutes]));
 
             return;
         }
@@ -101,7 +101,7 @@ class CreateDataSharingRequestForm extends Component
             // guess never tells one school who attends another. Counting the
             // misses stops a person from walking through another school's roll.
             RateLimiter::hit($guessKey, 3600);
-            $this->addError('admissionNumber', 'That school holds no learner with that admission number.');
+            $this->addError('admissionNumber', __('That school holds no learner with that admission number.'));
 
             return;
         }
@@ -121,7 +121,7 @@ class CreateDataSharingRequestForm extends Component
             return;
         }
 
-        session()->flash('success', 'The request was sent to the school that holds the records.');
+        session()->flash('success', __('The request was sent to the school that holds the records.'));
         $this->redirectRoute('data-sharing-requests.show', $sharingRequest);
     }
 

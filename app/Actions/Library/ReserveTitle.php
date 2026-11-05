@@ -80,11 +80,11 @@ class ReserveTitle
     private function refuseWhatCannotBeReserved(LibraryTitle $title, User $borrower, int $schoolId): void
     {
         if (!$borrower->belongsToSchool($schoolId)) {
-            throw new InvalidValueException('This person does not belong to the campus that owns the title.');
+            throw new InvalidValueException(__('This person does not belong to the campus that owns the title.'));
         }
 
         if ($borrower->isLearnerWhoNoLongerAttends($schoolId)) {
-            throw new InvalidValueException('This learner no longer attends this campus.');
+            throw new InvalidValueException(__('This learner no longer attends this campus.'));
         }
 
         $already = LibraryReservation::query()
@@ -95,7 +95,7 @@ class ReserveTitle
             ->exists();
 
         if ($already) {
-            throw new InvalidValueException('This person is already in the queue for this title.');
+            throw new InvalidValueException(__('This person is already in the queue for this title.'));
         }
 
         $holdsOne = LibraryLoan::query()
@@ -106,7 +106,7 @@ class ReserveTitle
             ->exists();
 
         if ($holdsOne) {
-            throw new InvalidValueException('This person already has a copy of this title.');
+            throw new InvalidValueException(__('This person already has a copy of this title.'));
         }
 
         $limit = LibraryLendingRules::forSchool($schoolId)->limitFor($borrower);
@@ -119,7 +119,7 @@ class ReserveTitle
 
         if ($waiting >= $limit) {
             throw new InvalidValueException(
-                "This person is already waiting for {$waiting} titles, which is as many as this library lends at once."
+                __('This person is already waiting for :waiting titles, which is as many as this library lends at once.', ['waiting' => $waiting])
             );
         }
     }

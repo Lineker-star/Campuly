@@ -55,11 +55,11 @@ class AuditEvent extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Audit records cannot be changed.');
+            throw new RuntimeException(__('Audit records cannot be changed.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Audit records cannot be deleted.');
+            throw new RuntimeException(__('Audit records cannot be deleted.'));
         });
     }
 

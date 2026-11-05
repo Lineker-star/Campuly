@@ -43,11 +43,11 @@ class SupportPlanStatusChange extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Support plan history cannot be changed.');
+            throw new RuntimeException(__('Support plan history cannot be changed.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Support plan history cannot be deleted.');
+            throw new RuntimeException(__('Support plan history cannot be deleted.'));
         });
     }
 

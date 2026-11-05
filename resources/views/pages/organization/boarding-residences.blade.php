@@ -5,9 +5,9 @@
     ['text' => 'Shared residences', 'active'],
 ]])
 
-@section('title', 'Shared residences')
+@section('title', __('Shared residences'))
 
-@section('page_heading', 'Shared residences')
+@section('page_heading', __('Shared residences'))
 
 @section('content')
     <div class="mx-auto w-full max-w-6xl">

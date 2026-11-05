@@ -71,7 +71,7 @@ class LocationCatalog
         $handle = fopen($path, 'rb');
 
         if ($handle === false) {
-            throw new RuntimeException('The world city catalog could not be opened.');
+            throw new RuntimeException(__('The world city catalog could not be opened.'));
         }
 
         $cities = [];

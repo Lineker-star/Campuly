@@ -34,7 +34,7 @@ class ManageBillingGroups
             Organization::query()->lockForUpdate()->findOrFail($organization->id);
 
             if ($organization->billingGroups()->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->exists()) {
-                throw new InvalidValueException('This organization already has a group with that name.');
+                throw new InvalidValueException(__('This organization already has a group with that name.'));
             }
 
             $group = BillingGroup::create(['organization_id' => $organization->id, 'name' => $name]);
@@ -55,7 +55,7 @@ class ManageBillingGroups
             $school = School::query()->lockForUpdate()->findOrFail($school->id);
 
             if ($school->organization_id !== $organization->id) {
-                throw new InvalidValueException('That campus belongs to another organization.');
+                throw new InvalidValueException(__('That campus belongs to another organization.'));
             }
 
             if ($groupId !== null) {
@@ -64,7 +64,7 @@ class ManageBillingGroups
                 $group = BillingGroup::query()->lockForUpdate()->find($groupId);
 
                 if ($group === null || $group->organization_id !== $organization->id) {
-                    throw new InvalidValueException('That group no longer exists. Choose another.');
+                    throw new InvalidValueException(__('That group no longer exists. Choose another.'));
                 }
             }
 
@@ -99,7 +99,7 @@ class ManageBillingGroups
             $group = BillingGroup::query()->lockForUpdate()->findOrFail($group->id);
 
             if ($group->schools()->lockForUpdate()->exists()) {
-                throw new InvalidValueException("Take every campus out of {$group->name} first.");
+                throw new InvalidValueException(__('Take every campus out of :name first.', ['name' => $group->name]));
             }
 
             $group->delete();

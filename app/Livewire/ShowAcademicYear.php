@@ -39,7 +39,7 @@ class ShowAcademicYear extends DataTableComponent
     {
         parent::mount();
         if ($academicYear === null) {
-            throw new LogicException('An academic year is required.');
+            throw new LogicException(__('An academic year is required.'));
         }
         Gate::authorize('view', $academicYear);
         $this->academicYear = $academicYear->loadMissing('academicPeriods');
@@ -130,7 +130,7 @@ class ShowAcademicYear extends DataTableComponent
             return;
         }
 
-        $this->notify("{$period->displayName} is closing. Finish the checklist, then close.");
+        $this->notify(__(':name is closing. Finish the checklist, then close.', ['name' => $period->displayName]));
     }
 
     /**

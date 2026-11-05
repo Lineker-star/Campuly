@@ -24,19 +24,19 @@ class DeleteAcademicLevel
                 ->findOrFail($academicLevel->id);
 
             if ($academicLevel->children()->exists()) {
-                throw new InvalidValueException('Move the child levels first before deleting this level group.');
+                throw new InvalidValueException(__('Move the child levels first before deleting this level group.'));
             }
 
             if ($academicLevel->cycleSections()->exists()) {
-                throw new InvalidValueException('This level has year sections. Keep it for history instead of deleting it.');
+                throw new InvalidValueException(__('This level has year sections. Keep it for history instead of deleting it.'));
             }
 
             if (CourseOffering::query()->where('academic_level_id', $academicLevel->id)->exists()) {
-                throw new InvalidValueException('This level has subjects attached to it. Keep it for history instead of deleting it.');
+                throw new InvalidValueException(__('This level has subjects attached to it. Keep it for history instead of deleting it.'));
             }
 
             if (InstructionalModelException::query()->where('academic_level_id', $academicLevel->id)->exists()) {
-                throw new InvalidValueException('This level has teaching setup attached to it. Keep it for history instead of deleting it.');
+                throw new InvalidValueException(__('This level has teaching setup attached to it. Keep it for history instead of deleting it.'));
             }
 
             $academicLevel->delete();

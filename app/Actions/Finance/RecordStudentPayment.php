@@ -52,7 +52,7 @@ class RecordStudentPayment
         ?int $schoolId = null,
     ): LedgerTransaction {
         if ($amount <= 0) {
-            throw new InvalidValueException('A payment must be more than nothing.');
+            throw new InvalidValueException(__('A payment must be more than nothing.'));
         }
 
         $schoolId ??= $enrollment->school_id;
@@ -66,7 +66,7 @@ class RecordStudentPayment
         $overpaid = round($amount - $applied, 2);
 
         if ($applied < 0 || $overpaid < 0) {
-            throw new InvalidValueException('A payment cannot settle more than it is worth.');
+            throw new InvalidValueException(__('A payment cannot settle more than it is worth.'));
         }
         $description ??= 'Payment received';
 

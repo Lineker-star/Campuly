@@ -4,8 +4,8 @@
     ['text' => 'School features', 'active'],
 ]])
 
-@section('title', 'School features')
-@section('page_heading', 'Choose the tools your school uses')
+@section('title', __('School features'))
+@section('page_heading', __('Choose the tools your school uses'))
 
 @section('content')
     <livewire:manage-school-features />

@@ -51,7 +51,7 @@ class SeedWorldData
 
         if ($previousMemoryLimit === false) {
             throw new RuntimeException(
-                "The country and state reference data requires a PHP memory limit of at least 512M. The current limit is {$currentMemoryLimit}.",
+                __('The country and state reference data requires a PHP memory limit of at least 512M. The current limit is :current_memory_limit.', ['current_memory_limit' => $currentMemoryLimit]),
             );
         }
 
@@ -59,7 +59,7 @@ class SeedWorldData
             ini_set('memory_limit', $previousMemoryLimit);
 
             throw new RuntimeException(
-                "The country and state reference data requires a PHP memory limit of at least 512M. The current limit is {$currentMemoryLimit}.",
+                __('The country and state reference data requires a PHP memory limit of at least 512M. The current limit is :current_memory_limit.', ['current_memory_limit' => $currentMemoryLimit]),
             );
         }
 

@@ -61,7 +61,7 @@ class OrganizationDomains extends Component
         }
 
         $this->reset('host', 'schoolId', 'isPrimary');
-        $this->notify("Add the record shown under {$domain->host}, then prove it.");
+        $this->notify(__('Add the record shown under :host, then prove it.', ['host' => $domain->host]));
     }
 
     public function verify(int $domainId, VerifySchoolDomain $verifySchoolDomain): void
@@ -76,7 +76,7 @@ class OrganizationDomains extends Component
             return;
         }
 
-        $this->notify("{$domain->host} is proved and now opens this organization.");
+        $this->notify(__(':host is proved and now opens this organization.', ['host' => $domain->host]));
     }
 
     public function giveUp(int $domainId, RemoveSchoolDomain $removeSchoolDomain): void
@@ -84,7 +84,7 @@ class OrganizationDomains extends Component
         $domain = $this->domain($domainId);
         $removeSchoolDomain->remove($domain, auth()->user());
 
-        $this->notify("{$domain->host} is no longer answered.");
+        $this->notify(__(':host is no longer answered.', ['host' => $domain->host]));
     }
 
     public function render(): View

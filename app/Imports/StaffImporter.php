@@ -108,7 +108,7 @@ class StaffImporter implements Importer
             ->exists();
 
         if ($isLearner) {
-            throw new InvalidValueException('This person is still a learner. A learner cannot be made staff.');
+            throw new InvalidValueException(__('This person is still a learner. A learner cannot be made staff.'));
         }
 
         $person = $existing instanceof StaffProfile

@@ -62,20 +62,20 @@ class ApplyStudentCredit
             $credit = $this->creditHeld($enrollment, $schoolId);
 
             if ($credit <= 0) {
-                throw new InvalidValueException('This student has no credit to use.');
+                throw new InvalidValueException(__('This student has no credit to use.'));
             }
 
             $usable = $limit === null ? $credit : min($credit, $limit);
 
             if ($usable <= 0) {
-                throw new InvalidValueException('There is nothing to apply.');
+                throw new InvalidValueException(__('There is nothing to apply.'));
             }
 
             $plan = $this->planner->spread($enrollment, $usable, $onlyInvoice, $schoolId);
             $applied = array_sum($plan);
 
             if ($applied <= 0) {
-                throw new InvalidValueException('This student owes nothing, so the credit stays where it is.');
+                throw new InvalidValueException(__('This student owes nothing, so the credit stays where it is.'));
             }
 
             $this->spendCredit($enrollment, $plan, $schoolId);

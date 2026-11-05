@@ -45,7 +45,7 @@
             @foreach ($zones as $region => $regionZones)
                 <optgroup label="{{ $region }}">
                     @foreach ($regionZones as $zone)
-                        <option value="{{ $zone['zone'] }}">{{ str_replace(['/', '_'], [' / ', ' '], $zone['zone']) }} (UTC{{ $zone['offset'] }})</option>
+                        <option value="{{ $zone['zone'] }}">{{ __(':zone (UTC:offset)', ['zone' => str_replace(['/', '_'], [' / ', ' '], $zone['zone']), 'offset' => $zone['offset']]) }}</option>
                     @endforeach
                 </optgroup>
             @endforeach

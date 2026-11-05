@@ -42,7 +42,7 @@ class SaveProgram
                 return $program;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has a programme with that name.');
+            throw new InvalidValueException(__('This school already has a programme with that name.'));
         }
     }
 
@@ -74,7 +74,7 @@ class SaveProgram
                 return $program;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has a programme with that name.');
+            throw new InvalidValueException(__('This school already has a programme with that name.'));
         }
     }
 
@@ -90,7 +90,7 @@ class SaveProgram
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException('This school already has a programme with that name.');
+            throw new InvalidValueException(__('This school already has a programme with that name.'));
         }
     }
 }

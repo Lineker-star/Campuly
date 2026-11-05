@@ -24,7 +24,7 @@ class CsvReader
     public function read(string $path, string $disk = 'local'): array
     {
         if (!Storage::disk($disk)->exists($path)) {
-            throw new InvalidValueException("There is no file at $path.");
+            throw new InvalidValueException(__('There is no file at :path.', ['path' => $path]));
         }
 
         return $this->parse((string) Storage::disk($disk)->get($path));
@@ -61,7 +61,7 @@ class CsvReader
         if ($headingRow === false || $this->isBlank($headingRow)) {
             fclose($stream);
 
-            throw new InvalidValueException('The file has no heading row.');
+            throw new InvalidValueException(__('The file has no heading row.'));
         }
 
         $headings = array_map(fn (?string $heading): string => strtolower(trim((string) $heading)), $headingRow);

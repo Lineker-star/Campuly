@@ -3,8 +3,8 @@
     ['href' => route('gradebooks.index'), 'text' => 'Gradebooks', 'active'],
 ]])
 
-@section('title', 'Gradebooks')
-@section('page_heading', 'Gradebooks')
+@section('title', __('Gradebooks'))
+@section('page_heading', __('Gradebooks'))
 
 @section('content')
     <livewire:gradebook-directory />

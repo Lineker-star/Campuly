@@ -53,13 +53,13 @@ class XlsxFormat implements ExportFormat
         $file = tempnam(sys_get_temp_dir(), 'xlsx');
 
         if ($file === false) {
-            throw new RuntimeException('The spreadsheet could not be started.');
+            throw new RuntimeException(__('The spreadsheet could not be started.'));
         }
 
         $zip = new ZipArchive;
 
         if ($zip->open($file, ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('The spreadsheet could not be written.');
+            throw new RuntimeException(__('The spreadsheet could not be written.'));
         }
 
         $zip->addFromString('[Content_Types].xml', $this->contentTypes());

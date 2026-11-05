@@ -33,11 +33,11 @@
             @livewire('academic-calendar-form', ['academicYear' => $academicYear, 'setupWizard' => true])
         @elseif ($currentStep === \App\Enums\AcademicYearSetupStep::Teaching)
             <april:card>
-                <slot:title>Choose the teaching approach</slot:title>
-                <slot:description>Set the default grouping for subjects.</slot:description>
-                <slot:footer><x-help-tooltip label="Teaching approach help">This sets the default grouping for subjects in {{ $academicYear->name }}. A subject can still use an exception later.</x-help-tooltip></slot:footer>
+                <slot:title>{{ __('Choose the teaching approach') }}</slot:title>
+                <slot:description>{{ __('Set the default grouping for subjects.') }}</slot:description>
+                <slot:footer><x-help-tooltip :label="__('Teaching approach help')">{{ __('This sets the default grouping for subjects in :name. A subject can still use an exception later.', ['name' => $academicYear->name]) }}</x-help-tooltip></slot:footer>
                 <slot:content>
-                    <april:button-link href="{{ route('academic-years.instructional-model.edit', [$academicYear, 'setup' => 1]) }}">Set teaching approach</april:button-link>
+                    <april:button-link href="{{ route('academic-years.instructional-model.edit', [$academicYear, 'setup' => 1]) }}">{{ __('Set teaching approach') }}</april:button-link>
                 </slot:content>
             </april:card>
         @elseif ($currentStep === \App\Enums\AcademicYearSetupStep::Structure)
@@ -50,43 +50,43 @@
             <section class="min-w-0 space-y-4" aria-labelledby="structure-heading">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <div class="min-w-0">
-                        <h2 id="structure-heading" class="text-lg font-semibold">{{ school_terms('class_level', 'Classes') }} and {{ strtolower(school_terms('section', 'sections')) }}</h2>
+                        <h2 id="structure-heading" class="text-lg font-semibold">{{ __(':term and :term2', ['term' => school_terms('class_level', 'Classes'), 'term2' => strtolower(school_terms('section', 'sections'))]) }}</h2>
                         <p class="text-sm text-muted-foreground">
                             {{ $sections->count() }} {{ $sections->count() === 1 ? strtolower(school_term('section', 'section')) : strtolower(school_terms('section', 'sections')) }}
                             @if ($sectionsWithoutTeacher > 0)
-                                · <span class="text-foreground">{{ $sectionsWithoutTeacher }} without a teacher</span>
+                                · <span class="text-foreground">{{ __(':sections_without_teacher without a teacher', ['sections_without_teacher' => $sectionsWithoutTeacher]) }}</span>
                             @endif
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
                         <april:dropdown-menu>
                             <slot:trigger>
-                                <april:button type="button" variant="ghost" size="icon" class="size-10 text-muted-foreground" aria-label="More structure actions">
+                                <april:button type="button" variant="ghost" size="icon" class="size-10 text-muted-foreground" aria-label="{{ __('More structure actions') }}">
                                     <x-lucide-ellipsis class="size-4" />
                                 </april:button>
                             </slot:trigger>
                             <slot:content class="w-56">
                                 <april:dropdown-menu-item x-on:click="window.location.href = '{{ route('academic-levels.index') }}'">
-                                    <x-lucide-list-tree class="mr-2 size-4" />All {{ strtolower(school_terms('class_level', 'classes')) }}
+                                    <x-lucide-list-tree class="mr-2 size-4" />{{ __('All :term', ['term' => strtolower(school_terms('class_level', 'classes'))]) }}
                                 </april:dropdown-menu-item>
                                 <april:dropdown-menu-item x-on:click="window.location.href = '{{ route('academic-cycle-sections.index', ['academic_year_id' => $academicYear->id]) }}'">
-                                    <x-lucide-layers class="mr-2 size-4" />All {{ strtolower(school_terms('section', 'sections')) }} this year
+                                    <x-lucide-layers class="mr-2 size-4" />{{ __('All :term this year', ['term' => strtolower(school_terms('section', 'sections'))]) }}
                                 </april:dropdown-menu-item>
                             </slot:content>
                         </april:dropdown-menu>
                         <april:button-link href="{{ route('academic-levels.create', ['setup' => 1, 'academic_year_id' => $academicYear->id]) }}" variant="{{ $canAddSection ? 'outline' : 'default' }}">
-                            <x-lucide-folder-plus class="mr-1.5 size-4" />Add {{ strtolower(school_term('class_level', 'class')) }}
+                            <x-lucide-folder-plus class="mr-1.5 size-4" />{{ __('Add :term', ['term' => strtolower(school_term('class_level', 'class'))]) }}
                         </april:button-link>
                         @if ($canAddSection)
                             <april:button-link href="{{ route('academic-cycle-sections.create', ['academic_year_id' => $academicYear->id, 'setup' => 1]) }}" variant="{{ $sectionAddVariant }}">
-                                <x-lucide-plus class="mr-1.5 size-4" />Add {{ strtolower(school_term('section', 'section')) }}
+                                <x-lucide-plus class="mr-1.5 size-4" />{{ __('Add :term', ['term' => strtolower(school_term('section', 'section'))]) }}
                             </april:button-link>
                         @endif
                     </div>
                 </div>
 
                 @if ($academicLevels->isEmpty())
-                    <p class="border-y py-6 text-sm text-muted-foreground">No {{ strtolower(school_terms('class_level', 'classes')) }} yet.</p>
+                    <p class="border-y py-6 text-sm text-muted-foreground">{{ __('No :term yet.', ['term' => strtolower(school_terms('class_level', 'classes'))]) }}</p>
                 @else
                     @livewire('academic-year-structure-tree', ['academicYear' => $academicYear])
                 @endif
@@ -95,10 +95,10 @@
             <section class="min-w-0 space-y-6" aria-labelledby="review-heading">
                 <div class="flex flex-wrap items-end justify-between gap-4">
                     <div class="min-w-0">
-                        <h2 id="review-heading" class="text-lg font-semibold">Review {{ $academicYear->name }}</h2>
+                        <h2 id="review-heading" class="text-lg font-semibold">{{ __('Review :name', ['name' => $academicYear->name]) }}</h2>
                         <dl class="mt-2 flex flex-wrap gap-x-8 gap-y-2 text-sm">
-                            <div><dt class="text-muted-foreground">Dates</dt><dd class="font-medium">{{ local_date($academicYear->starts_on, 'medium') }} – {{ local_date($academicYear->ends_on, 'medium') }}</dd></div>
-                            <div><dt class="text-muted-foreground">Reporting periods</dt><dd class="font-medium tabular-nums">{{ $academicYear->topLevelPeriods->count() }}</dd></div>
+                            <div><dt class="text-muted-foreground">{{ __('Dates') }}</dt><dd class="font-medium">{{ local_date($academicYear->starts_on, 'medium') }} – {{ local_date($academicYear->ends_on, 'medium') }}</dd></div>
+                            <div><dt class="text-muted-foreground">{{ __('Reporting periods') }}</dt><dd class="font-medium tabular-nums">{{ $academicYear->topLevelPeriods->count() }}</dd></div>
                         </dl>
                     </div>
                     @livewire('publish-academic-year', ['academicYear' => $academicYear])
@@ -111,16 +111,16 @@
         <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
             @if (($previous = $currentStep->previous()) !== null)
                 <april:button-link href="{{ route('academic-years.setup', [$academicYear, $previous->value]) }}" variant="ghost">
-                    <x-lucide-arrow-left class="mr-1.5 size-4" />Back
+                    <x-lucide-arrow-left class="mr-1.5 size-4" />{{ __('Back') }}
                 </april:button-link>
             @else
                 <span></span>
             @endif
             <div class="flex flex-wrap items-center gap-2">
-                <april:button-link href="{{ route('academic-years.show', $academicYear) }}" variant="ghost">Save and finish later</april:button-link>
+                <april:button-link href="{{ route('academic-years.show', $academicYear) }}" variant="ghost">{{ __('Save and finish later') }}</april:button-link>
                 @if ($currentStepComplete && $nextStep !== null)
                     <april:button-link href="{{ route('academic-years.setup', [$academicYear, $nextStep->value]) }}">
-                        Continue to {{ strtolower($nextStep->label()) }}
+                        {{ __('Continue to :label', ['label' => strtolower($nextStep->label())]) }}
                         <x-lucide-arrow-right class="ml-1.5 size-4" />
                     </april:button-link>
                 @endif

@@ -71,7 +71,7 @@ class CreateCourseOffering
         $this->failIfRecordsDoNotFit($subject, $academicYear, $academicPeriod, $academicLevel, $rosterMode, $cycleSections, $academicCycleSectionIds, $studentRecords, $studentRecordIds);
 
         if ($capacity !== null && $studentRecords->count() > $capacity) {
-            throw new InvalidValueException("This subject has room for {$capacity} learners. Name fewer learners or raise the capacity.");
+            throw new InvalidValueException(__('This subject has room for :capacity learners. Name fewer learners or raise the capacity.', ['capacity' => $capacity]));
         }
 
         return DB::transaction(function () use ($subject, $academicYear, $academicPeriod, $academicLevel, $rosterMode, $cycleSections, $studentRecords, $plannedPeriodsPerWeek, $capacity, $actor, $name): CourseOffering {
@@ -137,7 +137,7 @@ class CreateCourseOffering
             ->values();
 
         if ($periods->isEmpty()) {
-            throw new InvalidValueException('Add at least one term or semester to the academic year before creating this subject.');
+            throw new InvalidValueException(__('Add at least one term or semester to the academic year before creating this subject.'));
         }
 
         return DB::transaction(function () use ($subject, $academicYear, $academicLevel, $periods, $academicCycleSectionIds, $rosterMode, $studentRecordIds, $plannedPeriodsPerWeek, $capacity, $actor, $name): Collection {
@@ -177,37 +177,37 @@ class CreateCourseOffering
         array $studentRecordIds,
     ): void {
         if ($subject->school_id !== $academicYear->school_id || $academicPeriod->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('The subject and academic period must belong to the academic year school.');
+            throw new InvalidValueException(__('The subject and academic period must belong to the academic year school.'));
         }
 
         if ($academicPeriod->academic_year_id !== $academicYear->id) {
-            throw new InvalidValueException('The academic period does not belong to the academic year.');
+            throw new InvalidValueException(__('The academic period does not belong to the academic year.'));
         }
 
         if ($academicLevel->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('That '.strtolower(school_term('class_level', 'class')).' belongs to another school.');
+            throw new InvalidValueException(__('That :term belongs to another school.', ['term' => strtolower(school_term('class_level', 'class'))]));
         }
 
         $sectionLabel = strtolower(school_term('section', 'section'));
         $sectionsLabel = strtolower(school_terms('section', 'sections'));
 
         if (!$academicLevel->allowsRosterMode($rosterMode)) {
-            throw new InvalidValueException("A level group has no {$sectionsLabel} of its own. Choose the whole group or named learners for this subject.");
+            throw new InvalidValueException(__('A level group has no :sections_label of its own. Choose the whole group or named learners for this subject.', ['sections_label' => $sectionsLabel]));
         }
 
         if ($cycleSections->count() !== count($academicCycleSectionIds)) {
-            throw new InvalidValueException("Every selected {$sectionLabel} must belong to this level and academic cycle.");
+            throw new InvalidValueException(__('Every selected :section_label must belong to this level and academic cycle.', ['section_label' => $sectionLabel]));
         }
 
         if ($studentRecords->count() !== count($studentRecordIds)) {
-            throw new InvalidValueException('Every named learner must actively attend this '.strtolower(school_term('class_level', 'class')).' in this school.');
+            throw new InvalidValueException(__('Every named learner must actively attend this :term in this school.', ['term' => strtolower(school_term('class_level', 'class'))]));
         }
 
         if (
             !instructional_model($academicYear)->allowsRosterMode($rosterMode)
             && !$this->exceptions->allows($academicYear, $subject, $academicLevel, $rosterMode)
         ) {
-            throw new InvalidValueException('The teaching setup does not allow this way of choosing learners for the academic cycle. Record an exception for this subject if it is taught differently on purpose.');
+            throw new InvalidValueException(__('The teaching setup does not allow this way of choosing learners for the academic cycle. Record an exception for this subject if it is taught differently on purpose.'));
         }
 
         match ($rosterMode) {
@@ -218,7 +218,7 @@ class CreateCourseOffering
         };
 
         if ($academicYear->isClosed() || $academicPeriod->isClosed()) {
-            throw new InvalidValueException('Reopen the academic cycle before creating a course offering.');
+            throw new InvalidValueException(__('Reopen the academic cycle before creating a course offering.'));
         }
     }
 
@@ -268,7 +268,7 @@ class CreateCourseOffering
     private function requireIndividualRoster(array $sectionIds, array $studentRecordIds, string $sectionsLabel): void
     {
         if ($sectionIds !== []) {
-            throw new InvalidValueException("A named-learner roster does not select {$sectionsLabel}.");
+            throw new InvalidValueException(__('A named-learner roster does not select :sections_label.', ['sections_label' => $sectionsLabel]));
         }
     }
 }

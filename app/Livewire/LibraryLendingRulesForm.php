@@ -84,7 +84,7 @@ class LibraryLendingRulesForm extends Component
             'updated_by' => auth()->id(),
         ]], ['school_id'], ['loan_days', 'renewals_allowed', 'hold_days', 'learner_limit', 'staff_limit', 'fine_per_day', 'fine_cap', 'updated_by']);
 
-        $this->notify('The lending rules were saved.');
+        $this->notify(__('The lending rules were saved.'));
     }
 
     public function render(): View

@@ -26,7 +26,7 @@ class CreateAssessmentTemplateFromGradebook
         $courseOffering->loadMissing(['gradeCategories', 'gradeItems']);
 
         if ($courseOffering->gradeCategories->isEmpty() && $courseOffering->gradeItems->isEmpty()) {
-            throw new InvalidValueException('Add at least one category or assessment before saving this gradebook as a template.');
+            throw new InvalidValueException(__('Add at least one category or assessment before saving this gradebook as a template.'));
         }
 
         return DB::transaction(function () use ($courseOffering, $name, $description, $actor): AssessmentTemplate {

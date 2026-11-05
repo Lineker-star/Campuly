@@ -1,7 +1,7 @@
 <div>
     <april:card>
-        <slot:title>Syllabus coverage</slot:title>
-        <slot:description>Each class against its published plan. A topic planned for a past week counts as behind until it is covered or skipped.</slot:description>
+        <slot:title>{{ __('Syllabus coverage') }}</slot:title>
+        <slot:description>{{ __('Each class against its published plan. A topic planned for a past week counts as behind until it is covered or skipped.') }}</slot:description>
         <slot:content>
             <div class="mb-4 flex flex-wrap items-end gap-4">
                 <div class="flex flex-col gap-2">
@@ -14,23 +14,23 @@
                 </div>
                 <label class="flex h-10 items-center gap-2 text-sm">
                     <input type="checkbox" wire:model.live="onlyBehind" class="rounded border-input">
-                    Only classes behind plan
+                    {{ __('Only classes behind plan') }}
                 </label>
-                <april:button type="button" variant="outline" wire:click="export" class="ml-auto">Download CSV</april:button>
+                <april:button type="button" variant="outline" wire:click="export" class="ml-auto">{{ __('Download CSV') }}</april:button>
             </div>
 
             @if ($rows->isEmpty())
-                <p class="text-sm text-muted-foreground">No published syllabus in this {{ strtolower(school_term('period', 'period')) }}{{ $onlyBehind ? ' is behind plan' : ' yet' }}.</p>
+                <p class="text-sm text-muted-foreground">{{ __('No published syllabus in this :term:yet.', ['term' => strtolower(school_term('period', 'period')), 'yet' => $onlyBehind ? ' is behind plan' : ' yet']) }}</p>
             @else
                 <div class="relative overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="border-b text-muted-foreground">
                             <tr>
-                                <th scope="col" class="px-2 py-2">Subject</th>
-                                <th scope="col" class="px-2 py-2">Class</th>
-                                <th scope="col" class="px-2 py-2">Covered</th>
-                                <th scope="col" class="px-2 py-2">Behind</th>
-                                <th scope="col" class="px-2 py-2"><span class="sr-only">Open</span></th>
+                                <th scope="col" class="px-2 py-2">{{ __('Subject') }}</th>
+                                <th scope="col" class="px-2 py-2">{{ __('Class') }}</th>
+                                <th scope="col" class="px-2 py-2">{{ __('Covered') }}</th>
+                                <th scope="col" class="px-2 py-2">{{ __('Behind') }}</th>
+                                <th scope="col" class="px-2 py-2"><span class="sr-only">{{ __('Open') }}</span></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y">
@@ -43,14 +43,14 @@
                                             <div class="h-2 w-24 overflow-hidden rounded-full bg-muted" aria-hidden="true">
                                                 <div class="h-full bg-primary" style="width: {{ $row['percent'] }}%"></div>
                                             </div>
-                                            <span>{{ $row['covered'] }} of {{ $row['total'] }}</span>
+                                            <span>{{ __(':covered of :total', ['covered' => $row['covered'], 'total' => $row['total']]) }}</span>
                                         </div>
                                     </td>
                                     <td @class(['px-2 py-2', 'font-semibold text-destructive' => $row['behind'] > 0, 'text-muted-foreground' => $row['behind'] === 0])>
                                         {{ $row['behind'] > 0 ? $row['behind'].' '.\Illuminate\Support\Str::plural('topic', $row['behind']) : 'On track' }}
                                     </td>
                                     <td class="px-2 py-2 text-right">
-                                        <a class="font-medium underline" href="{{ route('syllabi.show', $row['id'] === null ? $row['syllabus'] : [$row['syllabus'], 'class' => $row['id']]) }}">Open<span class="sr-only"> {{ $row['syllabus']->courseOffering->subject->name }} for {{ $row['class'] }}</span></a>
+                                        <a class="font-medium underline" href="{{ route('syllabi.show', $row['id'] === null ? $row['syllabus'] : [$row['syllabus'], 'class' => $row['id']]) }}">{{ __('Open') }}<span class="sr-only"> {{ __(':name for :class', ['name' => $row['syllabus']->courseOffering->subject->name, 'class' => $row['class']]) }}</span></a>
                                     </td>
                                 </tr>
                             @endforeach

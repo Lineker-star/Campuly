@@ -71,15 +71,15 @@ class SyllabusCoverageService
         ?User $actor = null,
     ): ?SyllabusTopicCoverage {
         if ($syllabus->fresh()?->status !== SyllabusStatus::Published) {
-            throw new InvalidValueException('Coverage is recorded against the published syllabus only.');
+            throw new InvalidValueException(__('Coverage is recorded against the published syllabus only.'));
         }
 
         if ($topic->syllabus_id !== $syllabus->id) {
-            throw new InvalidValueException('That topic belongs to another syllabus.');
+            throw new InvalidValueException(__('That topic belongs to another syllabus.'));
         }
 
         if (!in_array($academicCycleSectionId, array_column($this->tracks($syllabus), 'id'), true)) {
-            throw new InvalidValueException('That class does not take this course offering.');
+            throw new InvalidValueException(__('That class does not take this course offering.'));
         }
 
         $match = ['syllabus_topic_id' => $topic->id, 'academic_cycle_section_id' => $academicCycleSectionId];

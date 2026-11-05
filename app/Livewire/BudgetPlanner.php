@@ -120,7 +120,7 @@ class BudgetPlanner extends Component
         }
 
         $this->reset('ledgerAccountId', 'amount', 'academicPeriodId', 'programId', 'fund', 'note');
-        $this->notify('The budget was saved.');
+        $this->notify(__('The budget was saved.'));
     }
 
     public function remove(int $budgetId, SetBudget $setBudget): void
@@ -129,7 +129,7 @@ class BudgetPlanner extends Component
         Gate::authorize('delete', $budget);
 
         $setBudget->remove($budget, auth()->user());
-        $this->notify('The budget was removed.');
+        $this->notify(__('The budget was removed.'));
     }
 
     public function render(BudgetVersusActual $comparison, ChartOfAccounts $chart): View

@@ -75,7 +75,7 @@ class AssignStudentsToParent extends Component
         $linked = collect($this->children)->firstWhere('id', $this->studentId);
 
         if ($linked !== null) {
-            $this->notify("{$linked['name']} is already linked to {$this->parent->name}.");
+            $this->notify(__(':name is already linked to :name2.', ['name' => $linked['name'], 'name2' => $this->parent->name]));
 
             return;
         }
@@ -85,7 +85,7 @@ class AssignStudentsToParent extends Component
             : User::query()->find($this->studentId);
 
         if ($learner === null) {
-            $this->addError('studentId', 'Choose a learner from the list.');
+            $this->addError('studentId', __('Choose a learner from the list.'));
 
             return;
         }
@@ -100,7 +100,7 @@ class AssignStudentsToParent extends Component
 
         $this->loadChildren();
         $this->loadStudents();
-        $this->notify("{$learner->name} is now linked to {$this->parent->name}.");
+        $this->notify(__(':name is now linked to :name2.', ['name' => $learner->name, 'name2' => $this->parent->name]));
     }
 
     public function remove(int $studentId, ChangeGuardianLink $changeGuardianLink): void
@@ -120,7 +120,7 @@ class AssignStudentsToParent extends Component
 
         $this->loadChildren();
         $this->loadStudents();
-        $this->notify("{$learner->name} is no longer linked to {$this->parent->name}.");
+        $this->notify(__(':name is no longer linked to :name2.', ['name' => $learner->name, 'name2' => $this->parent->name]));
     }
 
     public function updatedAcademicCycleSectionId(): void

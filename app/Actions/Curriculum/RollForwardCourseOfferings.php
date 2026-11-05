@@ -254,15 +254,15 @@ class RollForwardCourseOfferings
     private function validateYears(AcademicYear $source, AcademicYear $target): void
     {
         if ($source->school_id !== $target->school_id) {
-            throw new InvalidValueException('Academic years from different schools cannot share course offerings.');
+            throw new InvalidValueException(__('Academic years from different schools cannot share course offerings.'));
         }
 
         if ($source->id === $target->id) {
-            throw new InvalidValueException('Choose a different academic year to receive the course offerings.');
+            throw new InvalidValueException(__('Choose a different academic year to receive the course offerings.'));
         }
 
         if ($target->isClosed()) {
-            throw new InvalidValueException('Reopen the target academic year before copying course offerings.');
+            throw new InvalidValueException(__('Reopen the target academic year before copying course offerings.'));
         }
     }
 }

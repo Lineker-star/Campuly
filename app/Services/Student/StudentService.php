@@ -118,7 +118,7 @@ class StudentService
 
         if ($enrolledElsewhere) {
             throw ValidationException::withMessages([
-                'email' => 'This learner is enrolled at another school. Ask that school to move or transfer them.',
+                'email' => __('This learner is enrolled at another school. Ask that school to move or transfer them.'),
             ]);
         }
 
@@ -144,7 +144,7 @@ class StudentService
         $record['admission_number'] ??= $this->generateAdmissionNumber();
 
         if (current_academic_year_id() == null) {
-            throw new EmptyRecordsException('Academic Year not set');
+            throw new EmptyRecordsException(__('Academic Year not set'));
         }
 
         $academicCycleSection = AcademicCycleSection::inSchool()
@@ -261,7 +261,7 @@ class StudentService
             $destination = AcademicCycleSection::inSchool()->findOrFail($records['destination_academic_cycle_section_id']);
 
             if ($source->is($destination)) {
-                throw new InvalidValueException('Choose a destination other than the current section.');
+                throw new InvalidValueException(__('Choose a destination other than the current section.'));
             }
 
             $students = $this->getAllActiveStudents()
@@ -269,7 +269,7 @@ class StudentService
                 ->filter(fn (User $student): bool => $student->studentRecord?->academic_cycle_section_id === $source->id);
 
             if ($students->isEmpty()) {
-                throw new EmptyRecordsException('None of the chosen learners are still in this section. They may have been moved already.', 1);
+                throw new EmptyRecordsException(__('None of the chosen learners are still in this section. They may have been moved already.'), 1);
             }
 
             foreach ($students as $student) {
@@ -365,7 +365,7 @@ class StudentService
                 ->filter(fn (User $student): bool => $student->studentRecord?->academic_cycle_section_id === $section->id);
 
             if ($students->isEmpty()) {
-                throw new InvalidValueException('None of the chosen learners are still active in this section. They may have graduated already.');
+                throw new InvalidValueException(__('None of the chosen learners are still active in this section. They may have graduated already.'));
             }
 
             foreach ($students as $student) {

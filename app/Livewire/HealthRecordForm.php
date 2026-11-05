@@ -82,7 +82,7 @@ class HealthRecordForm extends Component
         );
 
         if ($changed === []) {
-            $this->notify('Nothing changed.');
+            $this->notify(__('Nothing changed.'));
 
             return;
         }
@@ -107,7 +107,7 @@ class HealthRecordForm extends Component
         }
 
         $this->takeIn($record->fresh());
-        $this->notify('The health record was saved.');
+        $this->notify(__('The health record was saved.'));
     }
 
     public function render(): View

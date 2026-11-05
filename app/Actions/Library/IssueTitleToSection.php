@@ -44,7 +44,7 @@ class IssueTitleToSection
                 ->find($title->id);
 
             if ($title === null) {
-                throw new InvalidValueException('This title is not available on the section\'s campus.');
+                throw new InvalidValueException(__('This title is not available on the section\'s campus.'));
             }
 
             $learners = StudentRecord::query()
@@ -57,7 +57,7 @@ class IssueTitleToSection
                 ->get();
 
             if ($learners->isEmpty()) {
-                throw new InvalidValueException('This section has no attending learners.');
+                throw new InvalidValueException(__('This section has no attending learners.'));
             }
 
             $copies = LibraryCopy::query()
@@ -85,12 +85,12 @@ class IssueTitleToSection
             $learners = $learners->reject(fn (StudentRecord $learner): bool => in_array($learner->user_id, $alreadyHolding, true))->values();
 
             if ($learners->isEmpty()) {
-                throw new InvalidValueException('Every attending learner in this section already has a copy of this title.');
+                throw new InvalidValueException(__('Every attending learner in this section already has a copy of this title.'));
             }
 
             if ($copies->count() < $learners->count()) {
                 throw new InvalidValueException(
-                    "There are only {$copies->count()} available copies for {$learners->count()} learners."
+                    __('There are only :count available copies for :count2 learners.', ['count' => $copies->count(), 'count2' => $learners->count()])
                 );
             }
 
@@ -100,7 +100,7 @@ class IssueTitleToSection
                 $borrower = $learner->user;
 
                 if ($borrower === null) {
-                    throw new InvalidValueException('Every attending learner must have an account before lending.');
+                    throw new InvalidValueException(__('Every attending learner must have an account before lending.'));
                 }
 
                 $loans->push($this->issue->issue($copies[$index], $borrower, $actor));

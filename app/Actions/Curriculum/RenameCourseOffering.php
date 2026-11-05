@@ -26,14 +26,14 @@ class RenameCourseOffering
         $name = $name === '' ? null : $name;
 
         if ($name !== null && mb_strlen($name) > 100) {
-            throw new InvalidValueException('Use a name of 100 characters or fewer.');
+            throw new InvalidValueException(__('Use a name of 100 characters or fewer.'));
         }
 
         return DB::transaction(function () use ($courseOffering, $name, $actor): CourseOffering {
             $courseOffering = CourseOffering::query()->lockForUpdate()->findOrFail($courseOffering->id);
 
             if ($courseOffering->status === CourseOfferingStatus::Archived) {
-                throw new InvalidValueException('An archived course offering cannot be changed.');
+                throw new InvalidValueException(__('An archived course offering cannot be changed.'));
             }
 
             if ($courseOffering->name === $name) {

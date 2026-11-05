@@ -93,7 +93,7 @@ class ResultRanking
     public function rank(array $enrollmentIds, ?int $academicYearId = null, ?int $academicPeriodId = null, ?CourseOffering $courseOffering = null, ?int $subjectId = null, ?array $courseOfferingIds = null): Collection
     {
         if (!feature_enabled(Feature::Ranking)) {
-            throw new InvalidValueException('This school does not rank students.');
+            throw new InvalidValueException(__('This school does not rank students.'));
         }
 
         if ($enrollmentIds === []) {

@@ -4,8 +4,8 @@
     ['text' => 'Notification settings', 'active'],
 ]])
 
-@section('title', 'Notification settings')
-@section('page_heading', 'Notification settings')
+@section('title', __('Notification settings'))
+@section('page_heading', __('Notification settings'))
 
 @section('content')
     <div class="mx-auto flex w-full max-w-2xl flex-col gap-6">

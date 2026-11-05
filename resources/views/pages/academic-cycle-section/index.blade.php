@@ -7,7 +7,7 @@
 @section('page_heading', school_terms('section', 'Section'))
 
 @section('page_actions')
-    <x-resource-create-action :href="route('academic-cycle-sections.create')" ability="create" :arguments="[\App\Models\AcademicCycleSection::class]">Add {{ school_term('section', 'section') }}</x-resource-create-action>
+    <x-resource-create-action :href="route('academic-cycle-sections.create')" ability="create" :arguments="[\App\Models\AcademicCycleSection::class]">{{ __('Add :term', ['term' => school_term('section', 'section')]) }}</x-resource-create-action>
 @endsection
 
 @section('content')

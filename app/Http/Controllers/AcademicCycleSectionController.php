@@ -62,7 +62,7 @@ class AcademicCycleSectionController extends Controller
         if (!$academicCycleSection->isEditable()) {
             return redirect()
                 ->route('academic-cycle-sections.show', $academicCycleSection)
-                ->with('danger', 'This '.strtolower(school_term('section', 'section')).' is archived or its '.strtolower(school_term('academic_year', 'school year')).' is closed, so its setup cannot change.');
+                ->with('danger', __('This :term is archived or its :term2 is closed, so its setup cannot change.', ['term' => strtolower(school_term('section', 'section')), 'term2' => strtolower(school_term('academic_year', 'school year'))]));
         }
 
         return view('pages.academic-cycle-section.edit', compact('academicCycleSection'));

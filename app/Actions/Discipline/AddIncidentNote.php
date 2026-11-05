@@ -28,7 +28,7 @@ class AddIncidentNote
         ?User $actor = null,
     ): IncidentNote {
         if (!$incident->status->isOpen()) {
-            throw new InvalidValueException('This case is finished. Reopen it before you write a note.');
+            throw new InvalidValueException(__('This case is finished. Reopen it before you write a note.'));
         }
 
         $note = IncidentNote::create([

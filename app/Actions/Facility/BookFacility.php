@@ -39,15 +39,15 @@ class BookFacility
         ?User $actor = null,
     ): FacilityBooking {
         if ($to->lessThanOrEqualTo($from)) {
-            throw new InvalidValueException('A booking has to end after it starts.');
+            throw new InvalidValueException(__('A booking has to end after it starts.'));
         }
 
         if (trim($purpose) === '') {
-            throw new InvalidValueException('Say what the booking is for.');
+            throw new InvalidValueException(__('Say what the booking is for.'));
         }
 
         if ($to->lessThanOrEqualTo(now())) {
-            throw new InvalidValueException('That time has passed. Choose a time still ahead.');
+            throw new InvalidValueException(__('That time has passed. Choose a time still ahead.'));
         }
 
         return DB::transaction(function () use ($facility, $from, $to, $purpose, $actor): FacilityBooking {
@@ -56,7 +56,7 @@ class BookFacility
             // Read under the lock, so a booking cannot slip in while the
             // thing is being taken out of use.
             if (!$facility->is_active) {
-                throw new InvalidValueException("$facility->name is out of use.");
+                throw new InvalidValueException(__(':name is out of use.', ['name' => $facility->name]));
             }
 
             $clashes = $this->availability->clashesFor($facility, $from, $to);
@@ -102,11 +102,11 @@ class BookFacility
             $booking = FacilityBooking::query()->lockForUpdate()->findOrFail($booking->getKey());
 
             if (!$booking->isRunning()) {
-                throw new InvalidValueException('This booking was already given up.');
+                throw new InvalidValueException(__('This booking was already given up.'));
             }
 
             if ($booking->ends_at->lessThanOrEqualTo(now())) {
-                throw new InvalidValueException('This booking is over, so it stays in the record.');
+                throw new InvalidValueException(__('This booking is over, so it stays in the record.'));
             }
 
             $booking->cancelled_at = now();

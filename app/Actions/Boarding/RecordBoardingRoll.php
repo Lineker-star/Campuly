@@ -33,7 +33,7 @@ class RecordBoardingRoll
             $roll = BoardingRoll::query()->lockForUpdate()->findOrFail($roll->id);
 
             if ($roll->isComplete()) {
-                throw new InvalidValueException('A completed roll cannot be changed.');
+                throw new InvalidValueException(__('A completed roll cannot be changed.'));
             }
 
             foreach ($entries as $entry) {
@@ -57,7 +57,7 @@ class RecordBoardingRoll
                     ->exists();
 
                 if ($hasMissing) {
-                    throw new InvalidValueException('Record every boarder before completing the roll.');
+                    throw new InvalidValueException(__('Record every boarder before completing the roll.'));
                 }
 
                 $roll->update([

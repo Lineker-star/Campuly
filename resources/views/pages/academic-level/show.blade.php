@@ -19,12 +19,12 @@
     <div class="flex items-center gap-2">
         @if ($canAddSection)
             <april:button-link href="{{ route('academic-cycle-sections.create', ['academic_level_id' => $academicLevel->id]) }}" class="h-11 select-none">
-                <x-lucide-plus class="mr-2 size-4" />Add {{ $sectionTerm }}
+                <x-lucide-plus class="mr-2 size-4" />{{ __('Add :section_term', ['section_term' => $sectionTerm]) }}
             </april:button-link>
         @endif
         @can('update', $academicLevel)
             @if ($academicLevel->isEditable())
-                <april:button-link href="{{ route('academic-levels.edit', $academicLevel) }}" variant="outline" class="h-11 select-none">Edit</april:button-link>
+                <april:button-link href="{{ route('academic-levels.edit', $academicLevel) }}" variant="outline" class="h-11 select-none">{{ __('Edit') }}</april:button-link>
             @endif
         @endcan
     </div>
@@ -36,18 +36,18 @@
 
         <dl class="grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4">
             <div>
-                <dt class="text-sm text-muted-foreground">Code</dt>
+                <dt class="text-sm text-muted-foreground">{{ __('Code') }}</dt>
                 <dd class="font-medium">{{ $academicLevel->code ?? '—' }}</dd>
             </div>
             <div>
-                <dt class="text-sm text-muted-foreground">Order</dt>
+                <dt class="text-sm text-muted-foreground">{{ __('Order') }}</dt>
                 <dd class="font-medium tabular-nums">{{ $academicLevel->position }}</dd>
             </div>
             <div>
                 <dt class="text-sm text-muted-foreground">{{ $academicLevel->is_group ? 'Kind' : 'Group' }}</dt>
                 <dd class="font-medium">
                     @if ($academicLevel->is_group)
-                        Group
+                        {{ __('Group') }}
                     @elseif ($academicLevel->parent)
                         <a href="{{ route('academic-levels.show', $academicLevel->parent) }}" class="underline-offset-4 hover:underline">{{ $academicLevel->parent->name }}</a>
                     @else
@@ -61,7 +61,7 @@
             </div>
             @if ($academicLevel->children->isNotEmpty())
                 <div class="col-span-2 sm:col-span-4">
-                    <dt class="text-sm text-muted-foreground">{{ school_terms('class_level', 'Classes') }} in this group</dt>
+                    <dt class="text-sm text-muted-foreground">{{ __(':term in this group', ['term' => school_terms('class_level', 'Classes')]) }}</dt>
                     <dd class="flex flex-wrap gap-x-3 font-medium">
                         @foreach ($academicLevel->children as $child)
                             <a href="{{ route('academic-levels.show', $child) }}" class="underline-offset-4 hover:underline">{{ $child->name }}</a>
@@ -74,7 +74,7 @@
         <section aria-labelledby="sections-heading" class="flex flex-col gap-6">
             <h2 id="sections-heading" class="text-base font-semibold">{{ school_terms('section', 'Sections') }}</h2>
             @if ($cycleSections->isEmpty())
-                <p class="text-sm text-muted-foreground">No {{ strtolower(school_terms('section', 'sections')) }}</p>
+                <p class="text-sm text-muted-foreground">{{ __('No :term', ['term' => strtolower(school_terms('section', 'sections'))]) }}</p>
             @else
                 @foreach ($sectionsByCycle as $cycleName => $sections)
                     <div class="flex flex-col gap-2">

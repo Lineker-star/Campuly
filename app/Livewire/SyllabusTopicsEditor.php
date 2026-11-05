@@ -105,7 +105,7 @@ class SyllabusTopicsEditor extends Component
             $this->resetForm();
         }
 
-        $this->notify("Removed {$topic->title}.");
+        $this->notify(__('Removed :title.', ['title' => $topic->title]));
     }
 
     public function render(): View

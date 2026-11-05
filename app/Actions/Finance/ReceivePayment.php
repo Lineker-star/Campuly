@@ -60,7 +60,7 @@ class ReceivePayment
         ?int $schoolId = null,
     ): StudentPayment {
         if ($amount <= 0) {
-            throw new InvalidValueException('A payment must be more than nothing.');
+            throw new InvalidValueException(__('A payment must be more than nothing.'));
         }
 
         $channel = $this->channels->get($method);
@@ -187,7 +187,7 @@ class ReceivePayment
             ->first();
 
         if ($recorded !== null) {
-            throw new InvalidValueException("A payment with reference {$recorded->reference} was already recorded on {$recorded->received_on->format('j M Y')}. Reverse that one first if it was wrong.");
+            throw new InvalidValueException(__('A payment with reference :reference was already recorded on :date. Reverse that one first if it was wrong.', ['reference' => $recorded->reference, 'date' => $recorded->received_on->format('j M Y')]));
         }
     }
 }

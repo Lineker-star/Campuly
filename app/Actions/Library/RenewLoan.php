@@ -34,21 +34,21 @@ class RenewLoan
             $loan = LibraryLoan::query()->lockForUpdate()->findOrFail($loan->id);
 
             if (!$loan->isOpen()) {
-                throw new InvalidValueException('This copy is already back.');
+                throw new InvalidValueException(__('This copy is already back.'));
             }
 
             $policy = LibraryLendingRules::forSchool($loan->school_id);
 
             if ($policy->renewals_allowed === 0) {
-                throw new InvalidValueException('This library does not renew loans.');
+                throw new InvalidValueException(__('This library does not renew loans.'));
             }
 
             if ($loan->renewals >= $policy->renewals_allowed) {
-                throw new InvalidValueException('This loan has been renewed as often as the library allows.');
+                throw new InvalidValueException(__('This loan has been renewed as often as the library allows.'));
             }
 
             if ($loan->daysLate() > 0) {
-                throw new InvalidValueException('This copy is late. Bring it back before it goes out again.');
+                throw new InvalidValueException(__('This copy is late. Bring it back before it goes out again.'));
             }
 
             $this->refuseABorrowerWhoLeft($loan);
@@ -83,7 +83,7 @@ class RenewLoan
         if ($borrower === null
             || !$borrower->belongsToSchool($loan->school_id)
             || $borrower->isLearnerWhoNoLongerAttends($loan->school_id)) {
-            throw new InvalidValueException('The borrower has left this campus. The copy must come back.');
+            throw new InvalidValueException(__('The borrower has left this campus. The copy must come back.'));
         }
     }
 
@@ -102,7 +102,7 @@ class RenewLoan
             ->exists();
 
         if ($somebodyIsWaiting) {
-            throw new InvalidValueException('Somebody is waiting for this title. Bring the copy back so it can go to them.');
+            throw new InvalidValueException(__('Somebody is waiting for this title. Bring the copy back so it can go to them.'));
         }
     }
 }

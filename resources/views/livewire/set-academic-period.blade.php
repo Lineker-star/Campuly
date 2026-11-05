@@ -24,9 +24,9 @@
                 $yearOptions = $academicYears->contains('id', $academicYear->id) ? $academicYears : $academicYears->prepend($academicYear);
             @endphp
             <div class="flex flex-wrap items-center gap-2">
-                <span class="text-muted-foreground">Working</span>
+                <span class="text-muted-foreground">{{ __('Working') }}</span>
                 @if ($compact && $this->canChangeYear() && $yearOptions->count() > 1)
-                    <label for="working-year" class="sr-only">Working {{ strtolower(school_term('academic_year', 'school year')) }}</label>
+                    <label for="working-year" class="sr-only">{{ __('Working :term', ['term' => strtolower(school_term('academic_year', 'school year'))]) }}</label>
                     <select id="working-year" wire:model.live="workingYearId" wire:loading.attr="disabled" @class($selectClasses) {{ field_error_bindings('workingYearId') }}>
                         @foreach ($yearOptions as $yearOption)
                             <option value="{{ $yearOption->id }}">{{ $yearOption->name }}</option>
@@ -36,7 +36,7 @@
                     <span class="font-medium">{{ $academicYear->name }}</span>
                 @endif
                 @if ($canPick)
-                    <label for="working-period-{{ $compact ? 'bar' : 'page' }}" class="sr-only">Working {{ $periodLabel }}</label>
+                    <label for="working-period-{{ $compact ? 'bar' : 'page' }}" class="sr-only">{{ __('Working :period_label', ['period_label' => $periodLabel]) }}</label>
                     <select id="working-period-{{ $compact ? 'bar' : 'page' }}" wire:model.live="workingPeriodId" wire:loading.attr="disabled" @class($selectClasses) {{ field_error_bindings('workingPeriodId') }}>
                         @foreach ($academicPeriods as $academicPeriod)
                             <option value="{{ $academicPeriod->id }}">{{ $academicPeriod->displayName }}</option>
@@ -55,10 +55,10 @@
             @elseif ($workingPeriodDiffers)
                 <span class="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-300">
                     <span class="size-1.5 rounded-full bg-current"></span>
-                    Today is {{ $currentPeriod->displayName }}
+                    {{ __('Today is :display_name', ['display_name' => $currentPeriod->displayName]) }}
                 </span>
             @elseif ($currentPeriod === null)
-                <span class="text-muted-foreground">No {{ $periodLabel }} today</span>
+                <span class="text-muted-foreground">{{ __('No :period_label today', ['period_label' => $periodLabel]) }}</span>
             @endif
 
             <x-field-error name="workingYearId" />

@@ -45,11 +45,11 @@ class ManageStaffLeave
         $end = Carbon::parse($endsOn)->startOfDay();
 
         if ($end->lt($start)) {
-            throw new InvalidValueException('Leave cannot end before it starts.');
+            throw new InvalidValueException(__('Leave cannot end before it starts.'));
         }
 
         if ($profile->status === StaffStatus::Left) {
-            throw new InvalidValueException('This person no longer works here.');
+            throw new InvalidValueException(__('This person no longer works here.'));
         }
 
         return DB::transaction(function () use ($profile, $start, $end, $type, $reason, $actor): StaffLeaveRequest {
@@ -101,11 +101,11 @@ class ManageStaffLeave
             }
 
             if ($current !== $seen) {
-                throw new InvalidValueException("Somebody else already made this leave {$current->label()}.");
+                throw new InvalidValueException(__('Somebody else already made this leave :label.', ['label' => $current->label()]));
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException('Leave cannot move from '.$current->label().' to '.$status->label().'.');
+                throw new InvalidValueException(__('Leave cannot move from :label to :label2.', ['label' => $current->label(), 'label2' => $status->label()]));
             }
 
             if ($current === LeaveStatus::Declined && $status === LeaveStatus::Requested) {
@@ -194,7 +194,7 @@ class ManageStaffLeave
             ->count();
 
         if ($lessons > 0) {
-            throw new InvalidValueException("{$teacher->name} still covers {$lessons} ".Str::plural('lesson', $lessons).' in these days. Withdraw that cover first.');
+            throw new InvalidValueException(__(':name still covers :lessons :lessons2 in these days. Withdraw that cover first.', ['name' => $teacher->name, 'lessons' => $lessons, 'lessons2' => Str::plural('lesson', $lessons)]));
         }
     }
 
@@ -208,7 +208,7 @@ class ManageStaffLeave
             ->exists();
 
         if ($clash) {
-            throw new InvalidValueException('These days are already asked for.');
+            throw new InvalidValueException(__('These days are already asked for.'));
         }
     }
 }

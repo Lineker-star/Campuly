@@ -23,10 +23,10 @@ class CourseOfferingRoster
         }
 
         if ($enrollment->school_id !== null && $enrollment->school_id !== $courseOffering->school_id) {
-            throw new InvalidValueException('This student is enrolled in another school.');
+            throw new InvalidValueException(__('This student is enrolled in another school.'));
         }
 
-        throw new InvalidValueException('This student is not enrolled in the course offering.');
+        throw new InvalidValueException(__('This student is not enrolled in the course offering.'));
     }
 
     /**

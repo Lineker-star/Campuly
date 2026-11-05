@@ -45,7 +45,7 @@ class RequestReport
         $actor ??= auth()->user();
 
         if ($actor instanceof User && !$actor->can($report->permission())) {
-            throw new InvalidValueException("You cannot read {$report->title()}, so you cannot ask for it.");
+            throw new InvalidValueException(__('You cannot read :title, so you cannot ask for it.', ['title' => $report->title()]));
         }
         $period = isset($parameters['financial_period_id'])
             ? FinancialPeriod::query()->inSchool()->find($parameters['financial_period_id'])

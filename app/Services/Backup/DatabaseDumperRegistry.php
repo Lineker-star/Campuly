@@ -36,7 +36,7 @@ class DatabaseDumperRegistry
         $dumper = $this->forDriver($driver);
 
         if (!$dumper->isAvailable()) {
-            throw new InvalidValueException("The $driver tools are not installed on this machine, so no backup can be taken.");
+            throw new InvalidValueException(__('The :driver tools are not installed on this machine, so no backup can be taken.', ['driver' => $driver]));
         }
 
         return $dumper;
@@ -58,6 +58,6 @@ class DatabaseDumperRegistry
             }
         }
 
-        throw new InvalidValueException("This application cannot back up a $driver database yet.");
+        throw new InvalidValueException(__('This application cannot back up a :driver database yet.', ['driver' => $driver]));
     }
 }

@@ -43,7 +43,7 @@ class SubjectService
         ]);
 
         if (!$subject->wasRecentlyCreated) {
-            throw new ResourceNotEmptyException('Subject already exists or something went wrong');
+            throw new ResourceNotEmptyException(__('Subject already exists or something went wrong'));
         }
     }
 
@@ -73,7 +73,7 @@ class SubjectService
     public function deleteSubject(Subject $subject)
     {
         if ($subject->courseOfferings()->exists()) {
-            throw new ResourceNotEmptyException('This subject is taught, so it cannot be deleted. Close its course offerings first.');
+            throw new ResourceNotEmptyException(__('This subject is taught, so it cannot be deleted. Close its course offerings first.'));
         }
 
         $isOnAFixedTimetable = $subject->timetableRecord()
@@ -81,7 +81,7 @@ class SubjectService
             ->exists();
 
         if ($isOnAFixedTimetable) {
-            throw new ResourceNotEmptyException('This subject is on a published timetable, so it cannot be deleted. Take it off the timetable in a new revision first.');
+            throw new ResourceNotEmptyException(__('This subject is on a published timetable, so it cannot be deleted. Take it off the timetable in a new revision first.'));
         }
 
         $subject->timetableRecord()->delete();

@@ -23,6 +23,6 @@ class EnsurePasswordChange
 
         return redirect()
             ->to(route('profile.show').'#update-password')
-            ->with('danger', 'Your administrator requires you to choose a new password before continuing.');
+            ->with('danger', __('Your administrator requires you to choose a new password before continuing.'));
     }
 }

@@ -49,7 +49,7 @@ class CreateTimetableSubstitution
                     ->where('weekday_id', $weekdayId)
                     ->whereDate('substituted_on', $date)
                     ->exists()) {
-                    throw new InvalidValueException('That timetable entry already has a substitution for this date.');
+                    throw new InvalidValueException(__('That timetable entry already has a substitution for this date.'));
                 }
 
                 $this->failIfTheTeacherIsAway($replacementTeacher, $date);
@@ -64,7 +64,7 @@ class CreateTimetableSubstitution
                 return $substitution;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('That timetable entry already has a substitution for this date.');
+            throw new InvalidValueException(__('That timetable entry already has a substitution for this date.'));
         }
     }
 
@@ -76,7 +76,7 @@ class CreateTimetableSubstitution
     public function withdraw(TimetableSubstitution $substitution, User $actor): void
     {
         if ($substitution->substituted_on->lt(school_today())) {
-            throw new InvalidValueException('That lesson has already happened, so its cover stays on the record.');
+            throw new InvalidValueException(__('That lesson has already happened, so its cover stays on the record.'));
         }
 
         $substitution->loadMissing('timetable.academicCycleSection');
@@ -118,7 +118,7 @@ class CreateTimetableSubstitution
                 ->exists();
 
             if (!$coveredBySomeoneElse) {
-                throw new InvalidValueException("$replacementTeacher->name teaches {$lesson['timetable']->name} at that time on that day.");
+                throw new InvalidValueException(__(':name teaches :name2 at that time on that day.', ['name' => $replacementTeacher->name, 'name2' => $lesson['timetable']->name]));
             }
         }
     }
@@ -134,7 +134,7 @@ class CreateTimetableSubstitution
             ->contains(fn (StaffProfile $profile): bool => $this->availability->isAway($profile, $date));
 
         if ($isAway) {
-            throw new InvalidValueException("$replacementTeacher->name is on leave that day.");
+            throw new InvalidValueException(__(':name is on leave that day.', ['name' => $replacementTeacher->name]));
         }
     }
 
@@ -154,7 +154,7 @@ class CreateTimetableSubstitution
             ->value('left_on');
 
         if ($lastDay !== null) {
-            throw new InvalidValueException("$replacementTeacher->name leaves this school on ".Carbon::parse($lastDay)->format('j M Y').', before that day.');
+            throw new InvalidValueException(__(':name leaves this school on :date, before that day.', ['name' => $replacementTeacher->name, 'date' => Carbon::parse($lastDay)->format('j M Y')]));
         }
     }
 
@@ -172,7 +172,7 @@ class CreateTimetableSubstitution
             ->exists();
 
         if ($isBusy) {
-            throw new InvalidValueException("$replacementTeacher->name already covers another lesson at that time on that day.");
+            throw new InvalidValueException(__(':name already covers another lesson at that time on that day.', ['name' => $replacementTeacher->name]));
         }
     }
 
@@ -184,38 +184,38 @@ class CreateTimetableSubstitution
         $schoolId = $timetable->academicCycleSection->school_id;
 
         if (!$timetable->isPublished() || !$timetable->academicPeriod->acceptsNewWork() || !$timetable->academicPeriod->academicYear->acceptsNewWork()) {
-            throw new InvalidValueException('A substitution can only be recorded while its published timetable and academic cycle accept new work.');
+            throw new InvalidValueException(__('A substitution can only be recorded while its published timetable and academic cycle accept new work.'));
         }
 
         if ($slot->timetable_id !== $timetable->id || $weekday === null || !TimetableRecord::query()
             ->where('timetable_time_slot_id', $slot->id)
             ->where('weekday_id', $weekday->id)
             ->exists()) {
-            throw new InvalidValueException('Choose a scheduled entry from this timetable.');
+            throw new InvalidValueException(__('Choose a scheduled entry from this timetable.'));
         }
 
         $period = $timetable->academicPeriod;
 
         if (($period->starts_on !== null && $date->lt($period->starts_on)) || ($period->ends_on !== null && $date->gt($period->ends_on))) {
-            throw new InvalidValueException('The selected date is outside the term this timetable belongs to.');
+            throw new InvalidValueException(__('The selected date is outside the term this timetable belongs to.'));
         }
 
         if (($timetable->effective_from !== null && $date->lt($timetable->effective_from)) || ($timetable->effective_to !== null && $date->gt($timetable->effective_to))) {
-            throw new InvalidValueException('The selected date is outside the dates this timetable is in use.');
+            throw new InvalidValueException(__('The selected date is outside the dates this timetable is in use.'));
         }
 
         if (strcasecmp($weekday->name, $date->format('l')) !== 0) {
-            throw new InvalidValueException('The selected date does not fall on the scheduled weekday.');
+            throw new InvalidValueException(__('The selected date does not fall on the scheduled weekday.'));
         }
 
         $closure = $this->calendar->closureOn($schoolId, $timetable->academic_cycle_section_id, $date);
 
         if ($closure !== null) {
-            throw new InvalidValueException("The school is shut on {$date->format('j M Y')} for {$closure->title}, so the lesson needs no cover.");
+            throw new InvalidValueException(__('The school is shut on :date for :title, so the lesson needs no cover.', ['date' => $date->format('j M Y'), 'title' => $closure->title]));
         }
 
         if (!$replacementTeacher->belongsToSchool($schoolId) || !$replacementTeacher->hasRole(Role::Teacher->value)) {
-            throw new InvalidValueException('The replacement must be an active teacher at this school.');
+            throw new InvalidValueException(__('The replacement must be an active teacher at this school.'));
         }
     }
 }

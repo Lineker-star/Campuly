@@ -22,24 +22,24 @@ class PublishReportCard
     public function publish(StudentRecord $studentRecord, AcademicPeriod $academicPeriod, User $actor, ?string $reason = null): ReportCardSnapshot
     {
         if ($academicPeriod->academic_year_id === null) {
-            throw new InvalidValueException('Choose a student and academic period from the same school.');
+            throw new InvalidValueException(__('Choose a student and academic period from the same school.'));
         }
 
         // A learner who moved campus is still reported by the campus that
         // taught the period. Their results there prove they studied it.
         if ($studentRecord->school_id !== $academicPeriod->school_id && $this->latestResults($studentRecord, $academicPeriod)->isEmpty()) {
-            throw new InvalidValueException('Choose a student and academic period from the same school.');
+            throw new InvalidValueException(__('Choose a student and academic period from the same school.'));
         }
 
         if (!in_array($academicPeriod->status, [AcademicPeriodStatus::Closing, AcademicPeriodStatus::Closed, AcademicPeriodStatus::Archived], true)) {
-            throw new InvalidValueException('Report cards can be published only while an academic period is closing or finished.');
+            throw new InvalidValueException(__('Report cards can be published only while an academic period is closing or finished.'));
         }
 
         return DB::transaction(function () use ($studentRecord, $academicPeriod, $actor, $reason): ReportCardSnapshot {
             $results = $this->latestResults($studentRecord, $academicPeriod);
 
             if ($results->isEmpty()) {
-                throw new InvalidValueException('Publish at least one subject result before publishing this report card.');
+                throw new InvalidValueException(__('Publish at least one subject result before publishing this report card.'));
             }
 
             $previous = ReportCardSnapshot::query()

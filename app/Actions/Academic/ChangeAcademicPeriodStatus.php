@@ -92,12 +92,12 @@ class ChangeAcademicPeriodStatus
     ): void {
         if (!$current->canMoveTo($status)) {
             throw new InvalidValueException(
-                "An academic period cannot move from {$current->value} to {$status->value}."
+                __('An academic period cannot move from :current to :status.', ['current' => $current->value, 'status' => $status->value])
             );
         }
 
         if ($current->requiresReasonToReach($status) && trim((string) $reason) === '') {
-            throw new InvalidValueException('Say why this period is being reopened.');
+            throw new InvalidValueException(__('Say why this period is being reopened.'));
         }
 
         if (!$period instanceof AcademicPeriod || $status->isFrozen()) {
@@ -105,11 +105,11 @@ class ChangeAcademicPeriodStatus
         }
 
         if ($period->academicYear?->isClosed()) {
-            throw new InvalidValueException('Reopen the academic year before you reopen this period.');
+            throw new InvalidValueException(__('Reopen the academic year before you reopen this period.'));
         }
 
         if ($period->parent?->isClosed()) {
-            throw new InvalidValueException("Reopen {$period->parent->displayName} before you reopen this period.");
+            throw new InvalidValueException(__('Reopen :name before you reopen this period.', ['name' => $period->parent->displayName]));
         }
     }
 
@@ -174,7 +174,7 @@ class ChangeAcademicPeriodStatus
         if ($blocking !== [] && !$force) {
             $summaries = implode(' ', array_column($blocking, 'summary'));
 
-            throw new InvalidValueException("This period is not ready to close. {$summaries}");
+            throw new InvalidValueException(__('This period is not ready to close. :summaries', ['summaries' => $summaries]));
         }
 
         return $this->change($period, AcademicPeriodStatus::Closed, $actor, $reason, $checklist);

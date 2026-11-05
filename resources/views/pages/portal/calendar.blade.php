@@ -4,8 +4,8 @@
     ['text' => 'School calendar', 'active'],
 ]])
 
-@section('title', 'School calendar')
-@section('page_heading', 'School calendar')
+@section('title', __('School calendar'))
+@section('page_heading', __('School calendar'))
 
 @php
     $eventsOn = fn ($day) => $events->filter(fn ($event) => $event->starts_at->lte($day->copy()->endOfDay())
@@ -19,10 +19,9 @@
             <slot:title>{{ local_date($month, 'month') }}</slot:title>
             <slot:description>
                 @if ($closures->isEmpty())
-                    The school is open every day this month.
+                    {{ __('The school is open every day this month.') }}
                 @else
-                    The school is shut on
-                    {{ $closures->map(fn ($closure) => local_date($closure->starts_at, 'day'))->join(', ', ' and ') }}.
+                    {{ __('The school is shut on :and.', ['and' => $closures->map(fn ($closure) => local_date($closure->starts_at, 'day'))->join(', ', ' and ')]) }}
                 @endif
             </slot:description>
             <slot:content>
@@ -33,7 +32,7 @@
                                 <x-lucide-chevron-left class="mr-1 size-4" />
                                 {{ local_date($month->copy()->subMonth(), 'month_short') }}
                             </april:button-link>
-                            <april:button-link href="{{ $linkFor(school_today($studentRecord->school_id)->format('Y-m')) }}" variant="outline" size="sm">Today</april:button-link>
+                            <april:button-link href="{{ $linkFor(school_today($studentRecord->school_id)->format('Y-m')) }}" variant="outline" size="sm">{{ __('Today') }}</april:button-link>
                             <april:button-link href="{{ $linkFor($month->copy()->addMonth()->format('Y-m')) }}" variant="outline" size="sm">
                                 {{ local_date($month->copy()->addMonth(), 'month_short') }}
                                 <x-lucide-chevron-right class="ml-1 size-4" />
@@ -74,12 +73,12 @@
         </april:card>
 
         <april:card>
-            <slot:title>What is on this month</slot:title>
-            <slot:description>These are the days the school put in front of your family.</slot:description>
+            <slot:title>{{ __('What is on this month') }}</slot:title>
+            <slot:description>{{ __('These are the days the school put in front of your family.') }}</slot:description>
             <slot:content>
                 @if ($events->isEmpty())
-                    <x-empty-state icon="lucide-calendar-days" title="Nothing is on this month"
-                        description="Step to another month, or check back once the school publishes its calendar." />
+                    <x-empty-state icon="lucide-calendar-days" title="{{ __('Nothing is on this month') }}"
+                        :description="__('Step to another month, or check back once the school publishes its calendar.')" />
                 @else
                     <ul class="divide-y rounded-md border">
                         @foreach ($events as $event)
@@ -89,7 +88,7 @@
                                     <p class="text-sm text-muted-foreground">
                                         {{ local_date($event->starts_at, 'day') }}
                                         @if ($event->ends_at->toDateString() !== $event->starts_at->toDateString())
-                                            to {{ local_date($event->ends_at, 'day') }}
+                                            {{ __('to :date', ['date' => local_date($event->ends_at, 'day')]) }}
                                         @endif
                                         ·
                                         {{ $event->is_all_day ? 'All day' : local_date($event->starts_at, 'time').' to '.local_date($event->ends_at, 'time') }}
@@ -106,10 +105,10 @@
                                         {{ $event->type->label() }}
                                     </span>
                                     @if ($event->type === \App\Enums\CalendarEventType::Appointment)
-                                        <april:button-link href="{{ route('portal.requests.index', [$studentRecord, 'type' => 'appointment', 'subject' => 'Appointment: '.$event->title, 'message' => 'I would like to request the published time on '.local_date($event->starts_at, 'datetime').' at '.($event->location ?: 'the school').'.']) }}" variant="outline" size="sm" class="mt-2">Request this time</april:button-link>
+                                        <april:button-link href="{{ route('portal.requests.index', [$studentRecord, 'type' => 'appointment', 'subject' => 'Appointment: '.$event->title, 'message' => 'I would like to request the published time on '.local_date($event->starts_at, 'datetime').' at '.($event->location ?: 'the school').'.']) }}" variant="outline" size="sm" class="mt-2">{{ __('Request this time') }}</april:button-link>
                                     @endif
                                     @unless ($event->isTeachingDay())
-                                        <span class="mt-1 block text-xs text-muted-foreground">The school is shut</span>
+                                        <span class="mt-1 block text-xs text-muted-foreground">{{ __('The school is shut') }}</span>
                                     @endunless
                                 </div>
                             </li>

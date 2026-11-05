@@ -31,7 +31,7 @@ class AdmissionWaitlistController extends Controller
 
         $join->join($section, $candidate, $request->user(), $request->integer('priority', 0));
 
-        return back()->with('success', 'The candidate is on the admission waitlist.');
+        return back()->with('success', __('The candidate is on the admission waitlist.'));
     }
 
     public function offer(AdmissionWaitlistEntry $admissionWaitlistEntry, OfferNextWaitlistEntry $offer): RedirectResponse
@@ -51,7 +51,7 @@ class AdmissionWaitlistController extends Controller
 
         $accept->accept($admissionWaitlistEntry, request()->user());
 
-        return back()->with('success', 'The candidate accepted the place and is now enrolled.');
+        return back()->with('success', __('The candidate accepted the place and is now enrolled.'));
     }
 
     public function decline(AdmissionWaitlistEntry $admissionWaitlistEntry, DeclineWaitlistEntry $decline): RedirectResponse
@@ -60,6 +60,6 @@ class AdmissionWaitlistController extends Controller
 
         $decline->decline($admissionWaitlistEntry, request()->user(), request('reason'));
 
-        return back()->with('success', 'The admission waitlist entry was declined.');
+        return back()->with('success', __('The admission waitlist entry was declined.'));
     }
 }

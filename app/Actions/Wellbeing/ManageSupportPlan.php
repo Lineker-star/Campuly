@@ -45,14 +45,14 @@ class ManageSupportPlan
         ?User $actor = null,
     ): SupportPlan {
         if ($enrollment->status !== EnrollmentStatus::Active) {
-            throw new InvalidValueException('A support plan needs an active enrollment.');
+            throw new InvalidValueException(__('A support plan needs an active enrollment.'));
         }
 
         $start = $startsOn === null ? null : Carbon::parse($startsOn);
         $review = $reviewOn === null ? null : Carbon::parse($reviewOn);
 
         if ($start !== null && $review !== null && $review->lt($start)) {
-            throw new InvalidValueException('A plan cannot be reviewed before it starts.');
+            throw new InvalidValueException(__('A plan cannot be reviewed before it starts.'));
         }
 
         return DB::transaction(function () use ($enrollment, $title, $category, $summary, $start, $review, $owner, $actor): SupportPlan {
@@ -98,7 +98,7 @@ class ManageSupportPlan
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException('A support plan cannot move from '.$current->label().' to '.$status->label().'.');
+                throw new InvalidValueException(__('A support plan cannot move from :label to :label2.', ['label' => $current->label(), 'label2' => $status->label()]));
             }
 
             $plan->status = $status;
@@ -185,7 +185,7 @@ class ManageSupportPlan
         ?User $actor = null,
     ): SupportPlanAction {
         if (!$plan->status->isOpen()) {
-            throw new InvalidValueException('This plan is finished. Reopen it before you add a step.');
+            throw new InvalidValueException(__('This plan is finished. Reopen it before you add a step.'));
         }
 
         return SupportPlanAction::create([
@@ -209,7 +209,7 @@ class ManageSupportPlan
         }
 
         if (!$action->supportPlan->status->isOpen()) {
-            throw new InvalidValueException('This plan is finished. Reopen it before you change its steps.');
+            throw new InvalidValueException(__('This plan is finished. Reopen it before you change its steps.'));
         }
 
         $action->completed_at = now();
@@ -227,7 +227,7 @@ class ManageSupportPlan
     public function addNote(SupportPlan $plan, string $body, ?User $actor = null): SupportPlanNote
     {
         if (!$plan->status->isOpen()) {
-            throw new InvalidValueException('This plan is finished. Reopen it before you write a note.');
+            throw new InvalidValueException(__('This plan is finished. Reopen it before you write a note.'));
         }
 
         return SupportPlanNote::create([

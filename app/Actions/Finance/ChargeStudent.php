@@ -44,7 +44,7 @@ class ChargeStudent
         ?int $schoolId = null,
     ): LedgerTransaction {
         if ($amount <= 0) {
-            throw new InvalidValueException('A charge must be more than nothing.');
+            throw new InvalidValueException(__('A charge must be more than nothing.'));
         }
 
         $schoolId ??= $enrollment->school_id;

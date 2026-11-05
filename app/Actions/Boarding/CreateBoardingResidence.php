@@ -32,7 +32,7 @@ class CreateBoardingResidence
             Organization::query()->lockForUpdate()->findOrFail($organization->id);
 
             if ($organization->boardingResidences()->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->exists()) {
-                throw new InvalidValueException('This organization already has a residence with that name.');
+                throw new InvalidValueException(__('This organization already has a residence with that name.'));
             }
 
             $residence = BoardingResidence::create([

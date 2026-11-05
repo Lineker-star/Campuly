@@ -56,7 +56,7 @@ class FeeService
     public function deleteFee(Fee $fee): ?bool
     {
         if ($fee->feeInvoiceRecords()->exists()) {
-            throw new InvalidValueException('This fee is on an invoice, so it cannot be deleted. Take it off the invoices that carry it first.');
+            throw new InvalidValueException(__('This fee is on an invoice, so it cannot be deleted. Take it off the invoices that carry it first.'));
         }
 
         return $fee->delete();

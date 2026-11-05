@@ -59,7 +59,7 @@ class RecordAttendance
             $this->failIfNotInTheLesson($enrollment, $day, $kind, $subject, $courseOffering, $timeSlot);
             $subject = $courseOffering->subject;
         } elseif ($timeSlot !== null) {
-            throw new InvalidValueException('A lesson time belongs to the register of one subject.');
+            throw new InvalidValueException(__('A lesson time belongs to the register of one subject.'));
         }
 
         $term = $this->termOf($enrollment, $day);
@@ -69,7 +69,7 @@ class RecordAttendance
         $closure = $this->calendar->closureOn($section->school_id, $section->id, $day);
 
         if ($closure !== null) {
-            throw new InvalidValueException("The school was shut on {$day->format('j M Y')} for {$closure->title}. That day has no register.");
+            throw new InvalidValueException(__('The school was shut on :date for :title. That day has no register.', ['date' => $day->format('j M Y'), 'title' => $closure->title]));
         }
 
         return DB::transaction(function () use ($enrollment, $status, $day, $kind, $subject, $actor, $reason, $source, $term, $section, $courseOffering, $timeSlot): AttendanceRecord {
@@ -91,7 +91,7 @@ class RecordAttendance
             if ($record->exists && $enrollment->school_id !== null && $record->school_id !== $enrollment->school_id) {
                 $record->loadMissing('school:id,name');
 
-                throw new InvalidValueException("{$day->format('j M Y')} is in the register of {$record->school?->name}. Only that campus can change it.");
+                throw new InvalidValueException(__(':date is in the register of :name. Only that campus can change it.', ['date' => $day->format('j M Y'), 'name' => $record->school?->name]));
             }
 
             $previous = $record->exists ? $record->status : null;
@@ -173,43 +173,43 @@ class RecordAttendance
         $registerKey = $kind === AttendanceKind::Daily ? 'daily_register' : 'lesson_register';
 
         if (!features()->config(Feature::Attendance, $registerKey, true, $enrollment->school_id)) {
-            throw new InvalidValueException("This school has not enabled the {$kind->label()} register.");
+            throw new InvalidValueException(__('This school has not enabled the :label register.', ['label' => $kind->label()]));
         }
 
         if ($day->isFuture()) {
-            throw new InvalidValueException('You cannot take the register for a day that has not happened.');
+            throw new InvalidValueException(__('You cannot take the register for a day that has not happened.'));
         }
 
         if ($enrollment->status->isClosed()) {
-            throw new InvalidValueException('This enrollment is closed. It cannot take attendance.');
+            throw new InvalidValueException(__('This enrollment is closed. It cannot take attendance.'));
         }
 
         if ($enrollment->academic_cycle_section_id === null) {
-            throw new InvalidValueException('Place the student in '.with_indefinite_article(strtolower(school_term('section', 'section'))).' before taking attendance.');
+            throw new InvalidValueException(__('Place the student in :term before taking attendance.', ['term' => with_indefinite_article(strtolower(school_term('section', 'section')))]));
         }
 
         if ($kind === AttendanceKind::Period && $subject === null) {
-            throw new InvalidValueException('A lesson register needs the subject it is for.');
+            throw new InvalidValueException(__('A lesson register needs the subject it is for.'));
         }
 
         if ($kind === AttendanceKind::Daily && $subject !== null) {
-            throw new InvalidValueException('A daily register covers the whole day, not one subject.');
+            throw new InvalidValueException(__('A daily register covers the whole day, not one subject.'));
         }
 
         if ($subject !== null && $enrollment->school_id !== null && $subject->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('The subject belongs to another school.');
+            throw new InvalidValueException(__('The subject belongs to another school.'));
         }
 
         if ($term !== null && ($term->isClosed() || $term->academicYear?->isClosed())) {
             $closedTerm = $term->label ?? $term->name;
 
-            throw new ClosedPeriodException("You cannot take attendance for {$day->format('j M Y')}. {$closedTerm} is closed.");
+            throw new ClosedPeriodException(__('You cannot take attendance for :date. :closed_term is closed.', ['date' => $day->format('j M Y'), 'closed_term' => $closedTerm]));
         }
 
         $period = current_academic_period() ?? current_academic_year();
 
         if ($period !== null && $period->isClosed()) {
-            throw new ClosedPeriodException('You cannot take attendance in a closed academic period.');
+            throw new ClosedPeriodException(__('You cannot take attendance in a closed academic period.'));
         }
     }
 
@@ -221,15 +221,15 @@ class RecordAttendance
     private function failIfNotInTheLesson(StudentRecord $enrollment, Carbon $day, AttendanceKind $kind, ?Subject $subject, CourseOffering $courseOffering, ?TimetableTimeSlot $timeSlot): void
     {
         if ($kind !== AttendanceKind::Period) {
-            throw new InvalidValueException('A daily register covers the whole day, not one subject.');
+            throw new InvalidValueException(__('A daily register covers the whole day, not one subject.'));
         }
 
         if ($subject !== null && $subject->id !== $courseOffering->subject_id) {
-            throw new InvalidValueException('The subject does not match the course offering.');
+            throw new InvalidValueException(__('The subject does not match the course offering.'));
         }
 
         if ($enrollment->school_id !== $courseOffering->school_id || !$this->roster->includes($courseOffering, $enrollment)) {
-            throw new InvalidValueException("{$enrollment->user?->name} does not take {$courseOffering->displayName()}.");
+            throw new InvalidValueException(__(':name does not take :display_name.', ['name' => $enrollment->user?->name, 'display_name' => $courseOffering->displayName()]));
         }
 
         if ($timeSlot === null) {
@@ -241,7 +241,7 @@ class RecordAttendance
         if ($timetable === null
             || !CourseOffering::query()->whereKey($courseOffering->id)->taughtOn($timetable)->exists()
             || !$timeSlot->occursOn($day, $day->dayOfWeekIso)) {
-            throw new InvalidValueException("Choose a lesson time of {$courseOffering->displayName()} on {$day->format('j M Y')}.");
+            throw new InvalidValueException(__('Choose a lesson time of :display_name on :date.', ['display_name' => $courseOffering->displayName(), 'date' => $day->format('j M Y')]));
         }
     }
 
@@ -255,13 +255,13 @@ class RecordAttendance
         $section = $enrollment->sectionOn($day) ?? $enrollment->academicCycleSection;
 
         if ($section === null) {
-            throw new InvalidValueException('Place the student in '.with_indefinite_article(strtolower(school_term('section', 'section'))).' before taking attendance.');
+            throw new InvalidValueException(__('Place the student in :term before taking attendance.', ['term' => with_indefinite_article(strtolower(school_term('section', 'section')))]));
         }
 
         if ($enrollment->school_id !== null && $section->school_id !== $enrollment->school_id) {
             $section->loadMissing('school:id,name');
 
-            throw new InvalidValueException("{$enrollment->user?->name} was at {$section->school?->name} on {$day->format('j M Y')}. Only that campus can take its register.");
+            throw new InvalidValueException(__(':name was at :name2 on :date. Only that campus can take its register.', ['name' => $enrollment->user?->name, 'name2' => $section->school?->name, 'date' => $day->format('j M Y')]));
         }
 
         return $section;

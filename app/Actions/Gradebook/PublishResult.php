@@ -51,7 +51,7 @@ class PublishResult
             // A second press, or a second teacher, must not queue the same
             // result twice for the person who approves it.
             if ($previous?->approval_status === ResultApprovalStatus::Pending && $previous->payload == $result) {
-                throw new InvalidValueException("Revision {$previous->revision} with this result is already waiting for approval.");
+                throw new InvalidValueException(__('Revision :revision with this result is already waiting for approval.', ['revision' => $previous->revision]));
             }
 
             $snapshot = ResultSnapshot::create([

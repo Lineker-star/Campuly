@@ -73,7 +73,7 @@ class CourseOfferingDirectory extends Component
             return;
         }
 
-        $this->notify("{$courseOffering->subject->name} is now active.");
+        $this->notify(__(':name is now active.', ['name' => $courseOffering->subject->name]));
     }
 
     public function startAssigning(int $courseOfferingId): void
@@ -107,7 +107,7 @@ class CourseOfferingDirectory extends Component
         }
 
         $this->cancelAssigning();
-        $this->notify("{$teacher->name} now teaches {$courseOffering->subject->name}.");
+        $this->notify(__(':name now teaches :name2.', ['name' => $teacher->name, 'name2' => $courseOffering->subject->name]));
     }
 
     public function cancelAssigning(): void

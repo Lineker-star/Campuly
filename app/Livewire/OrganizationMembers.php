@@ -81,13 +81,13 @@ class OrganizationMembers extends Component
         // A stranger's account is neither named nor granted, so the form
         // cannot tell anyone which emails exist elsewhere on the platform.
         if ($user === null || !$user->isKnownToOrganization($this->organization)) {
-            $this->addError('email', 'Nobody at this organization uses that email address.');
+            $this->addError('email', __('Nobody at this organization uses that email address.'));
 
             return;
         }
 
         if ($user->administersOrganization($this->organization)) {
-            $this->addError('email', "{$user->name} already administers this organization.");
+            $this->addError('email', __(':name already administers this organization.', ['name' => $user->name]));
 
             return;
         }
@@ -95,7 +95,7 @@ class OrganizationMembers extends Component
         $grantOrganizationMembership->grant($user, $this->organization, auth()->user());
 
         $this->email = '';
-        $this->notify("{$user->name} can now administer {$this->organization->name}.");
+        $this->notify(__(':name can now administer :name2.', ['name' => $user->name, 'name2' => $this->organization->name]));
     }
 
     /**
@@ -133,7 +133,7 @@ class OrganizationMembers extends Component
         }
 
         $this->stopEditing();
-        $this->notify("{$user->name} no longer administers {$this->organization->name}. Their campus access is unchanged.");
+        $this->notify(__(':name no longer administers :name2. Their campus access is unchanged.', ['name' => $user->name, 'name2' => $this->organization->name]));
     }
 
     /**
@@ -199,7 +199,7 @@ class OrganizationMembers extends Component
         }
 
         $this->stopEditing();
-        $this->notify("Permissions updated for {$user->name}.");
+        $this->notify(__('Permissions updated for :name.', ['name' => $user->name]));
     }
 
     /**

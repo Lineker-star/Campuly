@@ -8,16 +8,16 @@
                     </a>
                     <p class="text-xs text-muted-foreground">
                         @if ($stage['operator'] === 'any')
-                            Any item (OR)
+                            {{ __('Any item (OR)') }}
                         @elseif ($stage['operator'] === 'at_least')
-                            At least {{ $stage['required_count'] }} items
+                            {{ __('At least :required_count items', ['required_count' => $stage['required_count']]) }}
                         @elseif ($stage['operator'] === 'at_least_credits')
-                            At least {{ $stage['required_credits'] }} credits
+                            {{ __('At least :required_credits credits', ['required_credits' => $stage['required_credits']]) }}
                         @else
-                            All items (AND)
+                            {{ __('All items (AND)') }}
                         @endif
                         @if ($stage['is_negated'])
-                            · NOT this stage
+                            {{ __('· NOT this stage') }}
                         @endif
                     </p>
                 </div>

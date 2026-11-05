@@ -3,8 +3,8 @@
     ['href' => route('rankings.index'), 'text' => 'Rankings', 'active'],
 ]])
 
-@section('title', 'Rankings')
-@section('page_heading', 'Rankings')
+@section('title', __('Rankings'))
+@section('page_heading', __('Rankings'))
 
 @section('content')
     <livewire:ranking-filters />

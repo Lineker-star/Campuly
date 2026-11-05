@@ -11,15 +11,15 @@
 @endphp
 
 @if ($grid['rows'] === [])
-    <x-empty-state icon="lucide-clock" title="No time slots yet"
-        description="A timetable is a week of time slots. Add the first one to start placing lessons." />
+    <x-empty-state icon="lucide-clock" title="{{ __('No time slots yet') }}"
+        :description="__('A timetable is a week of time slots. Add the first one to start placing lessons.')" />
 @else
     <div class="overflow-x-auto beautify-scrollbar">
         <table class="w-full min-w-[44rem] border-separate border-spacing-1 text-sm">
             <thead>
                 <tr>
                     <th scope="col" class="w-28 px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        Time
+                        {{ __('Time') }}
                     </th>
                     @foreach ($weekdays as $weekday)
                         <th scope="col" class="rounded-md bg-muted/60 px-2 py-2 text-center text-xs font-semibold">

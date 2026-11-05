@@ -36,11 +36,11 @@ class WithdrawLibraryCopy
             $copy = LibraryCopy::query()->lockForUpdate()->with('title')->findOrFail($copy->getKey());
 
             if (!$copy->status->isHeld()) {
-                throw new InvalidValueException('This copy is already out of the library.');
+                throw new InvalidValueException(__('This copy is already out of the library.'));
             }
 
             if (LibraryLoan::query()->open()->where('library_copy_id', $copy->id)->exists()) {
-                throw new InvalidValueException('Somebody has this copy. Take it back first.');
+                throw new InvalidValueException(__('Somebody has this copy. Take it back first.'));
             }
 
             $copy->status = LibraryCopyStatus::Withdrawn;

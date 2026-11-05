@@ -60,7 +60,7 @@ class ChangeEnrollmentPlacement
             // The pointer moves now, so the history cannot say the learner
             // sits here only from a later day.
             if ($effectiveOn !== null && $effectiveOn->isAfter(school_today()->endOfDay())) {
-                throw new InvalidValueException('A new place starts when it is made. Choose today or an earlier day.');
+                throw new InvalidValueException(__('A new place starts when it is made. Choose today or an earlier day.'));
             }
 
             // The same place in the same year is not a move. Record nothing.
@@ -72,7 +72,7 @@ class ChangeEnrollmentPlacement
             // another way cannot fill it before the family answers.
             if ($this->seats->isFull($academicCycleSection)) {
                 throw new InvalidValueException(
-                    'The '.strtolower(school_term('section', 'section'))." is full at {$academicCycleSection->capacity} seats, counting open waitlist offers. Add the candidate to its admission waitlist instead."
+                    __('The :term is full at :capacity seats, counting open waitlist offers. Add the candidate to its admission waitlist instead.', ['term' => strtolower(school_term('section', 'section')), 'capacity' => $academicCycleSection->capacity])
                 );
             }
 
@@ -122,23 +122,23 @@ class ChangeEnrollmentPlacement
         ?AcademicPeriod $academicPeriod,
     ): void {
         if ($enrollment->status->isClosed()) {
-            throw new InvalidValueException('This enrollment is closed. It cannot take a new placement.');
+            throw new InvalidValueException(__('This enrollment is closed. It cannot take a new placement.'));
         }
 
         if ($academicCycleSection->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('That '.strtolower(school_term('section', 'section')).' belongs to another school.');
+            throw new InvalidValueException(__('That :term belongs to another school.', ['term' => strtolower(school_term('section', 'section'))]));
         }
 
         if ($academicCycleSection->academicYear->isClosed()) {
-            throw new InvalidValueException('The academic year is closed. Reopen it before you move a student.');
+            throw new InvalidValueException(__('The academic year is closed. Reopen it before you move a student.'));
         }
 
         if ($academicCycleSection->status !== AcademicStructureStatus::Active) {
-            throw new InvalidValueException('Activate the '.strtolower(school_term('section', 'section')).' before placing a student in it.');
+            throw new InvalidValueException(__('Activate the :term before placing a student in it.', ['term' => strtolower(school_term('section', 'section'))]));
         }
 
         if ($academicPeriod !== null && $academicPeriod->academic_year_id !== $academicCycleSection->academic_year_id) {
-            throw new InvalidValueException('That '.strtolower(school_term('period', 'period')).' is not part of the '.strtolower(school_term('section', 'section')).'’s '.strtolower(school_term('academic_year', 'school year')).'.');
+            throw new InvalidValueException(__('That :term is not part of the :term2’s :term3.', ['term' => strtolower(school_term('period', 'period')), 'term2' => strtolower(school_term('section', 'section')), 'term3' => strtolower(school_term('academic_year', 'school year'))]));
         }
     }
 

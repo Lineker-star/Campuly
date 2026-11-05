@@ -33,17 +33,17 @@ class ChangeAcademicPeriodDates
         ?string $reason = null,
     ): AcademicYear|AcademicPeriod {
         if ($period->status->isFrozen()) {
-            throw new InvalidValueException('A closed period keeps its dates. Reopen it before you change them.');
+            throw new InvalidValueException(__('A closed period keeps its dates. Reopen it before you change them.'));
         }
 
         if ($startsOn !== null && $endsOn !== null && $endsOn->lt($startsOn)) {
-            throw new InvalidValueException('A period cannot end before it starts.');
+            throw new InvalidValueException(__('A period cannot end before it starts.'));
         }
 
         $wasInUse = $period->status->acceptsWrites();
 
         if ($wasInUse && trim((string) $reason) === '') {
-            throw new InvalidValueException('Say why the dates of a period already in use are changing.');
+            throw new InvalidValueException(__('Say why the dates of a period already in use are changing.'));
         }
 
         $this->refuseMovingOutsideTheCycle($period, $startsOn, $endsOn);
@@ -106,7 +106,7 @@ class ChangeAcademicPeriodDates
 
         if ($outside) {
             throw new InvalidValueException(
-                "This period must run inside {$container->starts_on->toDateString()} to {$container->ends_on->toDateString()}."
+                __('This period must run inside :to_date_string to :to_date_string2.', ['to_date_string' => $container->starts_on->toDateString(), 'to_date_string2' => $container->ends_on->toDateString()])
             );
         }
     }

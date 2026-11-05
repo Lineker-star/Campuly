@@ -84,17 +84,17 @@ class AssessmentPlanService
     public function tagTopics(Syllabus $syllabus, GradeItem $item, array $topicIds): void
     {
         if ($syllabus->fresh()?->status !== SyllabusStatus::Published) {
-            throw new InvalidValueException('Assessments are linked to the published syllabus only.');
+            throw new InvalidValueException(__('Assessments are linked to the published syllabus only.'));
         }
 
         if ($item->course_offering_id !== $syllabus->course_offering_id) {
-            throw new InvalidValueException('That assessment belongs to another course offering.');
+            throw new InvalidValueException(__('That assessment belongs to another course offering.'));
         }
 
         $topicIds = array_values(array_unique($topicIds));
 
         if ($syllabus->topics()->whereKey($topicIds)->count() !== count($topicIds)) {
-            throw new InvalidValueException('Choose topics from this syllabus only.');
+            throw new InvalidValueException(__('Choose topics from this syllabus only.'));
         }
 
         // Tags on other revisions of the syllabus stay as they are.

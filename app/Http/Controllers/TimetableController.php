@@ -74,7 +74,7 @@ class TimetableController extends Controller
     {
         $this->timetableService->deleteTimetable($timetable);
 
-        return back()->with('success', 'Timetable deleted successfully');
+        return back()->with('success', __('Timetable deleted successfully'));
     }
 
     /**

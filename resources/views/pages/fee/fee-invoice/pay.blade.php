@@ -7,7 +7,7 @@
 
 @section('title', 'Take payment · '.$feeInvoice->name)
 
-@section('page_heading', 'Take payment')
+@section('page_heading', __('Take payment'))
 
 @section('content')
     <livewire:take-invoice-payment :fee-invoice="$feeInvoice" />

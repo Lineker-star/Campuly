@@ -67,7 +67,7 @@ class LibraryCopyCatalog extends Component
             return;
         }
 
-        $this->notify('The copy was taken out of the library.');
+        $this->notify(__('The copy was taken out of the library.'));
     }
 
     public function render(): View

@@ -24,18 +24,18 @@ class PublishSyllabus
             $syllabus = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->id);
 
             if (!in_array($syllabus->status, [SyllabusStatus::Draft, SyllabusStatus::Submitted], true)) {
-                throw new InvalidValueException('Only a draft syllabus can be published.');
+                throw new InvalidValueException(__('Only a draft syllabus can be published.'));
             }
 
             if (!$syllabus->topics()->exists()) {
-                throw new InvalidValueException('Add at least one topic before publishing the syllabus.');
+                throw new InvalidValueException(__('Add at least one topic before publishing the syllabus.'));
             }
 
             if ($syllabus->revision_of_id !== null) {
                 $replaced = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->revision_of_id);
 
                 if ($replaced->status !== SyllabusStatus::Published) {
-                    throw new InvalidValueException('The syllabus this draft revises is no longer the published one. Delete this draft and revise the current syllabus.');
+                    throw new InvalidValueException(__('The syllabus this draft revises is no longer the published one. Delete this draft and revise the current syllabus.'));
                 }
 
                 $replaced->update(['status' => SyllabusStatus::Superseded]);

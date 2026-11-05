@@ -28,11 +28,11 @@ class CreateAcademicLevel
         $schoolId = current_school_id();
 
         if ($parent !== null && $parent->school_id !== $schoolId) {
-            throw new InvalidValueException('That level group belongs to another school.');
+            throw new InvalidValueException(__('That level group belongs to another school.'));
         }
 
         if ($isGroup && $parent !== null) {
-            throw new InvalidValueException('A level group must be a top-level group without a parent.');
+            throw new InvalidValueException(__('A level group must be a top-level group without a parent.'));
         }
 
         return DB::transaction(function () use ($schoolId, $name, $code, $parent, $position, $actor, $isGroup): AcademicLevel {

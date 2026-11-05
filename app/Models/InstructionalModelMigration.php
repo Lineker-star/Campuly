@@ -56,11 +56,11 @@ class InstructionalModelMigration extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Instructional model history cannot be changed. Record the next move instead.');
+            throw new RuntimeException(__('Instructional model history cannot be changed. Record the next move instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Instructional model history cannot be deleted. Record the next move instead.');
+            throw new RuntimeException(__('Instructional model history cannot be deleted. Record the next move instead.'));
         });
     }
 

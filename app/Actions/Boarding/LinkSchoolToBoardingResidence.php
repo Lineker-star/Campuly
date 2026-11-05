@@ -22,7 +22,7 @@ class LinkSchoolToBoardingResidence
     public function link(BoardingResidence $residence, School $school, ?User $actor = null): void
     {
         if ($school->organization_id !== $residence->organization_id) {
-            throw new InvalidValueException('That campus belongs to another organization.');
+            throw new InvalidValueException(__('That campus belongs to another organization.'));
         }
 
         DB::transaction(function () use ($residence, $school, $actor): void {
@@ -51,7 +51,7 @@ class LinkSchoolToBoardingResidence
     public function unlink(BoardingResidence $residence, School $school, ?User $actor = null): void
     {
         if ($school->organization_id !== $residence->organization_id) {
-            throw new InvalidValueException('That campus belongs to another organization.');
+            throw new InvalidValueException(__('That campus belongs to another organization.'));
         }
 
         DB::transaction(function () use ($residence, $school, $actor): void {
@@ -60,7 +60,7 @@ class LinkSchoolToBoardingResidence
             $residence = BoardingResidence::query()->lockForUpdate()->findOrFail($residence->id);
 
             if ($residence->dormitories()->where('school_id', $school->id)->exists()) {
-                throw new InvalidValueException('Move this campus’s houses to another residence first.');
+                throw new InvalidValueException(__('Move this campus’s houses to another residence first.'));
             }
 
             if ($residence->schools()->detach($school->id) === 0) {

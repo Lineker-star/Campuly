@@ -43,11 +43,11 @@ class StaffLeaveStatusChange extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Leave history cannot be changed.');
+            throw new RuntimeException(__('Leave history cannot be changed.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Leave history cannot be deleted.');
+            throw new RuntimeException(__('Leave history cannot be deleted.'));
         });
     }
 

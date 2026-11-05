@@ -116,7 +116,7 @@ class FacilityBoard extends Component
 
         if ($facility === null) {
             Facility::create($values + ['school_id' => current_school_id()]);
-            $this->notify("{$values['name']} can be booked now.");
+            $this->notify(__(':name can be booked now.', ['name' => $values['name']]));
         } else {
             $facility->update($values);
             $this->notify('Saved.');
@@ -150,7 +150,7 @@ class FacilityBoard extends Component
 
         $manageFacility->restore($facility);
 
-        $this->notify("{$facility->name} can be booked again.");
+        $this->notify(__(':name can be booked again.', ['name' => $facility->name]));
     }
 
     public function startBooking(?int $facilityId = null): void
@@ -188,7 +188,7 @@ class FacilityBoard extends Component
         $facility = Facility::query()->inSchool()->find((int) $this->facilityId);
 
         if ($facility === null) {
-            $this->addError('facilityId', 'Choose something this campus shares.');
+            $this->addError('facilityId', __('Choose something this campus shares.'));
 
             return;
         }
@@ -204,7 +204,7 @@ class FacilityBoard extends Component
         }
 
         $this->stopBooking();
-        $this->notify("{$facility->name} is booked for {$booking->starts_at->format('j M, H:i')}.");
+        $this->notify(__(':name is booked for :date.', ['name' => $facility->name, 'date' => $booking->starts_at->format('j M, H:i')]));
     }
 
     public function startGivingUp(int $bookingId): void
@@ -244,7 +244,7 @@ class FacilityBoard extends Component
         }
 
         $this->stopGivingUp();
-        $this->notify('The booking was given up.');
+        $this->notify(__('The booking was given up.'));
     }
 
     public function render(): View

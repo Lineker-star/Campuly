@@ -4,33 +4,33 @@
     @endphp
 
     @if ($organization === null)
-        <p class="text-sm text-muted-foreground">One organization holds a school group, a district, or a single school. Campuses are added afterwards.</p>
+        <p class="text-sm text-muted-foreground">{{ __('One organization holds a school group, a district, or a single school. Campuses are added afterwards.') }}</p>
     @endif
 
     <div>
-        <label for="name" class="text-sm text-muted-foreground">Name</label>
+        <label for="name" class="text-sm text-muted-foreground">{{ __('Name') }}</label>
         <input id="name" wire:model="name" required maxlength="255" class="{{ $controlClasses }}" {{ field_error_bindings('name') }}>
         <x-field-error name="name" class="mt-1" />
     </div>
     <div>
-        <label for="code" class="text-sm text-muted-foreground">Code{{ $organization === null ? ' (optional)' : '' }}</label>
+        <label for="code" class="text-sm text-muted-foreground">{{ __('Code:optional', ['optional' => $organization === null ? ' (optional)' : '']) }}</label>
         <input id="code" wire:model="code" @required($organization !== null) maxlength="50" autocomplete="off" class="{{ $controlClasses }} font-mono uppercase" {{ field_error_bindings('code') }}>
-        <p class="mt-1 text-xs text-muted-foreground">Letters, numbers, dashes and underscores.{{ $organization === null ? ' Leave it empty to get one made up.' : '' }}</p>
+        <p class="mt-1 text-xs text-muted-foreground">{{ __('Letters, numbers, dashes and underscores.:up', ['up' => $organization === null ? ' Leave it empty to get one made up.' : '']) }}</p>
         <x-field-error name="code" class="mt-1" />
     </div>
     <div>
-        <label for="address" class="text-sm text-muted-foreground">Address (optional)</label>
+        <label for="address" class="text-sm text-muted-foreground">{{ __('Address (optional)') }}</label>
         <input id="address" wire:model="address" maxlength="1000" autocomplete="street-address" class="{{ $controlClasses }}" {{ field_error_bindings('address') }}>
         <x-field-error name="address" class="mt-1" />
     </div>
     <div class="grid gap-4 sm:grid-cols-2">
         <div>
-            <label for="email" class="text-sm text-muted-foreground">Email (optional)</label>
+            <label for="email" class="text-sm text-muted-foreground">{{ __('Email (optional)') }}</label>
             <input id="email" type="email" wire:model="email" maxlength="255" autocomplete="email" class="{{ $controlClasses }}" {{ field_error_bindings('email') }}>
             <x-field-error name="email" class="mt-1" />
         </div>
         <div>
-            <label for="phone" class="text-sm text-muted-foreground">Phone (optional)</label>
+            <label for="phone" class="text-sm text-muted-foreground">{{ __('Phone (optional)') }}</label>
             <input id="phone" type="tel" wire:model="phone" maxlength="50" autocomplete="tel" class="{{ $controlClasses }}" {{ field_error_bindings('phone') }}>
             <x-field-error name="phone" class="mt-1" />
         </div>

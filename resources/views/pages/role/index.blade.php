@@ -11,7 +11,7 @@
     @can('create', \App\Models\CampusRole::class)
         <april:button-link href="{{ route('roles.create') }}" class="h-11 select-none">
             <x-lucide-plus class="mr-2 size-4" />
-            Write a role
+            {{ __('Write a role') }}
         </april:button-link>
     @endcan
 @endsection
@@ -19,7 +19,7 @@
 @section('content')
 <div class="mx-auto flex w-full max-w-4xl flex-col gap-4">
     <p class="text-sm text-muted-foreground">
-        A role is a named set of permissions. A role can only carry permissions you already hold here.
+        {{ __('A role is a named set of permissions. A role can only carry permissions you already hold here.') }}
     </p>
 
     <ul class="divide-y border-y">
@@ -33,14 +33,14 @@
                             <span class="break-words">{{ $role->name }}</span>
                         @endcan
                         @if ($role->isBuiltIn())
-                            <april:badge variant="secondary">Built in</april:badge>
+                            <april:badge variant="secondary">{{ __('Built in') }}</april:badge>
                         @endif
                         @if ($role->isArchived())
-                            <april:badge variant="outline">No longer offered</april:badge>
+                            <april:badge variant="outline">{{ __('No longer offered') }}</april:badge>
                         @endif
                     </p>
                     <p class="break-words text-xs text-muted-foreground">
-                        {{ $role->permissions_count }} {{ str('permission')->plural($role->permissions_count) }} · held by {{ $role->users_count }} here
+                        {{ __(':permissions_count :permissions_count2 · held by :users_count here', ['permissions_count' => $role->permissions_count, 'permissions_count2' => str('permission')->plural($role->permissions_count), 'users_count' => $role->users_count]) }}
                         @if ($role->description !== null)
                             · {{ $role->description }}
                         @endif

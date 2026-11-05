@@ -131,7 +131,7 @@ class RehearseRestore extends Command
         $defaultConnection = (string) config('database.default');
 
         if ($connection === $defaultConnection) {
-            throw new RuntimeException('The restore rehearsal cannot use the application database connection.');
+            throw new RuntimeException(__('The restore rehearsal cannot use the application database connection.'));
         }
 
         $settings = (array) DB::connection($connection)->getConfig();
@@ -139,11 +139,11 @@ class RehearseRestore extends Command
         $targetDatabase = $settings['database'] ?? null;
 
         if (!is_string($targetDatabase) || trim($targetDatabase) === '') {
-            throw new RuntimeException('The restore rehearsal needs a named, isolated database.');
+            throw new RuntimeException(__('The restore rehearsal needs a named, isolated database.'));
         }
 
         if (mb_strtolower($targetDatabase) === mb_strtolower($applicationDatabase)) {
-            throw new RuntimeException('The restore rehearsal database must have a different name from the application database.');
+            throw new RuntimeException(__('The restore rehearsal database must have a different name from the application database.'));
         }
 
         $dumper = $dumpers->forConnection($connection);
@@ -159,7 +159,7 @@ class RehearseRestore extends Command
 
         foreach (self::REQUIRED_ROWS as $table) {
             if ($rows[$table] === 0) {
-                throw new RuntimeException("The restored database has no $table, so the backup is not usable.");
+                throw new RuntimeException(__('The restored database has no :table, so the backup is not usable.', ['table' => $table]));
             }
         }
 

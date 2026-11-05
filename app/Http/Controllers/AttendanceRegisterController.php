@@ -28,6 +28,6 @@ class AttendanceRegisterController extends Controller
         $statuses = $request->validated('statuses');
         $this->recordAttendance->recordMany($students->map(fn ($student): array => ['enrollment' => $student, 'status' => AttendanceStatus::from($statuses[$student->id])])->all(), $request->date('attended_on'), actor: $request->user());
 
-        return redirect()->route('attendance.register', ['academic_cycle_section_id' => $section->id, 'attended_on' => $request->input('attended_on')])->with('success', 'Attendance register saved.');
+        return redirect()->route('attendance.register', ['academic_cycle_section_id' => $section->id, 'attended_on' => $request->input('attended_on')])->with('success', __('Attendance register saved.'));
     }
 }

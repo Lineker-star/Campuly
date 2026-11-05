@@ -35,7 +35,7 @@ class VerifySchoolDomain
 
         if (!in_array($domain->verification_token, array_map('trim', $found), true)) {
             throw new InvalidValueException(
-                'The record was not found yet. Add it at '.$domain->verificationRecord().' and try again in a few minutes.'
+                __('The record was not found yet. Add it at :verification_record and try again in a few minutes.', ['verification_record' => $domain->verificationRecord()])
             );
         }
 
@@ -46,7 +46,7 @@ class VerifySchoolDomain
         } catch (UniqueConstraintViolationException) {
             $domain->verified_at = null;
 
-            throw new InvalidValueException("Another organization proved {$domain->host} first.");
+            throw new InvalidValueException(__('Another organization proved :host first.', ['host' => $domain->host]));
         }
 
         $this->auditor->record(

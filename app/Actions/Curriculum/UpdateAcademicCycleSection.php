@@ -88,20 +88,20 @@ class UpdateAcademicCycleSection
         ?User $homeroomTeacher,
     ): void {
         if ($section->status === AcademicStructureStatus::Archived) {
-            throw new InvalidValueException('An archived '.strtolower(school_term('section', 'section')).' cannot be edited.');
+            throw new InvalidValueException(__('An archived :term cannot be edited.', ['term' => strtolower(school_term('section', 'section'))]));
         }
 
         if ($section->academicYear->isClosed()) {
-            throw new InvalidValueException('The academic cycle is closed. Reopen it before editing a section.');
+            throw new InvalidValueException(__('The academic cycle is closed. Reopen it before editing a section.'));
         }
 
         if ($homeroomTeacher !== null) {
             if (!$homeroomTeacher->belongsToSchool($section->school_id)) {
-                throw new InvalidValueException('The '.strtolower(school_term('homeroom_teacher', 'class teacher')).' does not work in this school.');
+                throw new InvalidValueException(__('The :term does not work in this school.', ['term' => strtolower(school_term('homeroom_teacher', 'class teacher'))]));
             }
 
             if (!$homeroomTeacher->hasRole(Role::Teacher->value)) {
-                throw new InvalidValueException('Only a teacher can be '.with_indefinite_article(strtolower(school_term('homeroom_teacher', 'class teacher'))).'.');
+                throw new InvalidValueException(__('Only a teacher can be :term.', ['term' => with_indefinite_article(strtolower(school_term('homeroom_teacher', 'class teacher')))]));
             }
         }
     }

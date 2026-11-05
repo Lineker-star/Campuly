@@ -73,24 +73,24 @@ class CreateAcademicCycleSection
         ?User $homeroomTeacher,
     ): void {
         if ($academicYear->school_id !== $academicLevel->school_id) {
-            throw new InvalidValueException('That '.strtolower(school_term('class_level', 'class')).' belongs to another school.');
+            throw new InvalidValueException(__('That :term belongs to another school.', ['term' => strtolower(school_term('class_level', 'class'))]));
         }
 
         if ($academicLevel->is_group) {
-            throw new InvalidValueException('A level group organizes teachable levels. Add this section under one of its child levels.');
+            throw new InvalidValueException(__('A level group organizes teachable levels. Add this section under one of its child levels.'));
         }
 
         if ($academicYear->isClosed()) {
-            throw new InvalidValueException('The academic cycle is closed. Reopen it before configuring sections.');
+            throw new InvalidValueException(__('The academic cycle is closed. Reopen it before configuring sections.'));
         }
 
         if ($homeroomTeacher !== null) {
             if (!$homeroomTeacher->belongsToSchool($academicYear->school_id)) {
-                throw new InvalidValueException('The '.strtolower(school_term('homeroom_teacher', 'class teacher')).' does not work in this school.');
+                throw new InvalidValueException(__('The :term does not work in this school.', ['term' => strtolower(school_term('homeroom_teacher', 'class teacher'))]));
             }
 
             if (!$homeroomTeacher->hasRole(Role::Teacher->value)) {
-                throw new InvalidValueException('Only a teacher can be '.with_indefinite_article(strtolower(school_term('homeroom_teacher', 'class teacher'))).'.');
+                throw new InvalidValueException(__('Only a teacher can be :term.', ['term' => with_indefinite_article(strtolower(school_term('homeroom_teacher', 'class teacher')))]));
             }
         }
     }

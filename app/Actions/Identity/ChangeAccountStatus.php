@@ -63,7 +63,7 @@ class ChangeAccountStatus
     public function changeTo(User $user, AccountStatus $status, ?User $actor = null, ?string $reason = null): User
     {
         if ($this->systemPermissionScope->allows($user, PlatformPermission::ManagePlatform) && !$status->canAccessApplication()) {
-            throw new RuntimeException('A platform administrator account cannot be suspended or archived.');
+            throw new RuntimeException(__('A platform administrator account cannot be suspended or archived.'));
         }
 
         return DB::transaction(function () use ($user, $status, $actor, $reason): User {
@@ -118,7 +118,7 @@ class ChangeAccountStatus
             if ($membership->grants(OrganizationPermission::ManageMembers)
                 && $membership->organization?->hasAnotherMemberManager($user) === false) {
                 throw new InvalidValueException(
-                    "{$membership->organization->name} would be left with nobody who can manage its members. Grant a replacement first."
+                    __(':name would be left with nobody who can manage its members. Grant a replacement first.', ['name' => $membership->organization->name])
                 );
             }
         }

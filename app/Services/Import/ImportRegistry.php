@@ -41,7 +41,7 @@ class ImportRegistry
             }
         }
 
-        throw new InvalidValueException("There is no import called $key.");
+        throw new InvalidValueException(__('There is no import called :key.', ['key' => $key]));
     }
 
     /**

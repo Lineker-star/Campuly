@@ -69,7 +69,7 @@ class AcademicYearStructureTree extends Component
     public function moveSection(int $academicCycleSectionId, string $direction, MoveAcademicCycleSection $moveAcademicCycleSection): void
     {
         $academicYear = $this->academicYear;
-        abort_unless($academicYear !== null, 422, 'Create a school year before adding sections.');
+        abort_unless($academicYear !== null, 422, __('Create a school year before adding sections.'));
 
         $section = AcademicCycleSection::inSchool($this->workingSchoolId())
             ->where('academic_year_id', $academicYear->id)
@@ -94,7 +94,7 @@ class AcademicYearStructureTree extends Component
             return;
         }
 
-        $this->notify("{$academicLevel->name} was deleted.");
+        $this->notify(__(':name was deleted.', ['name' => $academicLevel->name]));
     }
 
     public function render(): View

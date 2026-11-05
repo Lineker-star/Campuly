@@ -49,13 +49,13 @@ class ManageStaffProfile
         $schoolId = current_school_id();
 
         if (StudentRecord::query()->where('user_id', $attributes['user_id'])->enrolled()->exists()) {
-            throw new InvalidValueException('This person is still a learner. A learner cannot be made staff.');
+            throw new InvalidValueException(__('This person is still a learner. A learner cannot be made staff.'));
         }
 
         try {
             return DB::transaction(function () use ($attributes, $schoolId, $actor): StaffProfile {
                 if (StaffProfile::query()->where('school_id', $schoolId)->where('user_id', $attributes['user_id'])->exists()) {
-                    throw new InvalidValueException('This person already has an employment record here.');
+                    throw new InvalidValueException(__('This person already has an employment record here.'));
                 }
 
                 $this->refuseATakenStaffNumber($attributes['staff_number'] ?? null, $schoolId);
@@ -67,7 +67,7 @@ class ManageStaffProfile
             });
         } catch (UniqueConstraintViolationException) {
             // Somebody saved the same person or number a moment earlier.
-            throw new InvalidValueException('This person or staff number was just given an employment record. Open the staff list to see it.');
+            throw new InvalidValueException(__('This person or staff number was just given an employment record. Open the staff list to see it.'));
         }
     }
 
@@ -95,16 +95,16 @@ class ManageStaffProfile
                 $isComingBack = $profile->status === StaffStatus::Left && !$isLeaving;
 
                 if ($isComingBack && StudentRecord::query()->where('user_id', $profile->user_id)->enrolled()->exists()) {
-                    throw new InvalidValueException('This person is now a learner. A learner cannot be made staff.');
+                    throw new InvalidValueException(__('This person is now a learner. A learner cannot be made staff.'));
                 }
                 if ($isLeaving && $actor !== null && $actor->id !== $profile->user_id
                     && $this->roleAuthority->holdsMoreThan($profile->user()->firstOrFail(), $actor, School::query()->findOrFail($profile->school_id))) {
-                    throw new InvalidValueException('This person holds more at this school than you do, so you cannot record that they left.');
+                    throw new InvalidValueException(__('This person holds more at this school than you do, so you cannot record that they left.'));
                 }
 
                 if ($isComingBack && $actor !== null && $actor->id !== $profile->user_id
                     && $this->roleAuthority->holdsMoreThan($profile->user()->firstOrFail(), $actor, School::query()->findOrFail($profile->school_id))) {
-                    throw new InvalidValueException('This person holds more at this school than you do, so you cannot take them back.');
+                    throw new InvalidValueException(__('This person holds more at this school than you do, so you cannot take them back.'));
                 }
 
                 if ($isLeaving && $profile->status !== StaffStatus::Left) {
@@ -114,7 +114,7 @@ class ManageStaffProfile
                 $leftOn = $isLeaving ? Carbon::parse($attributes['left_on'] ?? school_today($profile->school_id))->startOfDay() : null;
 
                 if ($leftOn !== null && $profile->joined_on !== null && $leftOn->lt($profile->joined_on)) {
-                    throw new InvalidValueException('A person cannot leave before they joined.');
+                    throw new InvalidValueException(__('A person cannot leave before they joined.'));
                 }
 
                 $profile->fill([...$attributes, 'left_on' => $leftOn]);
@@ -142,7 +142,7 @@ class ManageStaffProfile
                 return $profile;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('Another person was just given this staff number.');
+            throw new InvalidValueException(__('Another person was just given this staff number.'));
         }
     }
 
@@ -161,7 +161,7 @@ class ManageStaffProfile
 
         if ($this->roleAuthority->campusHasARoleManager($school)
             && !$this->roleAuthority->campusHasARoleManager($school, $leaver)) {
-            throw new InvalidValueException('Nobody else at this campus can manage roles. Give somebody else role management before recording that this person left.');
+            throw new InvalidValueException(__('Nobody else at this campus can manage roles. Give somebody else role management before recording that this person left.'));
         }
     }
 
@@ -221,7 +221,7 @@ class ManageStaffProfile
                 ->first();
 
             if ($overlap !== null) {
-                throw new InvalidValueException('These hours overlap '.substr((string) $overlap->starts_at, 0, 5).' to '.substr((string) $overlap->ends_at, 0, 5).' on the same day.');
+                throw new InvalidValueException(__('These hours overlap :starts_at to :ends_at on the same day.', ['starts_at' => substr((string) $overlap->starts_at, 0, 5), 'ends_at' => substr((string) $overlap->ends_at, 0, 5)]));
             }
 
             $hours = StaffAvailability::create([
@@ -263,7 +263,7 @@ class ManageStaffProfile
             ->exists();
 
         if ($taken) {
-            throw new InvalidValueException("Another person already has staff number {$staffNumber}.");
+            throw new InvalidValueException(__('Another person already has staff number :staff_number.', ['staff_number' => $staffNumber]));
         }
     }
 

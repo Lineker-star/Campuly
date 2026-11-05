@@ -38,11 +38,11 @@ class RequestOvernightLeave
         $place = BoardingPlace::currentFor($enrollment);
 
         if ($place === null || !$place->isBoarding()) {
-            throw new InvalidValueException('This learner does not board, so there is no house to leave.');
+            throw new InvalidValueException(__('This learner does not board, so there is no house to leave.'));
         }
 
         if (strtotime($returnsOn) < strtotime($leavesOn)) {
-            throw new InvalidValueException('A learner cannot come back before they leave.');
+            throw new InvalidValueException(__('A learner cannot come back before they leave.'));
         }
 
         $clash = OvernightLeave::query()
@@ -53,7 +53,7 @@ class RequestOvernightLeave
             ->exists();
 
         if ($clash) {
-            throw new InvalidValueException('This learner already has leave covering one of those nights.');
+            throw new InvalidValueException(__('This learner already has leave covering one of those nights.'));
         }
 
         $leave = OvernightLeave::create([

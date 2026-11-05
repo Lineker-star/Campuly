@@ -4,13 +4,13 @@
     ['text' => 'Issued card', 'active'],
 ]])
 
-@section('title', 'Issued report card')
-@section('page_heading', 'Issued report card')
+@section('title', __('Issued report card'))
+@section('page_heading', __('Issued report card'))
 
 @section('page_actions')
     <april:button-link href="{{ route('report-cards.index') }}" variant="outline">
         <x-lucide-arrow-left class="mr-2 size-4" />
-        Back to report cards
+        {{ __('Back to report cards') }}
     </april:button-link>
 @endsection
 
@@ -24,10 +24,9 @@
     <div class="space-y-6">
         @if ($isSuperseded)
             <april:alert variant="destructive">
-                <slot:title>A later version exists</slot:title>
+                <slot:title>{{ __('A later version exists') }}</slot:title>
                 <slot:description>
-                    This is revision {{ $reportCardSnapshot->revision }}. The school has since issued revision {{ $latestRevision }}.
-                    This page stays exactly as it was issued.
+                    {{ __('This is revision :revision. The school has since issued revision :latest_revision. This page stays exactly as it was issued.', ['revision' => $reportCardSnapshot->revision, 'latest_revision' => $latestRevision]) }}
                 </slot:description>
             </april:alert>
         @endif
@@ -38,29 +37,29 @@
             <slot:content>
                 <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                     <div class="rounded-lg border p-4">
-                        <dt class="text-sm text-muted-foreground">Overall</dt>
+                        <dt class="text-sm text-muted-foreground">{{ __('Overall') }}</dt>
                         <dd class="text-2xl font-semibold">
                             {{ $reportCardSnapshot->average_percentage === null ? '—' : number_local($reportCardSnapshot->average_percentage, 2).'%' }}
                         </dd>
-                        <p class="mt-1 text-xs text-muted-foreground">Average across the subjects below</p>
+                        <p class="mt-1 text-xs text-muted-foreground">{{ __('Average across the subjects below') }}</p>
                     </div>
                     <div class="rounded-lg border p-4">
                         <dt class="text-sm text-muted-foreground">{{ school_term('period', 'Period') }}</dt>
                         <dd class="text-lg font-semibold">{{ $reportCardSnapshot->academicPeriod->label ?? $reportCardSnapshot->academicPeriod->name }}</dd>
                     </div>
                     <div class="rounded-lg border p-4">
-                        <dt class="text-sm text-muted-foreground">Academic year</dt>
+                        <dt class="text-sm text-muted-foreground">{{ __('Academic year') }}</dt>
                         <dd class="text-lg font-semibold">{{ $reportCardSnapshot->academicYear?->name ?? 'Unknown year' }}</dd>
                     </div>
                     <div class="rounded-lg border p-4">
-                        <dt class="text-sm text-muted-foreground">Revision</dt>
-                        <dd class="text-lg font-semibold">{{ $reportCardSnapshot->revision }} of {{ $latestRevision }}</dd>
+                        <dt class="text-sm text-muted-foreground">{{ __('Revision') }}</dt>
+                        <dd class="text-lg font-semibold">{{ __(':revision of :latest_revision', ['revision' => $reportCardSnapshot->revision, 'latest_revision' => $latestRevision]) }}</dd>
                         @if (filled($reportCardSnapshot->reason))
                             <p class="mt-1 text-xs text-muted-foreground">{{ $reportCardSnapshot->reason }}</p>
                         @endif
                     </div>
                     <div class="rounded-lg border p-4">
-                        <dt class="text-sm text-muted-foreground">Issued</dt>
+                        <dt class="text-sm text-muted-foreground">{{ __('Issued') }}</dt>
                         <dd class="text-lg font-semibold">{{ local_date(school_time($reportCardSnapshot->published_at), 'medium') }}</dd>
                         <p class="mt-1 text-xs text-muted-foreground">
                             {{ $reportCardSnapshot->publishedBy?->name ? 'By '.$reportCardSnapshot->publishedBy->name : 'Publisher not recorded' }}
@@ -71,19 +70,19 @@
         </april:card>
 
         <april:card>
-            <slot:title>Subject results</slot:title>
-            <slot:description>Each row names the result version this card copied, so anyone can trace a mark back to its source.</slot:description>
+            <slot:title>{{ __('Subject results') }}</slot:title>
+            <slot:description>{{ __('Each row names the result version this card copied, so anyone can trace a mark back to its source.') }}</slot:description>
             <slot:content>
                 @if ($results === [])
-                    <x-empty-state icon="lucide-book-open" title="No subject results on this card"
-                        description="The card was issued before any subject result was published for the period." />
+                    <x-empty-state icon="lucide-book-open" title="{{ __('No subject results on this card') }}"
+                        :description="__('The card was issued before any subject result was published for the period.')" />
                 @else
                     <april:data-table>
                         <slot:header>
                             <april:data-table-row>
-                                <april:data-table-head>Subject</april:data-table-head>
-                                <april:data-table-head>Result</april:data-table-head>
-                                <april:data-table-head>Source revision</april:data-table-head>
+                                <april:data-table-head>{{ __('Subject') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('Result') }}</april:data-table-head>
+                                <april:data-table-head>{{ __('Source revision') }}</april:data-table-head>
                             </april:data-table-row>
                         </slot:header>
                         <slot:body>
@@ -93,7 +92,7 @@
                                     <april:data-table-cell>
                                         {{ $result['percentage'] === null ? '—' : number_local($result['percentage'], 2).'%' }}
                                     </april:data-table-cell>
-                                    <april:data-table-cell class="text-muted-foreground">Revision {{ $result['source_revision'] }}</april:data-table-cell>
+                                    <april:data-table-cell class="text-muted-foreground">{{ __('Revision :source_revision', ['source_revision' => $result['source_revision']]) }}</april:data-table-cell>
                                 </april:data-table-row>
                             @endforeach
                         </slot:body>
@@ -103,17 +102,17 @@
         </april:card>
 
         <april:card>
-            <slot:title>Revision history</slot:title>
-            <slot:description>A published card never changes. A correction is issued as the next revision, and every earlier one stays readable.</slot:description>
+            <slot:title>{{ __('Revision history') }}</slot:title>
+            <slot:description>{{ __('A published card never changes. A correction is issued as the next revision, and every earlier one stays readable.') }}</slot:description>
             <slot:content>
                 <ol class="space-y-3">
                     @foreach ($revisions as $revision)
                         <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4 {{ $revision->is($reportCardSnapshot) ? 'border-primary' : '' }}">
                             <div>
                                 <p class="font-medium">
-                                    Revision {{ $revision->revision }}
+                                    {{ __('Revision :revision', ['revision' => $revision->revision]) }}
                                     @if ($revision->is($reportCardSnapshot))
-                                        <span class="ml-1 text-xs text-muted-foreground">(you are reading this one)</span>
+                                        <span class="ml-1 text-xs text-muted-foreground">{{ __('(you are reading this one)') }}</span>
                                     @endif
                                 </p>
                                 <p class="text-sm text-muted-foreground">
@@ -131,7 +130,7 @@
                                     {{ $revision->average_percentage === null ? '—' : number_local($revision->average_percentage, 2).'%' }}
                                 </span>
                                 @unless ($revision->is($reportCardSnapshot))
-                                    <april:button-link href="{{ route('report-cards.show', $revision) }}" variant="outline" size="sm" aria-label="Open revision {{ $revision->revision }}">Open</april:button-link>
+                                    <april:button-link href="{{ route('report-cards.show', $revision) }}" variant="outline" size="sm" aria-label="Open revision {{ $revision->revision }}">{{ __('Open') }}</april:button-link>
                                 @endunless
                             </div>
                         </li>

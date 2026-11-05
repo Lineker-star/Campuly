@@ -40,7 +40,7 @@ trait InAcademicPeriod
         }
 
         throw new ClosedPeriodException(
-            'You cannot '.$verb.' this record because its academic period is closed.'
+            __('You cannot :verb this record because its academic period is closed.', ['verb' => $verb])
         );
     }
 

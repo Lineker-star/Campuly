@@ -43,7 +43,7 @@ class ExportFormatRegistry
             }
         }
 
-        throw new InvalidValueException("There is no export format called $key.");
+        throw new InvalidValueException(__('There is no export format called :key.', ['key' => $key]));
     }
 
     /**

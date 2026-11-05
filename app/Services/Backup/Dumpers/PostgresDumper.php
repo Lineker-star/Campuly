@@ -81,7 +81,7 @@ class PostgresDumper implements DatabaseDumper
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new InvalidValueException("$tool failed: ".trim($process->getErrorOutput()));
+            throw new InvalidValueException(__(':tool failed: :get_error_output', ['tool' => $tool, 'get_error_output' => trim($process->getErrorOutput())]));
         }
     }
 

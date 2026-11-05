@@ -8,16 +8,16 @@
     <p class="text-sm text-muted-foreground">{{ $courseOffering->subject->name }} · {{ $courseOffering->academicYear->name }} · {{ $level->name }} · {{ $courseOffering->academicPeriod->display_name }}</p>
 
     <div class="flex flex-col gap-2 sm:w-96">
-        <label for="offering-name" class="text-sm font-medium">Name</label>
-        <input type="text" id="offering-name" wire:model="name" maxlength="100" placeholder="Optional, such as Algebra B" class="{{ $controlClasses }}" {{ field_error_bindings('name') }}>
-        <p class="text-xs text-muted-foreground">Name it when the same subject runs more than once for {{ $level->name }}.</p>
+        <label for="offering-name" class="text-sm font-medium">{{ __('Name') }}</label>
+        <input type="text" id="offering-name" wire:model="name" maxlength="100" placeholder="{{ __('Optional, such as Algebra B') }}" class="{{ $controlClasses }}" {{ field_error_bindings('name') }}>
+        <p class="text-xs text-muted-foreground">{{ __('Name it when the same subject runs more than once for :name.', ['name' => $level->name]) }}</p>
         <x-field-error name="name" />
     </div>
 
     <fieldset class="flex flex-col gap-3">
-        <legend class="mb-2 text-sm font-medium">Who attends</legend>
+        <legend class="mb-2 text-sm font-medium">{{ __('Who attends') }}</legend>
         <div>
-            <label for="roster-mode" class="sr-only">Who attends</label>
+            <label for="roster-mode" class="sr-only">{{ __('Who attends') }}</label>
             <select id="roster-mode" wire:model.live="rosterMode" class="{{ $controlClasses }} sm:w-72" {{ field_error_bindings('rosterMode') }}>
                 @foreach ($rosterModes as $mode)
                     <option value="{{ $mode->value }}">{{ school_roster_label($mode) }}</option>
@@ -27,7 +27,7 @@
 
         @if ($choosesSections)
             @if ($sections->isEmpty())
-                <p class="text-sm text-muted-foreground">No {{ $sectionsTerm }} in {{ $level->name }} this year.</p>
+                <p class="text-sm text-muted-foreground">{{ __('No :sections_term in :name this year.', ['sections_term' => $sectionsTerm, 'name' => $level->name]) }}</p>
             @else
                 <div class="flex flex-wrap gap-2" role="group" aria-label="{{ ucfirst($sectionsTerm) }}">
                     @foreach ($sections as $section)
@@ -44,9 +44,9 @@
             <p class="text-sm">{{ $level->is_group ? 'Everyone in the classes under '.$level->name : 'Everyone in '.$level->name }}</p>
         @elseif ($rosterMode === \App\Enums\RosterMode::IndividualRoster->value)
             @if ($learners->isEmpty())
-                <p class="text-sm text-muted-foreground">No learners in {{ $level->name }} yet.</p>
+                <p class="text-sm text-muted-foreground">{{ __('No learners in :name yet.', ['name' => $level->name]) }}</p>
             @else
-                <ul class="max-h-96 divide-y overflow-y-auto border-y" aria-label="Learners">
+                <ul class="max-h-96 divide-y overflow-y-auto border-y" aria-label="{{ __('Learners') }}">
                     @foreach ($learners as $learner)
                         <li wire:key="learner-{{ $learner->id }}">
                             <label class="flex min-h-11 cursor-pointer items-center gap-3 text-sm select-none">
@@ -64,5 +64,5 @@
         <x-field-error name="rosterMode" />
     </fieldset>
 
-    <april:button type="submit" class="h-11 select-none" wire:loading.attr="disabled" wire:target="save">Save roster</april:button>
+    <april:button type="submit" class="h-11 select-none" wire:loading.attr="disabled" wire:target="save">{{ __('Save roster') }}</april:button>
 </form>

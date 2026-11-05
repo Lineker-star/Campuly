@@ -39,7 +39,8 @@ final class UntranslatedText
                     'line' => substr_count($blade, "\n", 0, $offset) + 1,
                     'kind' => 'text',
                     'text' => trim(preg_replace('/\s+/u', ' ', self::unmask($blade, $text, $offset)) ?? ''),
-                    'fixable' => !str_contains($text, "\u{E000}"),
+                    'fixable' => !self::hasHiddenCode(self::unmask($blade, $text, $offset))
+                        && (!str_contains($text, "\u{E000}") || self::placeholders(self::unmask($blade, $text, $offset)) !== null),
                 ];
             }
         }
@@ -108,6 +109,145 @@ final class UntranslatedText
     }
 
     /**
+     * Turn "Words {{ $expr }} words" into one translatable sentence with
+     * :placeholders, or null when the text holds directives, raw echoes or
+     * comments and needs a person.
+     */
+    private static function placeholders(string $original): ?string
+    {
+        if (preg_match('/@[a-zA-Z]|\{!!|\{\{--/', $original) === 1) {
+            return null;
+        }
+
+        preg_match('/^(\s*)(.*?)(\s*)$/su', $original, $parts);
+        $sentence = '';
+        $replace = [];
+        $rest = $parts[2];
+
+        while (preg_match('/\{\{\s*(.+?)\s*\}\}/su', $rest, $echo, PREG_OFFSET_CAPTURE) === 1) {
+            $sentence .= substr($rest, 0, $echo[0][1]);
+            $expression = $echo[1][0];
+            $name = self::placeholderName($expression);
+            $base = $name;
+            $n = 2;
+
+            while (isset($replace[$name]) && $replace[$name] !== $expression) {
+                $name = $base.$n++;
+            }
+
+            $replace[$name] = $expression;
+            $sentence .= ':'.$name;
+            $rest = substr($rest, $echo[0][1] + strlen($echo[0][0]));
+        }
+
+        $sentence .= $rest;
+        $sentence = html_entity_decode(preg_replace('/\s+/u', ' ', $sentence) ?? $sentence, ENT_QUOTES | ENT_HTML5);
+
+        if (!self::isWords(preg_replace('/:\w+/u', '', $sentence) ?? '')) {
+            return null;
+        }
+
+        $pairs = [];
+
+        foreach ($replace as $name => $expression) {
+            $pairs[] = "'$name' => $expression";
+        }
+
+        return $parts[1].'{{ __('.self::quote($sentence).', ['.implode(', ', $pairs).']) }}'.$parts[3];
+    }
+
+    /**
+     * Keep the directives of a text where they are and wrap each run of
+     * words between them; null when raw echoes or comments are involved.
+     */
+    private static function aroundDirectives(string $original): ?string
+    {
+        if (preg_match('/\{!!|\{\{--/', $original) === 1) {
+            return null;
+        }
+
+        // Text, directive, text, directive, … — split by the directives' positions.
+        preg_match_all('/(?<![\w.])@\w+(?:\s*(?<args>\((?:[^()]++|(?&args))*\)))?/u', $original, $directives, PREG_OFFSET_CAPTURE);
+        $parts = [];
+        $cursor = 0;
+
+        foreach ($directives[0] as [$directive, $at]) {
+            $parts[] = substr($original, $cursor, $at - $cursor);
+            $parts[] = $directive;
+            $cursor = $at + strlen($directive);
+        }
+
+        $parts[] = substr($original, $cursor);
+
+        $result = '';
+        $changed = false;
+
+        foreach ($parts as $index => $part) {
+            // Odd indexes are the directives themselves.
+            if ($index % 2 === 1 || !self::isWords(preg_replace('/\{\{.*?\}\}/su', '', $part) ?? '')) {
+                $result .= $part;
+
+                continue;
+            }
+
+            $wrapped = str_contains($part, '{{')
+                ? self::placeholders($part)
+                : (function (string $text): string {
+                    preg_match('/^(\s*)(.*?)(\s*)$/su', $text, $m);
+
+                    return $m[1].'{{ __('.self::quote(html_entity_decode(preg_replace('/\s+/u', ' ', $m[2]) ?? $m[2], ENT_QUOTES | ENT_HTML5)).') }}'.$m[3];
+                })($part);
+
+            if ($wrapped === null) {
+                return null;
+            }
+
+            $result .= $wrapped;
+            $changed = true;
+        }
+
+        return $changed ? $result : null;
+    }
+
+    /**
+     * Whether the original text holds a directive, a comment or a raw echo.
+     */
+    private static function hasHiddenCode(string $original): bool
+    {
+        return preg_match('/(?<![\w.])@[a-zA-Z]|\{!!|\{\{--/', $original) === 1;
+    }
+
+    /**
+     * A readable placeholder name for an echoed expression.
+     */
+    private static function placeholderName(string $expression): string
+    {
+        $map = [
+            '/^(?:money_text|money)\(/' => 'amount',
+            '/^local_date\(/' => 'date',
+            '/^(?:mb_)?strtolower\(\s*school_terms?\(|^school_terms?\(|^ucfirst\(\s*school_terms?\(/' => 'term',
+            "/^config\\('app\\.name'\\)/" => 'app',
+            '/^(?:count|\$\w+->count\(\)|.*->count\(\))/' => 'count',
+            '/^percent_local\(/' => 'percent',
+        ];
+
+        foreach ($map as $pattern => $name) {
+            if (preg_match($pattern, $expression) === 1) {
+                return $name;
+            }
+        }
+
+        $inner = preg_replace('/^number_local\((.*?)(?:,.*)?\)$/s', '$1', $expression) ?? $expression;
+        preg_match_all('/[A-Za-z_][A-Za-z0-9_]*/', $inner, $words);
+        $skip = ['this', 'fn', 'null', 'true', 'false', 'id', 'value', 'get', 'first', 'name_for', 'e'];
+        $candidates = array_values(array_filter($words[0], fn (string $w): bool => !in_array(strtolower($w), $skip, true)));
+        $last = end($candidates) ?: 'value';
+        $snake = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $last) ?? $last);
+
+        return preg_replace('/[^a-z0-9_]/', '', $snake) ?: 'value';
+    }
+
+    /**
      * Wrap the plain texts and attributes in __() and return the new view.
      */
     public static function fix(string $blade): string
@@ -118,7 +258,28 @@ final class UntranslatedText
         preg_match_all('/>([^<>]*)</u', $masked, $matches, PREG_OFFSET_CAPTURE);
 
         foreach ($matches[1] as [$text, $offset]) {
-            if (str_contains($text, "\u{E000}") || !self::isWords(trim($text))) {
+            if (!self::isWords(trim(str_replace("\u{E000}", '', $text)))) {
+                continue;
+            }
+
+            // Directives inside the text stay; the words between them are wrapped piece by piece.
+            if (self::hasHiddenCode(substr($blade, $offset, strlen($text)))) {
+                $split = self::aroundDirectives(substr($blade, $offset, strlen($text)));
+
+                if ($split !== null) {
+                    $edits[] = [$offset, strlen($text), $split];
+                }
+
+                continue;
+            }
+
+            if (str_contains($text, "\u{E000}")) {
+                $mixed = self::placeholders(substr($blade, $offset, strlen($text)));
+
+                if ($mixed !== null) {
+                    $edits[] = [$offset, strlen($text), $mixed];
+                }
+
                 continue;
             }
 
@@ -182,7 +343,8 @@ final class UntranslatedText
         $blade = preg_replace_callback('/<(script|style)\b.*?<\/\1>/su', $blank, $blade) ?? $blade;
         $blade = preg_replace_callback('/\{\{.*?\}\}|\{!!.*?!!\}/su', $marker, $blade) ?? $blade;
         // @directive(...) with balanced parentheses, and bare @directives.
-        $blade = preg_replace_callback('/@\w+\s*(\((?:[^()]++|(?1))*\))?/u', $blank, $blade) ?? $blade;
+        // Not an "@" inside a word (person@example.com).
+        $blade = preg_replace_callback('/(?<![\w.])@\w+\s*(\((?:[^()]++|(?1))*\))?/u', $blank, $blade) ?? $blade;
         // Alpine and Livewire attribute values are code, not text.
         $blade = preg_replace_callback('/\s(?:x-[\w:.-]+|wire:[\w.-]+|@[\w.:-]+|:[\w.-]+)="[^"]*"/u', $blank, $blade) ?? $blade;
 

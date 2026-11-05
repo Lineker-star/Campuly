@@ -64,7 +64,7 @@ class BackupCipher
             $sealed = openssl_encrypt($piece, 'aes-256-cbc', $sealing, OPENSSL_RAW_DATA, $start);
 
             if ($sealed === false) {
-                throw new RuntimeException('The backup could not be locked.');
+                throw new RuntimeException(__('The backup could not be locked.'));
             }
 
             $frame = pack('N', strlen($sealed)).$start.$sealed;
@@ -87,7 +87,7 @@ class BackupCipher
         $size = filesize($from);
 
         if ($size === false || $size < strlen(self::MAGIC) + 16 + self::SIGNATURE) {
-            throw new InvalidValueException('This is not a backup this application wrote.');
+            throw new InvalidValueException(__('This is not a backup this application wrote.'));
         }
 
         $in = $this->open($from, 'rb');
@@ -96,7 +96,7 @@ class BackupCipher
         if (!str_starts_with($header, self::MAGIC)) {
             fclose($in);
 
-            throw new InvalidValueException('This is not a backup this application wrote.');
+            throw new InvalidValueException(__('This is not a backup this application wrote.'));
         }
 
         $salt = substr($header, strlen(self::MAGIC));
@@ -122,7 +122,7 @@ class BackupCipher
                 fclose($in);
                 fclose($out);
 
-                throw new InvalidValueException('This backup cannot be unlocked with this key.');
+                throw new InvalidValueException(__('This backup cannot be unlocked with this key.'));
             }
 
             fwrite($out, $piece);
@@ -156,7 +156,7 @@ class BackupCipher
         fclose($file);
 
         if (!hash_equals(hash_final($signature, true), $written)) {
-            throw new InvalidValueException('This backup was changed after it was written, so it was refused.');
+            throw new InvalidValueException(__('This backup was changed after it was written, so it was refused.'));
         }
     }
 
@@ -189,7 +189,7 @@ class BackupCipher
         $key = config('monitoring.backup.key');
 
         if (!is_string($key) || $key === '') {
-            throw new InvalidValueException('No backup key is set. Set BACKUP_KEY before writing a backup.');
+            throw new InvalidValueException(__('No backup key is set. Set BACKUP_KEY before writing a backup.'));
         }
 
         return str_starts_with($key, 'base64:') ? (string) base64_decode(substr($key, 7), true) : $key;
@@ -205,7 +205,7 @@ class BackupCipher
         $file = fopen($path, $mode);
 
         if ($file === false) {
-            throw new RuntimeException("The file [$path] could not be opened.");
+            throw new RuntimeException(__('The file [:path] could not be opened.', ['path' => $path]));
         }
 
         return $file;

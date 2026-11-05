@@ -44,12 +44,12 @@ class GenerateAcademicCycle
 
         if ($template === null) {
             throw new InvalidValueException(
-                'This campus has no calendar template. Choose one, or set a default for the organization.'
+                __('This campus has no calendar template. Choose one, or set a default for the organization.')
             );
         }
 
         if ($template->organization_id !== $school->organization_id) {
-            throw new InvalidValueException('That calendar template belongs to another organization.');
+            throw new InvalidValueException(__('That calendar template belongs to another organization.'));
         }
 
         $startsOn = $startsOn->copy()->startOfDay();
@@ -145,7 +145,7 @@ class GenerateAcademicCycle
 
         if ($clash !== null) {
             throw new InvalidValueException(
-                "This cycle runs over {$clash->name}, which covers {$clash->starts_on?->toDateString()} to {$clash->ends_on?->toDateString()}."
+                __('This cycle runs over :name, which covers :to_date_string to :to_date_string2.', ['name' => $clash->name, 'to_date_string' => $clash->starts_on?->toDateString(), 'to_date_string2' => $clash->ends_on?->toDateString()])
             );
         }
     }

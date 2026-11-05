@@ -32,7 +32,7 @@ class SaveCustomTimetableItem
                 return CustomTimetableItem::create(['name' => $name, 'school_id' => current_school_id()]);
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has an item with that name.');
+            throw new InvalidValueException(__('This school already has an item with that name.'));
         }
     }
 
@@ -51,7 +51,7 @@ class SaveCustomTimetableItem
                 return $item;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has an item with that name.');
+            throw new InvalidValueException(__('This school already has an item with that name.'));
         }
     }
 
@@ -72,7 +72,7 @@ class SaveCustomTimetableItem
                 ->exists();
 
             if ($isOnAFixedTimetable) {
-                throw new InvalidValueException("{$item->name} is on a published timetable, so it stays. Rename it instead.");
+                throw new InvalidValueException(__(':name is on a published timetable, so it stays. Rename it instead.', ['name' => $item->name]));
             }
 
             TimetableRecord::query()->whereKey($cells->pluck('id'))->delete();
@@ -92,7 +92,7 @@ class SaveCustomTimetableItem
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException('This school already has an item with that name.');
+            throw new InvalidValueException(__('This school already has an item with that name.'));
         }
     }
 }

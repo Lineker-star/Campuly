@@ -54,13 +54,13 @@ class BackupCatalogue
             $stream = $this->disk()->readStream($path);
 
             if ($stream === null) {
-                throw new InvalidValueException("The backup [$path] could not be read.");
+                throw new InvalidValueException(__('The backup [:path] could not be read.', ['path' => $path]));
             }
 
             $file = fopen($working, 'wb');
 
             if ($file === false) {
-                throw new RuntimeException('A working file for the restore could not be made.');
+                throw new RuntimeException(__('A working file for the restore could not be made.'));
             }
 
             stream_copy_to_stream($stream, $file);
@@ -178,7 +178,7 @@ class BackupCatalogue
         $out = fopen($to, 'wb');
 
         if ($in === false || $out === false) {
-            throw new RuntimeException('The backup could not be opened.');
+            throw new RuntimeException(__('The backup could not be opened.'));
         }
 
         while (!gzeof($in)) {
@@ -203,7 +203,7 @@ class BackupCatalogue
         $file = tempnam(sys_get_temp_dir(), 'skuul-restore');
 
         if ($file === false) {
-            throw new RuntimeException('A working file for the restore could not be made.');
+            throw new RuntimeException(__('A working file for the restore could not be made.'));
         }
 
         return $file;

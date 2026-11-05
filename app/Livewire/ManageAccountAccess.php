@@ -29,7 +29,7 @@ class ManageAccountAccess extends Component
 
         $sendAccountInvitation->send($this->user, auth()->user());
 
-        $this->notify("Sent an invitation to {$this->user->email}.");
+        $this->notify(__('Sent an invitation to :email.', ['email' => $this->user->email]));
     }
 
     public function revokeInvitation(RevokeAccountInvitation $revokeAccountInvitation): void
@@ -95,6 +95,6 @@ class ManageAccountAccess extends Component
 
     private function announceStatus(): void
     {
-        $this->notify("Set {$this->user->name}'s account to {$this->user->account_status->label()}.");
+        $this->notify(__('Set :name\'s account to :label.', ['name' => $this->user->name, 'label' => $this->user->account_status->label()]));
     }
 }

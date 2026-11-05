@@ -7,11 +7,11 @@
     @if ($canWrite && $draftCount > 0)
         <april:alert>
             <slot:icon><x-lucide-file-pen class="size-4" /></slot:icon>
-            <slot:title>{{ $draftCount }} {{ Str::plural('event', $draftCount) }} {{ $draftCount === 1 ? 'is' : 'are' }} still a draft</slot:title>
+            <slot:title>{{ __(':draft_count :draft_count2 :are still a draft', ['draft_count' => $draftCount, 'draft_count2' => Str::plural('event', $draftCount), 'are' => $draftCount === 1 ? 'is' : 'are']) }}</slot:title>
             <slot:description>
-                A draft is not on the calendar the school reads, and a draft closure does not shut the school.
+                {{ __('A draft is not on the calendar the school reads, and a draft closure does not shut the school.') }}
                 <april:button type="button" variant="link" class="h-auto p-0 underline" wire:click="showDrafts">
-                    Show the drafts
+                    {{ __('Show the drafts') }}
                 </april:button>.
             </slot:description>
         </april:alert>
@@ -21,10 +21,9 @@
         <slot:title>{{ local_date($calendarMonth, 'month') }}</slot:title>
         <slot:description>
             @if ($closures->isEmpty())
-                The school is open every day this month.
+                {{ __('The school is open every day this month.') }}
             @else
-                The school is shut on
-                {{ $closures->map(fn ($closure) => local_date($closure->starts_at, 'day'))->join(', ', ' and ') }}.
+                {{ __('The school is shut on :and.', ['and' => $closures->map(fn ($closure) => local_date($closure->starts_at, 'day'))->join(', ', ' and ')]) }}
             @endif
         </slot:description>
         <slot:content>
@@ -32,14 +31,14 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <div class="flex gap-2">
                         <april:button type="button" variant="outline" size="sm" wire:click="previousMonth"
-                            wire:loading.attr="disabled" aria-label="Previous month">
+                            wire:loading.attr="disabled" aria-label="{{ __('Previous month') }}">
                             <x-lucide-chevron-left class="mr-1 size-4" />
                             {{ local_date($calendarMonth->copy()->subMonthNoOverflow(), 'month_short') }}
                         </april:button>
                         <april:button type="button" variant="outline" size="sm" wire:click="showCurrentMonth"
-                            wire:loading.attr="disabled">Today</april:button>
+                            wire:loading.attr="disabled">{{ __('Today') }}</april:button>
                         <april:button type="button" variant="outline" size="sm" wire:click="nextMonth"
-                            wire:loading.attr="disabled" aria-label="Next month">
+                            wire:loading.attr="disabled" aria-label="{{ __('Next month') }}">
                             {{ local_date($calendarMonth->copy()->addMonthNoOverflow(), 'month_short') }}
                             <x-lucide-chevron-right class="ml-1 size-4" />
                         </april:button>
@@ -47,9 +46,9 @@
 
                     <div class="flex flex-wrap items-center gap-2">
                         <div class="flex flex-col gap-2">
-                            <april:label for="filter-type" class="sr-only">Kind of day</april:label>
+                            <april:label for="filter-type" class="sr-only">{{ __('Kind of day') }}</april:label>
                             <april:native-select id="filter-type" wire:model.live="type">
-                                <option value="">Every kind</option>
+                                <option value="">{{ __('Every kind') }}</option>
                                 @foreach ($types as $availableType)
                                     <option value="{{ $availableType->value }}">{{ $availableType->label() }}</option>
                                 @endforeach
@@ -60,20 +59,20 @@
                             <label class="flex items-center gap-2 text-sm">
                                 <input type="checkbox" wire:model.live="draftsOnly"
                                     class="size-4 rounded border-input text-primary-foreground focus:ring-2 focus:ring-ring">
-                                Drafts only
+                                {{ __('Drafts only') }}
                             </label>
                         @endif
 
                         @if ($selectedType !== null || $draftsOnly)
                             <april:button type="button" variant="outline" size="sm" wire:click="clearFilters">
                                 <x-lucide-x class="mr-1 size-4" />
-                                Clear
+                                {{ __('Clear') }}
                             </april:button>
                         @endif
                     </div>
                 </div>
 
-                <p wire:loading class="text-sm text-muted-foreground" role="status">Updating the calendar…</p>
+                <p wire:loading class="text-sm text-muted-foreground" role="status">{{ __('Updating the calendar…') }}</p>
 
                 <div class="relative overflow-x-auto">
                     <div class="grid min-w-[46rem] grid-cols-7 gap-px rounded-lg border bg-border">
@@ -118,20 +117,20 @@
     </april:card>
 
     <april:card>
-        <slot:title>What is on this month</slot:title>
-        <slot:description>An event with no {{ strtolower(school_term('section', 'section')) }} named is for the whole school.</slot:description>
+        <slot:title>{{ __('What is on this month') }}</slot:title>
+        <slot:description>{{ __('An event with no :term named is for the whole school.', ['term' => strtolower(school_term('section', 'section'))]) }}</slot:description>
         <slot:content>
             @if ($events->isEmpty())
                 @if ($selectedType !== null || $draftsOnly)
-                    <x-empty-state icon="lucide-search-x" title="Nothing matches this filter"
-                        description="No day of that kind is in this month.">
-                        <april:button type="button" variant="outline" wire:click="clearFilters">Show every day</april:button>
+                    <x-empty-state icon="lucide-search-x" title="{{ __('Nothing matches this filter') }}"
+                        :description="__('No day of that kind is in this month.')">
+                        <april:button type="button" variant="outline" wire:click="clearFilters">{{ __('Show every day') }}</april:button>
                     </x-empty-state>
                 @else
-                    <x-empty-state icon="lucide-calendar-days" title="Nothing is on this month"
-                        description="Add holidays, closures, and events so the school and its families read the same calendar.">
+                    <x-empty-state icon="lucide-calendar-days" title="{{ __('Nothing is on this month') }}"
+                        :description="__('Add holidays, closures, and events so the school and its families read the same calendar.')">
                         @can('create', App\Models\CalendarEvent::class)
-                            <april:button-link href="{{ route('calendar-events.create') }}">Add the first day</april:button-link>
+                            <april:button-link href="{{ route('calendar-events.create') }}">{{ __('Add the first day') }}</april:button-link>
                         @endcan
                     </x-empty-state>
                 @endif
@@ -139,11 +138,11 @@
                 <april:data-table>
                     <slot:header>
                         <april:data-table-row>
-                            <april:data-table-head>Day</april:data-table-head>
-                            <april:data-table-head>What is on</april:data-table-head>
-                            <april:data-table-head>Kind</april:data-table-head>
-                            <april:data-table-head>Who it is for</april:data-table-head>
-                            <april:data-table-head class="text-right">Actions</april:data-table-head>
+                            <april:data-table-head>{{ __('Day') }}</april:data-table-head>
+                            <april:data-table-head>{{ __('What is on') }}</april:data-table-head>
+                            <april:data-table-head>{{ __('Kind') }}</april:data-table-head>
+                            <april:data-table-head>{{ __('Who it is for') }}</april:data-table-head>
+                            <april:data-table-head class="text-right">{{ __('Actions') }}</april:data-table-head>
                         </april:data-table-row>
                     </slot:header>
                     <slot:body>
@@ -152,7 +151,7 @@
                                 <april:data-table-cell class="whitespace-nowrap font-medium">
                                     {{ local_date($event->starts_at, 'day') }}
                                     @if ($event->ends_at->toDateString() !== $event->starts_at->toDateString())
-                                        to {{ local_date($event->ends_at, 'day') }}
+                                        {{ __('to :date', ['date' => local_date($event->ends_at, 'day')]) }}
                                     @endif
                                     <span class="block text-xs text-muted-foreground">
                                         {{ $event->is_all_day ? 'All day' : local_date($event->starts_at, 'time').' to '.local_date($event->ends_at, 'time') }}
@@ -169,12 +168,12 @@
                                         {{ $event->type->label() }}
                                     </span>
                                     @unless ($event->isTeachingDay())
-                                        <span class="mt-1 block text-xs text-muted-foreground">The school is shut</span>
+                                        <span class="mt-1 block text-xs text-muted-foreground">{{ __('The school is shut') }}</span>
                                     @endunless
                                 </april:data-table-cell>
                                 <april:data-table-cell class="text-muted-foreground">
                                     @if ($event->audiences->isEmpty())
-                                        The whole school
+                                        {{ __('The whole school') }}
                                     @else
                                         {{ $event->audiences->map(fn ($audience) => $audience->academicCycleSection?->qualifiedName() ?? $audience->user?->name ?? 'One person')->join(', ') }}
                                     @endif
@@ -182,11 +181,11 @@
                                 <april:data-table-cell class="text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         @unless ($event->is_published)
-                                            <span class="whitespace-nowrap rounded-full border border-dashed px-2.5 py-0.5 text-xs text-muted-foreground">Draft</span>
+                                            <span class="whitespace-nowrap rounded-full border border-dashed px-2.5 py-0.5 text-xs text-muted-foreground">{{ __('Draft') }}</span>
                                         @endunless
                                         <april:button-link href="{{ route('calendar-events.edit', $event) }}" variant="outline" size="sm" aria-label="Open {{ $event->title }}">
                                             <x-lucide-eye class="mr-1 size-4" />
-                                            Open
+                                            {{ __('Open') }}
                                         </april:button-link>
                                     </div>
                                 </april:data-table-cell>

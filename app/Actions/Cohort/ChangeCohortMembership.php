@@ -40,11 +40,11 @@ class ChangeCohortMembership
         ?User $actor = null,
     ): CohortMember {
         if ($cohort->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('A student can only join a group in their own school.');
+            throw new InvalidValueException(__('A student can only join a group in their own school.'));
         }
 
         if (!in_array($enrollment->status, EnrollmentStatus::enrolled(), true)) {
-            throw new InvalidValueException("This learner no longer attends the school ({$enrollment->status->label()}).");
+            throw new InvalidValueException(__('This learner no longer attends the school (:label).', ['label' => $enrollment->status->label()]));
         }
 
         return $this->add($cohort, ['student_record_id' => $enrollment->id], $joinedOn, $actor);
@@ -75,7 +75,7 @@ class ChangeCohortMembership
             $member = CohortMember::query()->lockForUpdate()->findOrFail($member->getKey());
 
             if ($member->left_on !== null) {
-                throw new InvalidValueException('This person already left the group.');
+                throw new InvalidValueException(__('This person already left the group.'));
             }
 
             $leftOn = Carbon::parse($leftOn ?? school_today())->startOfDay();
@@ -125,7 +125,7 @@ class ChangeCohortMembership
         $joinedOn = Carbon::parse($joinedOn ?? school_today())->startOfDay();
 
         if ($joinedOn->isAfter(school_today())) {
-            throw new InvalidValueException('Nobody can join a group on a day that has not come yet.');
+            throw new InvalidValueException(__('Nobody can join a group on a day that has not come yet.'));
         }
 
         try {
@@ -133,7 +133,7 @@ class ChangeCohortMembership
                 $cohort = Cohort::query()->lockForUpdate()->findOrFail($cohort->getKey());
 
                 if (!$cohort->is_active) {
-                    throw new InvalidValueException("{$cohort->name} is closed. Open it again before anybody joins.");
+                    throw new InvalidValueException(__(':name is closed. Open it again before anybody joins.', ['name' => $cohort->name]));
                 }
 
                 $member = CohortMember::firstOrNew(['cohort_id' => $cohort->id, ...$holder]);

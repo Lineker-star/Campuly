@@ -130,15 +130,15 @@ class MoveEnrollmentBetweenCampuses
         School $destination,
     ): void {
         if ($enrollment->status->isClosed()) {
-            throw new InvalidValueException('This enrollment is closed. It cannot move to another campus.');
+            throw new InvalidValueException(__('This enrollment is closed. It cannot move to another campus.'));
         }
 
         if ($source->id === $destination->id) {
-            throw new InvalidValueException('The student already attends that campus. Change the placement instead.');
+            throw new InvalidValueException(__('The student already attends that campus. Change the placement instead.'));
         }
 
         if ($source->organization_id !== $destination->organization_id) {
-            throw new InvalidValueException('The two campuses belong to different organizations. Transfer the enrollment instead.');
+            throw new InvalidValueException(__('The two campuses belong to different organizations. Transfer the enrollment instead.'));
         }
 
         $numberTaken = $enrollment->admission_number !== null && StudentRecord::query()
@@ -148,7 +148,7 @@ class MoveEnrollmentBetweenCampuses
             ->exists();
 
         if ($numberTaken) {
-            throw new InvalidValueException("{$destination->name} already has a learner with admission number {$enrollment->admission_number}. Change one of the numbers first.");
+            throw new InvalidValueException(__(':name already has a learner with admission number :admission_number. Change one of the numbers first.', ['name' => $destination->name, 'admission_number' => $enrollment->admission_number]));
         }
     }
 }

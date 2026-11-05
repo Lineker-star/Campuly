@@ -56,11 +56,11 @@ class LedgerTransaction extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('A posted entry cannot be changed. Post a reversal instead.');
+            throw new RuntimeException(__('A posted entry cannot be changed. Post a reversal instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A posted entry cannot be deleted. Post a reversal instead.');
+            throw new RuntimeException(__('A posted entry cannot be deleted. Post a reversal instead.'));
         });
     }
 

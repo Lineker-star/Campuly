@@ -48,11 +48,11 @@ class EnrollmentPlacement extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Placement history cannot be changed. Record the next placement instead.');
+            throw new RuntimeException(__('Placement history cannot be changed. Record the next placement instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Placement history cannot be deleted. Record the next placement instead.');
+            throw new RuntimeException(__('Placement history cannot be deleted. Record the next placement instead.'));
         });
     }
 

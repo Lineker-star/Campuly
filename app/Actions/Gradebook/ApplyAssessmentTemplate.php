@@ -65,24 +65,24 @@ class ApplyAssessmentTemplate
     private function ensureCanApply(AssessmentTemplate $template, CourseOffering $courseOffering): void
     {
         if ($template->school_id !== $courseOffering->school_id || !$template->is_active) {
-            throw new InvalidValueException('Choose an active assessment template from this school.');
+            throw new InvalidValueException(__('Choose an active assessment template from this school.'));
         }
 
         $template->loadMissing('items.gradingScale');
 
         if ($template->items->contains(fn ($item): bool => $item->type === GradeItemType::Scale && $item->gradingScale === null)) {
-            throw new InvalidValueException('This template uses a grading scale that is no longer available. Choose another template or update the scale first.');
+            throw new InvalidValueException(__('This template uses a grading scale that is no longer available. Choose another template or update the scale first.'));
         }
 
         $courseOffering->loadMissing(['academicPeriod', 'academicYear']);
         $period = $courseOffering->academicPeriod ?? $courseOffering->academicYear;
 
         if ($period !== null && $period->isClosed()) {
-            throw new ClosedPeriodException('You cannot change a gradebook in a closed academic period.');
+            throw new ClosedPeriodException(__('You cannot change a gradebook in a closed academic period.'));
         }
 
         if ($courseOffering->gradeCategories()->exists() || $courseOffering->gradeItems()->exists()) {
-            throw new InvalidValueException('This gradebook already has a structure. Apply templates before adding categories or assessments.');
+            throw new InvalidValueException(__('This gradebook already has a structure. Apply templates before adding categories or assessments.'));
         }
     }
 

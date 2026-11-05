@@ -41,15 +41,15 @@ class TransferEnrollment
         ?string $reason = null,
     ): StudentRecord {
         if ($enrollment->school_id === $destination->id) {
-            throw new InvalidValueException('The student is already enrolled in that school.');
+            throw new InvalidValueException(__('The student is already enrolled in that school.'));
         }
 
         if ($enrollment->school->organization_id === $destination->organization_id) {
-            throw new InvalidValueException('Both schools are campuses of one organization. Move the enrollment between campuses instead.');
+            throw new InvalidValueException(__('Both schools are campuses of one organization. Move the enrollment between campuses instead.'));
         }
 
         if ($enrollment->status->isClosed() && $enrollment->status !== EnrollmentStatus::Transferred) {
-            throw new InvalidValueException('This enrollment is closed and cannot be transferred.');
+            throw new InvalidValueException(__('This enrollment is closed and cannot be transferred.'));
         }
 
         return DB::transaction(function () use ($enrollment, $destination, $academicCycleSection, $actor, $reason): StudentRecord {
@@ -63,7 +63,7 @@ class TransferEnrollment
             }
 
             if ($successor !== null) {
-                throw new InvalidValueException("This enrollment was already transferred to {$successor->school?->name}. Ask that school to transfer the learner on.");
+                throw new InvalidValueException(__('This enrollment was already transferred to :name. Ask that school to transfer the learner on.', ['name' => $successor->school?->name]));
             }
 
             $alreadyThere = StudentRecord::query()
@@ -73,7 +73,7 @@ class TransferEnrollment
                 ->exists();
 
             if ($alreadyThere) {
-                throw new InvalidValueException("The learner is already enrolled at {$destination->name}.");
+                throw new InvalidValueException(__('The learner is already enrolled at :name.', ['name' => $destination->name]));
             }
 
             $this->changeStatus->change($enrollment, EnrollmentStatus::Transferred, $actor, $reason);

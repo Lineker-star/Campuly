@@ -4,8 +4,8 @@
     ['href' => route('course-offerings.edit', $courseOffering), 'text' => 'Edit roster', 'active'],
 ]])
 
-@section('title', 'Edit roster')
-@section('page_heading', 'Edit roster')
+@section('title', __('Edit roster'))
+@section('page_heading', __('Edit roster'))
 
 @section('content')
     <livewire:edit-course-offering-roster :course-offering="$courseOffering" :setup="request()->boolean('setup')" />

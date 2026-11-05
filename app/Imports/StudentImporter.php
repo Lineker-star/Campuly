@@ -163,7 +163,7 @@ class StudentImporter implements Importer
             ->first();
 
         if ($academicLevel === null) {
-            throw new InvalidValueException("There is no level called {$row['level']}.");
+            throw new InvalidValueException(__('There is no level called :level.', ['level' => $row['level']]));
         }
 
         $academicCycleSection = AcademicCycleSection::inSchool()
@@ -173,7 +173,7 @@ class StudentImporter implements Importer
             ->first();
 
         if ($academicCycleSection === null) {
-            throw new InvalidValueException("The level {$row['level']} has no section called {$row['section']} in this cycle.");
+            throw new InvalidValueException(__('The level :level has no section called :section in this cycle.', ['level' => $row['level'], 'section' => $row['section']]));
         }
 
         $this->refuseALearnerWhoAttendsElsewhere($existing instanceof StudentRecord ? $existing->user?->email : $row['email']);
@@ -230,7 +230,7 @@ class StudentImporter implements Importer
         $person = User::query()->whereRaw('LOWER(email) = ?', [mb_strtolower((string) $email)])->first();
 
         if ($person?->worksAsStaff() === true) {
-            throw new InvalidValueException("{$person->name} works as staff. A member of staff cannot be admitted as a learner.");
+            throw new InvalidValueException(__(':name works as staff. A member of staff cannot be admitted as a learner.', ['name' => $person->name]));
         }
     }
 
@@ -274,7 +274,7 @@ class StudentImporter implements Importer
         }
 
         if (StudentRecord::inSchool()->where('admission_number', $admissionNumber)->exists()) {
-            throw new InvalidValueException("Admission number {$admissionNumber} is already used in this school.");
+            throw new InvalidValueException(__('Admission number :admission_number is already used in this school.', ['admission_number' => $admissionNumber]));
         }
 
         return $admissionNumber;

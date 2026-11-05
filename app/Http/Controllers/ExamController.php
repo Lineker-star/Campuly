@@ -42,6 +42,6 @@ class ExamController extends Controller
         $status = $request->status;
         $this->examService->setExamActiveStatus($exam, $status);
 
-        return back()->with('success', 'Exam status updated successfully');
+        return back()->with('success', __('Exam status updated successfully'));
     }
 }

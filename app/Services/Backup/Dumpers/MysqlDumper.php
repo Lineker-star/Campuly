@@ -64,7 +64,7 @@ class MysqlDumper implements DatabaseDumper
         $file = fopen($path, 'rb');
 
         if ($file === false) {
-            throw new RuntimeException("The file [$path] could not be opened.");
+            throw new RuntimeException(__('The file [:path] could not be opened.', ['path' => $path]));
         }
 
         $this->run('mysql', $connection, [(string) $connection['database']], $file);
@@ -93,7 +93,7 @@ class MysqlDumper implements DatabaseDumper
             $process->run();
 
             if (!$process->isSuccessful()) {
-                throw new InvalidValueException("$tool failed: ".trim($process->getErrorOutput()));
+                throw new InvalidValueException(__(':tool failed: :get_error_output', ['tool' => $tool, 'get_error_output' => trim($process->getErrorOutput())]));
             }
         } finally {
             unlink($options);
@@ -110,7 +110,7 @@ class MysqlDumper implements DatabaseDumper
         $file = tempnam(sys_get_temp_dir(), 'skuul-db');
 
         if ($file === false) {
-            throw new RuntimeException('The database options file could not be written.');
+            throw new RuntimeException(__('The database options file could not be written.'));
         }
 
         chmod($file, 0600);

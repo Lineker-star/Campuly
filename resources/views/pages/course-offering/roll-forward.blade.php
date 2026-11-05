@@ -4,8 +4,8 @@
     ['href' => route('course-offerings.roll-forward.show'), 'text' => 'Roll over subjects', 'active'],
 ]])
 
-@section('title', 'Roll over subjects')
-@section('page_heading', 'Roll over subjects')
+@section('title', __('Roll over subjects'))
+@section('page_heading', __('Roll over subjects'))
 
 @section('content')
     <livewire:roll-over-subjects :setup="request()->boolean('setup')" />

@@ -58,7 +58,7 @@ class OrganizationBoardingResidences extends Component
         }
 
         $this->reset('name', 'notes');
-        $this->notify("{$residence->name} is ready to share between campuses.");
+        $this->notify(__(':name is ready to share between campuses.', ['name' => $residence->name]));
     }
 
     public function linkCampus(int $residenceId, string $schoolId, LinkSchoolToBoardingResidence $linkSchoolToBoardingResidence): void

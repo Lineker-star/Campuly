@@ -32,7 +32,7 @@ class SyllabusTopicImporter extends Component
             ->firstWhere('id', (int) $id);
 
         if ($source === null) {
-            $this->notify('Copy from an outline or syllabus of the same subject in this school.', 'danger');
+            $this->notify(__('Copy from an outline or syllabus of the same subject in this school.'), 'danger');
 
             return;
         }

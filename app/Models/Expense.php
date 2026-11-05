@@ -31,11 +31,11 @@ class Expense extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('A recorded expense cannot be changed. Record a correction instead.');
+            throw new RuntimeException(__('A recorded expense cannot be changed. Record a correction instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A recorded expense cannot be deleted. Record a correction instead.');
+            throw new RuntimeException(__('A recorded expense cannot be deleted. Record a correction instead.'));
         });
     }
 

@@ -26,7 +26,7 @@ class AcademicYearSubjectAssignmentsTable extends DataTableComponent
     {
         parent::mount();
         if ($academicYear === null) {
-            throw new LogicException('An academic year is required.');
+            throw new LogicException(__('An academic year is required.'));
         }
 
         $this->academicYear = $academicYear;

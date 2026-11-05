@@ -25,11 +25,11 @@ class ReportCardSnapshot extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('A published report card cannot be changed. Publish a new revision instead.');
+            throw new RuntimeException(__('A published report card cannot be changed. Publish a new revision instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A published report card cannot be deleted.');
+            throw new RuntimeException(__('A published report card cannot be deleted.'));
         });
     }
 

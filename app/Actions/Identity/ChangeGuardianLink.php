@@ -95,7 +95,7 @@ class ChangeGuardianLink
     private function refuseALearnerOfAnotherSchool(User $learner): void
     {
         if (!StudentRecord::query()->inSchool()->where('user_id', $learner->getKey())->exists()) {
-            throw new InvalidValueException('This learner does not attend this school.');
+            throw new InvalidValueException(__('This learner does not attend this school.'));
         }
     }
 }

@@ -115,7 +115,7 @@ class AttendanceRegister extends Component
         $this->feedback = null;
 
         if (!$this->isValidDate($this->attendedOn)) {
-            $this->addError('attendedOn', 'Choose a valid day.');
+            $this->addError('attendedOn', __('Choose a valid day.'));
 
             return;
         }
@@ -146,7 +146,7 @@ class AttendanceRegister extends Component
         $status = AttendanceStatus::tryFrom($status)?->value;
 
         if ($status === null) {
-            $this->addError('statusesByStudent', 'Choose a valid attendance status.');
+            $this->addError('statusesByStudent', __('Choose a valid attendance status.'));
 
             return;
         }
@@ -179,7 +179,7 @@ class AttendanceRegister extends Component
         $section = $this->selectedSection();
 
         if ($section === null) {
-            $this->addError('academicCycleSectionId', 'Choose a section in this school.');
+            $this->addError('academicCycleSectionId', __('Choose a section in this school.'));
 
             return;
         }
@@ -187,7 +187,7 @@ class AttendanceRegister extends Component
         $students = $this->register->students($section, Carbon::parse($validated['attendedOn']));
 
         if ($students->isEmpty()) {
-            $this->addError('register', 'There are no learners in this section to mark.');
+            $this->addError('register', __('There are no learners in this section to mark.'));
 
             return;
         }
@@ -229,7 +229,7 @@ class AttendanceRegister extends Component
         $offering = $this->selectedOffering();
 
         if ($offering === null) {
-            $this->addError('courseOfferingId', 'Choose a subject you teach.');
+            $this->addError('courseOfferingId', __('Choose a subject you teach.'));
 
             return;
         }
@@ -240,7 +240,7 @@ class AttendanceRegister extends Component
         $timeSlot = $this->selectedTimeSlot($offering, $day);
 
         if ($this->timeSlotId !== '' && $timeSlot === null) {
-            $this->addError('timeSlotId', 'Choose a lesson time of this subject on that day.');
+            $this->addError('timeSlotId', __('Choose a lesson time of this subject on that day.'));
 
             return;
         }
@@ -248,7 +248,7 @@ class AttendanceRegister extends Component
         $students = $this->register->lessonStudents($offering);
 
         if ($students->isEmpty()) {
-            $this->addError('register', 'Nobody takes this subject yet.');
+            $this->addError('register', __('Nobody takes this subject yet.'));
 
             return;
         }

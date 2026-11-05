@@ -45,7 +45,7 @@ class PublishTimetable
             }
 
             if (!$timetable->status->canMoveTo(TimetableStatus::Published)) {
-                throw new InvalidValueException('An archived timetable cannot be published again. Start a revision.');
+                throw new InvalidValueException(__('An archived timetable cannot be published again. Start a revision.'));
             }
 
             $conflicts = $this->conflictChecker->conflicts($timetable);

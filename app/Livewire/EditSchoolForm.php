@@ -47,7 +47,7 @@ class EditSchoolForm extends Component
         $schoolService->updateSchool($this->school, $this->schoolDetails());
 
         if ($this->setup) {
-            session()->flash('success', 'School details saved.');
+            session()->flash('success', __('School details saved.'));
             $this->redirectRoute('schools.setup', [$this->school, 'language']);
 
             return;
@@ -55,7 +55,7 @@ class EditSchoolForm extends Component
 
         $this->logo = null;
         $this->school->refresh();
-        $this->notify('The changes were saved.');
+        $this->notify(__('The changes were saved.'));
     }
 
     public function render(): View

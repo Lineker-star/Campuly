@@ -65,7 +65,7 @@ class ReportDesk extends Component
         }
 
         $this->resetPage();
-        $this->notify("The report is being built. It is number $run->id.");
+        $this->notify(__('The report is being built. It is number :run.', ['run' => $run->id]));
     }
 
     public function render(ReportRegistry $reportRegistry, ExportFormatRegistry $formats): View

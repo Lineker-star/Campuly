@@ -51,11 +51,11 @@ class PostLedgerTransaction
         $period ??= $this->periods->openFor($prepared['school_id'], $date);
 
         if ($period->school_id !== $prepared['school_id']) {
-            throw new InvalidValueException('A ledger entry and its financial period must belong to the same school.');
+            throw new InvalidValueException(__('A ledger entry and its financial period must belong to the same school.'));
         }
 
         if (!$period->isOpen()) {
-            throw new InvalidValueException("Financial period {$period->name} is closed.");
+            throw new InvalidValueException(__('Financial period :name is closed.', ['name' => $period->name]));
         }
 
         return DB::transaction(function () use ($description, $prepared, $date, $source, $actor, $reference, $reversalOf, $period): LedgerTransaction {
@@ -65,7 +65,7 @@ class PostLedgerTransaction
             $period = FinancialPeriod::query()->whereKey($period->id)->sharedLock()->firstOrFail();
 
             if (!$period->isOpen()) {
-                throw new InvalidValueException("Financial period {$period->name} is closed.");
+                throw new InvalidValueException(__('Financial period :name is closed.', ['name' => $period->name]));
             }
 
             $transaction = LedgerTransaction::create([
@@ -120,7 +120,7 @@ class PostLedgerTransaction
     private function prepare(array $lines): array
     {
         if (count($lines) < 2) {
-            throw new InvalidValueException('An entry needs at least two lines.');
+            throw new InvalidValueException(__('An entry needs at least two lines.'));
         }
 
         $prepared = [];
@@ -137,11 +137,11 @@ class PostLedgerTransaction
             $lineCredit = round((float) ($line['credit'] ?? 0), 2);
 
             if ($lineDebit < 0 || $lineCredit < 0) {
-                throw new InvalidValueException('A line cannot hold a negative amount.');
+                throw new InvalidValueException(__('A line cannot hold a negative amount.'));
             }
 
             if (($lineDebit > 0) === ($lineCredit > 0)) {
-                throw new InvalidValueException('Each line is either a debit or a credit, never both and never nothing.');
+                throw new InvalidValueException(__('Each line is either a debit or a credit, never both and never nothing.'));
             }
 
             $schoolIds[] = $account->school_id;
@@ -163,15 +163,15 @@ class PostLedgerTransaction
         }
 
         if (count(array_unique($schoolIds)) > 1) {
-            throw new InvalidValueException('One entry cannot cross two schools.');
+            throw new InvalidValueException(__('One entry cannot cross two schools.'));
         }
 
         if (round($debit, 2) !== round($credit, 2)) {
-            throw new InvalidValueException("This entry does not balance: $debit debited against $credit credited.");
+            throw new InvalidValueException(__('This entry does not balance: :debit debited against :credit credited.', ['debit' => $debit, 'credit' => $credit]));
         }
 
         if (round($debit, 2) <= 0) {
-            throw new InvalidValueException('An entry cannot be worth nothing.');
+            throw new InvalidValueException(__('An entry cannot be worth nothing.'));
         }
 
         return [

@@ -25,11 +25,11 @@ class SetCampusCalendarTemplate
     public function override(School $school, CalendarTemplate $template, ?User $actor = null, ?string $reason = null): School
     {
         if ($template->organization_id !== $school->organization_id) {
-            throw new InvalidValueException('That calendar template belongs to another organization.');
+            throw new InvalidValueException(__('That calendar template belongs to another organization.'));
         }
 
         if (trim((string) $reason) === '') {
-            throw new InvalidValueException('Say why this campus needs a calendar of its own.');
+            throw new InvalidValueException(__('Say why this campus needs a calendar of its own.'));
         }
 
         return $this->apply($school, $template->id, $actor, $reason);

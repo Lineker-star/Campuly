@@ -87,7 +87,7 @@ class ListAdminsTable extends DataTableComponent
         Gate::authorize('delete', [$admin, 'admin']);
 
         if ($admin->is(auth()->user())) {
-            $this->notify('You cannot delete your own account. Ask another administrator.', 'danger');
+            $this->notify(__('You cannot delete your own account. Ask another administrator.'), 'danger');
 
             return;
         }

@@ -66,7 +66,7 @@ class PortalRequests extends Component
         }
 
         $this->reset('subject', 'message');
-        $this->notify('Your request was sent to the school.');
+        $this->notify(__('Your request was sent to the school.'));
     }
 
     public function withdraw(int $requestId, SubmitPortalRequest $submitRequest, PortalAccess $access): void
@@ -86,7 +86,7 @@ class PortalRequests extends Component
             return;
         }
 
-        $this->notify('Request taken back.');
+        $this->notify(__('Request taken back.'));
     }
 
     public function render(): View

@@ -49,7 +49,7 @@ class OrganizationBillingGroups extends Component
         }
 
         $this->reset('name');
-        $this->notify("{$group->name} can now hold campuses.");
+        $this->notify(__(':name can now hold campuses.', ['name' => $group->name]));
     }
 
     /**
@@ -88,7 +88,7 @@ class OrganizationBillingGroups extends Component
             return;
         }
 
-        $this->notify("{$group->name} was deleted.");
+        $this->notify(__(':name was deleted.', ['name' => $group->name]));
     }
 
     public function render(): View

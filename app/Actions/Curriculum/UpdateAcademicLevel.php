@@ -41,7 +41,7 @@ class UpdateAcademicLevel
             $academicLevel = AcademicLevel::query()->lockForUpdate()->findOrFail($academicLevel->id);
 
             if ($academicLevel->status === AcademicStructureStatus::Archived) {
-                throw new InvalidValueException('An archived '.strtolower(school_term('class_level', 'class')).' cannot be edited.');
+                throw new InvalidValueException(__('An archived :term cannot be edited.', ['term' => strtolower(school_term('class_level', 'class'))]));
             }
 
             $before = [
@@ -94,35 +94,35 @@ class UpdateAcademicLevel
         bool $isGroup,
     ): void {
         if ($isGroup && $parent !== null) {
-            throw new InvalidValueException('A level group must be a top-level group without a parent.');
+            throw new InvalidValueException(__('A level group must be a top-level group without a parent.'));
         }
 
         if ($isGroup && !$academicLevel->is_group && $academicLevel->cycleSections()->exists()) {
-            throw new InvalidValueException('This level has sections, so it cannot become a level group.');
+            throw new InvalidValueException(__('This level has sections, so it cannot become a level group.'));
         }
 
         if ($isGroup && !$academicLevel->is_group && CourseOffering::query()
             ->whereBelongsTo($academicLevel)
             ->where('roster_mode', '!=', RosterMode::AcademicLevel)
             ->exists()) {
-            throw new InvalidValueException('This level has subjects taught by section or to named learners, so it cannot become a level group.');
+            throw new InvalidValueException(__('This level has subjects taught by section or to named learners, so it cannot become a level group.'));
         }
 
         if (!$isGroup && $academicLevel->children()->exists()) {
-            throw new InvalidValueException('Move the child levels first before marking this group as a teachable level.');
+            throw new InvalidValueException(__('Move the child levels first before marking this group as a teachable level.'));
         }
 
         if ($parent !== null) {
             if ($parent->school_id !== $academicLevel->school_id) {
-                throw new InvalidValueException('That level group belongs to another school.');
+                throw new InvalidValueException(__('That level group belongs to another school.'));
             }
 
             if ($parent->id === $academicLevel->id) {
-                throw new InvalidValueException('A level cannot sit under itself.');
+                throw new InvalidValueException(__('A level cannot sit under itself.'));
             }
 
             if ($this->descendsFrom($parent, $academicLevel)) {
-                throw new InvalidValueException('That level group sits under this one already.');
+                throw new InvalidValueException(__('That level group sits under this one already.'));
             }
         }
     }

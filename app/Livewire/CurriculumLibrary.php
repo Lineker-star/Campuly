@@ -38,7 +38,7 @@ class CurriculumLibrary extends Component
         Gate::authorize('delete', $outline);
 
         $outline->delete();
-        $this->notify("Removed {$outline->name} from the library. Syllabi copied from it keep their topics.");
+        $this->notify(__('Removed :name from the library. Syllabi copied from it keep their topics.', ['name' => $outline->name]));
     }
 
     public function render(): View

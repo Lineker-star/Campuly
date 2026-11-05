@@ -63,7 +63,7 @@ class ShowDataSharingRequest extends Component
         }
 
         $this->reset('note');
-        $this->notify("Request {$nextStatus->label()}.");
+        $this->notify(__('Request :label.', ['label' => $nextStatus->label()]));
     }
 
     public function fulfil(FulfilDataSharingRequest $fulfilDataSharingRequest): void
@@ -83,7 +83,7 @@ class ShowDataSharingRequest extends Component
         }
 
         $this->sharingRequest->refresh();
-        $this->notify('Records handed over. The other school still has to take them in.');
+        $this->notify(__('Records handed over. The other school still has to take them in.'));
     }
 
     public function receive(FulfilDataSharingRequest $fulfilDataSharingRequest): void
@@ -102,7 +102,7 @@ class ShowDataSharingRequest extends Component
             return;
         }
 
-        $this->notify('Records taken in.');
+        $this->notify(__('Records taken in.'));
     }
 
     public function render(TransferPackageReader $reader): View
@@ -152,7 +152,7 @@ class ShowDataSharingRequest extends Component
         }
 
         $names = collect($unreadable)->map(fn (DataCategory $category): string => $category->label())->join(', ', ' and ');
-        $this->notify("You cannot {$verb} {$names}. You need the permission to read them at this campus.", 'danger');
+        $this->notify(__('You cannot :verb :names. You need the permission to read them at this campus.', ['verb' => $verb, 'names' => $names]), 'danger');
 
         return true;
     }

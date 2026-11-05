@@ -53,11 +53,11 @@ class RefundStudent
         $schoolId ??= $enrollment->school_id;
 
         if ($amount <= 0) {
-            throw new InvalidValueException('A refund must be more than nothing.');
+            throw new InvalidValueException(__('A refund must be more than nothing.'));
         }
 
         if (trim($reason) === '') {
-            throw new InvalidValueException('Say why the money is being given back.');
+            throw new InvalidValueException(__('Say why the money is being given back.'));
         }
 
         $channel = $this->channels->get($method);
@@ -69,7 +69,7 @@ class RefundStudent
             StudentRecord::query()->whereKey($enrollment->getKey())->lockForUpdate()->first();
 
             if ($amount > $this->credit->creditHeld($enrollment, $schoolId)) {
-                throw new InvalidValueException('The school is not holding that much for this student.');
+                throw new InvalidValueException(__('The school is not holding that much for this student.'));
             }
 
             $transaction = $this->post->post(

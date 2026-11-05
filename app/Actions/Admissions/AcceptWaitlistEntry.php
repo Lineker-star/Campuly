@@ -39,7 +39,7 @@ class AcceptWaitlistEntry
                 ->findOrFail($entry->getKey());
 
             if ($entry->status !== AdmissionWaitlistStatus::Offered) {
-                throw new InvalidValueException('Only an offered admission place can be accepted.');
+                throw new InvalidValueException(__('Only an offered admission place can be accepted.'));
             }
 
             $earlier = StudentRecord::query()
@@ -48,11 +48,11 @@ class AcceptWaitlistEntry
                 ->first();
 
             if ($earlier !== null && !$earlier->status->isClosed()) {
-                throw new InvalidValueException('This candidate already attends the school.');
+                throw new InvalidValueException(__('This candidate already attends the school.'));
             }
 
             if ($earlier !== null && !$earlier->status->canMoveTo(EnrollmentStatus::Active)) {
-                throw new InvalidValueException("This candidate's earlier enrollment here is {$earlier->status->label()}, so it cannot be opened again.");
+                throw new InvalidValueException(__('This candidate\'s earlier enrollment here is :label, so it cannot be opened again.', ['label' => $earlier->status->label()]));
             }
 
             // The admission form refuses the same thing. Accepting a place
@@ -73,7 +73,7 @@ class AcceptWaitlistEntry
             $candidate = $entry->candidate()->firstOrFail();
 
             if ($candidate->worksAsStaff()) {
-                throw new InvalidValueException("{$candidate->name} works as staff. A member of staff cannot be admitted as a learner.");
+                throw new InvalidValueException(__(':name works as staff. A member of staff cannot be admitted as a learner.', ['name' => $candidate->name]));
             }
 
             $candidate->assignRole(Role::Student);

@@ -89,7 +89,7 @@ class CohortRecord extends Component
         }
 
         $this->isEditing = false;
-        $this->notify('The group was saved.');
+        $this->notify(__('The group was saved.'));
     }
 
     public function addMember(ChangeCohortMembership $changeMembership): void
@@ -117,7 +117,7 @@ class CohortRecord extends Component
         }
 
         $this->reset('studentRecordId');
-        $this->notify('The learner joined the group.');
+        $this->notify(__('The learner joined the group.'));
     }
 
     public function removeMember(int $memberId, ChangeCohortMembership $changeMembership): void
@@ -132,7 +132,7 @@ class CohortRecord extends Component
             return;
         }
 
-        $this->notify('The place was closed. The group still shows who held it.');
+        $this->notify(__('The place was closed. The group still shows who held it.'));
     }
 
     public function render(): View

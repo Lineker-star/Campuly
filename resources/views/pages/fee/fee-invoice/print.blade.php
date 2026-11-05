@@ -30,17 +30,17 @@
                 <p class="eyebrow">{{ $isReceipt ? 'Receipt' : 'Invoice' }}</p>
                 <h2>{{ $feeInvoice->name }}</h2>
                 <p class="muted">
-                    Issued {{ local_date($feeInvoice->issue_date, 'medium') ?? $dash }}
+                    {{ __('Issued :date', ['date' => local_date($feeInvoice->issue_date, 'medium') ?? $dash]) }}
                     @unless ($isReceipt)
-                        · Due {{ local_date($feeInvoice->due_date, 'medium') ?? $dash }}
+                        {{ __('· Due :date', ['date' => local_date($feeInvoice->due_date, 'medium') ?? $dash]) }}
                     @endunless
                 </p>
             </div>
             @if ($isReceipt)
-                <div class="stamp" id="paid-stamp">Paid in full</div>
+                <div class="stamp" id="paid-stamp">{{ __('Paid in full') }}</div>
             @else
                 <div class="amount-due">
-                    <span>Amount due</span>
+                    <span>{{ __('Amount due') }}</span>
                     <strong>{{ money($feeInvoice->balance) }}</strong>
                 </div>
             @endif
@@ -50,8 +50,8 @@
             <h3>{{ $isReceipt ? 'Received from' : 'Billed to' }}</h3>
             <table class="facts">
                 <tr>
-                    <th>Student</th><td>{{ $feeInvoice->user?->name ?? $dash }}</td>
-                    <th>Admission number</th><td>{{ $feeInvoice->studentRecord?->admission_number ?: $dash }}</td>
+                    <th>{{ __('Student') }}</th><td>{{ $feeInvoice->user?->name ?? $dash }}</td>
+                    <th>{{ __('Admission number') }}</th><td>{{ $feeInvoice->studentRecord?->admission_number ?: $dash }}</td>
                 </tr>
                 <tr>
                     <th>{{ school_term('class_level', 'Class') }}</th><td>{{ $section?->academicLevel?->name ?? $dash }}</td>
@@ -59,23 +59,23 @@
                 </tr>
                 @if ($contact !== '')
                     <tr>
-                        <th>School contact</th><td colspan="3">{{ $contact }}</td>
+                        <th>{{ __('School contact') }}</th><td colspan="3">{{ $contact }}</td>
                     </tr>
                 @endif
             </table>
         </section>
 
         <section>
-            <h3>Fees</h3>
+            <h3>{{ __('Fees') }}</h3>
             <table class="list">
                 <thead>
                     <tr>
-                        <th>Fee</th>
-                        <th class="num">Amount</th>
-                        <th class="num">Waiver</th>
-                        <th class="num">Fine</th>
-                        <th class="num">Paid</th>
-                        <th class="num">Owed</th>
+                        <th>{{ __('Fee') }}</th>
+                        <th class="num">{{ __('Amount') }}</th>
+                        <th class="num">{{ __('Waiver') }}</th>
+                        <th class="num">{{ __('Fine') }}</th>
+                        <th class="num">{{ __('Paid') }}</th>
+                        <th class="num">{{ __('Owed') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,13 +89,13 @@
                             <td class="num">{{ money($record->outstanding) }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="muted">No fees are on this invoice yet.</td></tr>
+                        <tr><td colspan="6" class="muted">{{ __('No fees are on this invoice yet.') }}</td></tr>
                     @endforelse
                 </tbody>
                 @if ($hasLines)
                     <tfoot>
                         <tr>
-                            <th>Total</th>
+                            <th>{{ __('Total') }}</th>
                             <th class="num">{{ money($feeInvoice->amount) }}</th>
                             <th class="num">{{ money($feeInvoice->waiver) }}</th>
                             <th class="num">{{ money($feeInvoice->fine) }}</th>
@@ -109,15 +109,15 @@
 
         @if ($payments->isNotEmpty())
             <section>
-                <h3>Payments received</h3>
+                <h3>{{ __('Payments received') }}</h3>
                 <table class="list">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Receipt</th>
-                            <th>Method</th>
-                            <th>Reference</th>
-                            <th class="num">Amount</th>
+                            <th>{{ __('Date') }}</th>
+                            <th>{{ __('Receipt') }}</th>
+                            <th>{{ __('Method') }}</th>
+                            <th>{{ __('Reference') }}</th>
+                            <th class="num">{{ __('Amount') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,7 +137,7 @@
 
         @if (filled($feeInvoice->note))
             <section>
-                <h3>Note</h3>
+                <h3>{{ __('Note') }}</h3>
                 <p class="note">{{ $feeInvoice->note }}</p>
             </section>
         @endif
@@ -145,9 +145,9 @@
         <footer class="record-footer">
             <div class="signature">
                 <span></span>
-                {{ $isReceipt ? 'Received by' : 'Authorised by' }} · signature and school stamp
+                {{ __(':by · signature and school stamp', ['by' => $isReceipt ? 'Received by' : 'Authorised by']) }}
             </div>
-            <p class="muted">Printed {{ local_date(school_now(), 'datetime') }} by {{ auth()->user()->name }}</p>
+            <p class="muted">{{ __('Printed :date by :name', ['date' => local_date(school_now(), 'datetime'), 'name' => auth()->user()->name]) }}</p>
         </footer>
     </div>
 @endsection

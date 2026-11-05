@@ -6,7 +6,7 @@
                 <span class="text-sm">{{ $stage['is_complete'] ? 'Complete' : 'In progress' }}</span>
             </div>
             @if ($stage['required_credits'] !== null)
-                <p class="mt-1 text-sm text-muted-foreground">Requires {{ $stage['required_credits'] }} credits</p>
+                <p class="mt-1 text-sm text-muted-foreground">{{ __('Requires :required_credits credits', ['required_credits' => $stage['required_credits']]) }}</p>
             @endif
             @if ($stage['stages'] !== [])
                 <div class="mt-3 border-l pl-3">

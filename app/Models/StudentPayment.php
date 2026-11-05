@@ -68,11 +68,11 @@ class StudentPayment extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('A payment cannot be changed. Record its reversal instead.');
+            throw new RuntimeException(__('A payment cannot be changed. Record its reversal instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A payment cannot be deleted. Record its reversal instead.');
+            throw new RuntimeException(__('A payment cannot be deleted. Record its reversal instead.'));
         });
     }
 

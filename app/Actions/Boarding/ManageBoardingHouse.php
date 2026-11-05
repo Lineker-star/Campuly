@@ -72,7 +72,7 @@ class ManageBoardingHouse
             $wasActive = $dormitory->is_active;
 
             if ($wasActive && !$isActive && $this->hasCurrentBoarders($dormitory)) {
-                throw new InvalidValueException("Move the boarders out of {$dormitory->name} before closing it.");
+                throw new InvalidValueException(__('Move the boarders out of :name before closing it.', ['name' => $dormitory->name]));
             }
 
             $dormitory->update(['name' => $name, 'label' => $label, 'notes' => $notes, 'is_active' => $isActive]);

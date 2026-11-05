@@ -102,7 +102,7 @@ class RecordExpenseForm extends Component
 
         if ($amount > $balance && !$this->confirmsMoreThanBalance) {
             $this->isAboveBalance = true;
-            $this->addError('amount', "{$source->name} holds ".money_text($balance).' in the books. Check the amount, or confirm below.');
+            $this->addError('amount', __(':name holds :amount in the books. Check the amount, or confirm below.', ['name' => $source->name, 'amount' => money_text($balance)]));
 
             return;
         }
@@ -127,7 +127,7 @@ class RecordExpenseForm extends Component
             return;
         }
 
-        session()->flash('success', 'Expense recorded.');
+        session()->flash('success', __('Expense recorded.'));
         $this->redirectRoute('expenses.index');
     }
 

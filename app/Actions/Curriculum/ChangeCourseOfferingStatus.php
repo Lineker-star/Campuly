@@ -30,14 +30,14 @@ class ChangeCourseOfferingStatus
                 ->findOrFail($courseOffering->id);
 
             if (!$courseOffering->status->canMoveTo($status)) {
-                throw new InvalidValueException("A {$courseOffering->status->label()} offering cannot move to {$status->label()}.");
+                throw new InvalidValueException(__('A :label offering cannot move to :label2.', ['label' => $courseOffering->status->label(), 'label2' => $status->label()]));
             }
 
             $activeKey = null;
 
             if ($status === CourseOfferingStatus::Active) {
                 if (!$courseOffering->academicPeriod->isOperational() || $courseOffering->academicYear->isClosed()) {
-                    throw new InvalidValueException('Open the academic period before activating its course offering.');
+                    throw new InvalidValueException(__('Open the academic period before activating its course offering.'));
                 }
 
                 $this->ensureRosterIsReady($courseOffering);
@@ -48,7 +48,7 @@ class ChangeCourseOfferingStatus
                 );
 
                 if (CourseOffering::query()->where('active_key', $activeKey)->whereKeyNot($courseOffering->id)->exists()) {
-                    throw new InvalidValueException('An active offering already exists for this subject, period, level, and section group.');
+                    throw new InvalidValueException(__('An active offering already exists for this subject, period, level, and section group.'));
                 }
             }
 
@@ -78,10 +78,10 @@ class ChangeCourseOfferingStatus
         $learnerCount = $courseOffering->studentRecords->count();
 
         match ($courseOffering->roster_mode) {
-            RosterMode::HomeSection => $sectionCount === 1 ?: throw new InvalidValueException('Select exactly one section before activating this course offering.'),
-            RosterMode::CombinedHomeSections => $sectionCount >= 2 ?: throw new InvalidValueException('Select at least two sections before activating this course offering.'),
-            RosterMode::AcademicLevel => ($sectionCount === 0 && $learnerCount === 0) ?: throw new InvalidValueException('A whole-level offering cannot have sections or named learners.'),
-            RosterMode::IndividualRoster => $learnerCount > 0 ?: throw new InvalidValueException('Add at least one named learner before activating this course offering.'),
+            RosterMode::HomeSection => $sectionCount === 1 ?: throw new InvalidValueException(__('Select exactly one section before activating this course offering.')),
+            RosterMode::CombinedHomeSections => $sectionCount >= 2 ?: throw new InvalidValueException(__('Select at least two sections before activating this course offering.')),
+            RosterMode::AcademicLevel => ($sectionCount === 0 && $learnerCount === 0) ?: throw new InvalidValueException(__('A whole-level offering cannot have sections or named learners.')),
+            RosterMode::IndividualRoster => $learnerCount > 0 ?: throw new InvalidValueException(__('Add at least one named learner before activating this course offering.')),
         };
     }
 }

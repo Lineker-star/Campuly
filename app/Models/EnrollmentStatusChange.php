@@ -44,11 +44,11 @@ class EnrollmentStatusChange extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Enrollment history cannot be changed. Record the next change instead.');
+            throw new RuntimeException(__('Enrollment history cannot be changed. Record the next change instead.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Enrollment history cannot be deleted. Record the next change instead.');
+            throw new RuntimeException(__('Enrollment history cannot be deleted. Record the next change instead.'));
         });
     }
 

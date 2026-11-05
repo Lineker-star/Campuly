@@ -30,7 +30,7 @@ class RecordCashDeposit
         ?User $actor = null,
     ): CashDeposit {
         if ($amount <= 0) {
-            throw new InvalidValueException('A cash deposit must be more than nothing.');
+            throw new InvalidValueException(__('A cash deposit must be more than nothing.'));
         }
 
         $period = $this->periods->openFor(current_school_id(), $date);

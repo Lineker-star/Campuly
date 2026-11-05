@@ -37,11 +37,11 @@ class ChangeAcademicCycleSectionStatus
             $from = $section->status;
 
             if (!$from->canMoveTo($status)) {
-                throw new InvalidValueException("A {$from->label()} ".strtolower(school_term('section', 'section'))." cannot become {$status->label()}.");
+                throw new InvalidValueException(__('A :label :term cannot become :label2.', ['label' => $from->label(), 'term' => strtolower(school_term('section', 'section')), 'label2' => $status->label()]));
             }
 
             if ($status === AcademicStructureStatus::Active && $section->academicYear->isClosed()) {
-                throw new InvalidValueException('The academic cycle is closed. Reopen it before activating a section.');
+                throw new InvalidValueException(__('The academic cycle is closed. Reopen it before activating a section.'));
             }
 
             if ($status === AcademicStructureStatus::Archived) {
@@ -81,7 +81,7 @@ class ChangeAcademicCycleSectionStatus
             ->count();
 
         if ($learners > 0) {
-            throw new InvalidValueException("Move the {$learners} learners of this section before archiving it.");
+            throw new InvalidValueException(__('Move the :learners learners of this section before archiving it.', ['learners' => $learners]));
         }
 
         $waiting = AdmissionWaitlistEntry::query()
@@ -90,7 +90,7 @@ class ChangeAcademicCycleSectionStatus
             ->count();
 
         if ($waiting > 0) {
-            throw new InvalidValueException("Decide the {$waiting} open entries of this section's admission queue before archiving it.");
+            throw new InvalidValueException(__('Decide the :waiting open entries of this section\'s admission queue before archiving it.', ['waiting' => $waiting]));
         }
     }
 }

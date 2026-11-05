@@ -20,7 +20,7 @@ class RevokeSystemRole
     public function revoke(User $user, Role $role): void
     {
         if (!$role->isSystemScoped()) {
-            throw new InvalidArgumentException("{$role->value} is not a system-scoped role.");
+            throw new InvalidArgumentException(__(':role is not a system-scoped role.', ['role' => $role->value]));
         }
 
         try {

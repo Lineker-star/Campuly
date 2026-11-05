@@ -39,6 +39,6 @@ class AcademicYearController extends Controller
     {
         $this->academicYear->deleteAcademicYear($academicYear);
 
-        return back()->with('success', 'School calendar deleted successfully');
+        return back()->with('success', __('School calendar deleted successfully'));
     }
 }

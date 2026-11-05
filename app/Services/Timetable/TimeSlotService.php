@@ -109,11 +109,11 @@ class TimeSlotService
         $offering = $timeSlot->timetable->courseOffering;
 
         if ($offering !== null && $kind === 'subject' && $recordableId !== $offering->subject_id) {
-            throw new InvalidValueException('This timetable holds the times of one subject. Place that subject only.');
+            throw new InvalidValueException(__('This timetable holds the times of one subject. Place that subject only.'));
         }
 
         if ($facilityId !== null && !Facility::query()->whereKey($facilityId)->where('school_id', $schoolId)->active()->holdsLessons()->exists()) {
-            throw new InvalidValueException('Choose an open room of this school that can hold a lesson.');
+            throw new InvalidValueException(__('Choose an open room of this school that can hold a lesson.'));
         }
     }
 

@@ -38,7 +38,7 @@ class BoardingRollBoard extends Component
         $day = $this->day();
 
         if ($rollType === null || $day->isFuture()) {
-            $this->notify('A roll can only be taken for today or a day before.', 'danger');
+            $this->notify(__('A roll can only be taken for today or a day before.'), 'danger');
 
             return;
         }
@@ -46,7 +46,7 @@ class BoardingRollBoard extends Component
         $house = Dormitory::query()->inSchool()->active()->find($houseId);
 
         if ($house === null) {
-            $this->notify('This house is no longer open. Reload the page.', 'danger');
+            $this->notify(__('This house is no longer open. Reload the page.'), 'danger');
 
             return;
         }

@@ -35,11 +35,11 @@ class ReversePayment
     public function reverse(StudentPayment $payment, string $reason, ?User $actor = null): StudentPayment
     {
         if ($payment->isReversal()) {
-            throw new InvalidValueException('A reversal cannot be reversed. Record the payment again instead.');
+            throw new InvalidValueException(__('A reversal cannot be reversed. Record the payment again instead.'));
         }
 
         if (trim($reason) === '') {
-            throw new InvalidValueException('Say why the payment is being taken back.');
+            throw new InvalidValueException(__('Say why the payment is being taken back.'));
         }
 
         return DB::transaction(function () use ($payment, $reason, $actor): StudentPayment {
@@ -48,7 +48,7 @@ class ReversePayment
             StudentPayment::query()->whereKey($payment->getKey())->lockForUpdate()->first();
 
             if ($payment->isReversed()) {
-                throw new InvalidValueException('This payment was already taken back.');
+                throw new InvalidValueException(__('This payment was already taken back.'));
             }
 
             $transaction = $payment->ledgerTransaction === null

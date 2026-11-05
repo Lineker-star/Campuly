@@ -37,7 +37,7 @@ class ReportController extends Controller
     {
         $this->authorize('download', $reportRun);
 
-        abort_unless($reportRun->isReady(), 404, 'This report is not ready yet.');
+        abort_unless($reportRun->isReady(), 404, __('This report is not ready yet.'));
         abort_unless(
             $reportRun->file_path !== null && Storage::disk(config('filesystems.private_disk'))->exists($reportRun->file_path),
             410,

@@ -24,7 +24,7 @@ class DeclineWaitlistEntry
             $entry = AdmissionWaitlistEntry::query()->lockForUpdate()->findOrFail($entry->getKey());
 
             if (!$entry->isOpen()) {
-                throw new InvalidValueException('This admission waitlist entry has already been decided.');
+                throw new InvalidValueException(__('This admission waitlist entry has already been decided.'));
             }
 
             $entry->update([

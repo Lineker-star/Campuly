@@ -125,7 +125,7 @@ class StaffProfileRecord extends Component
 
         $this->profile->refresh();
         $this->isEditingJob = false;
-        $this->notify('The employment record was saved.');
+        $this->notify(__('The employment record was saved.'));
     }
 
     public function addCredential(ManageStaffProfile $manageStaffProfile): void
@@ -157,7 +157,7 @@ class StaffProfileRecord extends Component
         ], auth()->user());
 
         $this->reset('credentialType', 'credentialName', 'credentialIssuer', 'credentialIssuedOn', 'credentialExpiresOn');
-        $this->notify('The qualification was added.');
+        $this->notify(__('The qualification was added.'));
     }
 
     public function removeCredential(int $credentialId, ManageStaffProfile $manageStaffProfile): void
@@ -165,7 +165,7 @@ class StaffProfileRecord extends Component
         Gate::authorize('update', $this->profile);
 
         $manageStaffProfile->removeCredential($this->profile->credentials()->findOrFail($credentialId), auth()->user());
-        $this->notify('The qualification was removed.');
+        $this->notify(__('The qualification was removed.'));
     }
 
     public function addHours(ManageStaffProfile $manageStaffProfile): void
@@ -189,7 +189,7 @@ class StaffProfileRecord extends Component
         }
 
         $this->reset('startsAt', 'endsAt');
-        $this->notify('The working hours were added.');
+        $this->notify(__('The working hours were added.'));
     }
 
     public function removeHours(int $hoursId, ManageStaffProfile $manageStaffProfile): void
@@ -197,7 +197,7 @@ class StaffProfileRecord extends Component
         Gate::authorize('update', $this->profile);
 
         $manageStaffProfile->removeHours($this->profile->availabilities()->findOrFail($hoursId), auth()->user());
-        $this->notify('The working hours were removed.');
+        $this->notify(__('The working hours were removed.'));
     }
 
     public function render(StaffAvailabilityService $availability): View

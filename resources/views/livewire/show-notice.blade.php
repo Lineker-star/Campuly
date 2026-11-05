@@ -4,11 +4,11 @@
             <april:badge variant="{{ $notice->status->value === 'published' ? 'default' : 'secondary' }}">
                 {{ $notice->status->label() }}
             </april:badge>
-            <span>Shows {{ local_date(\Illuminate\Support\Carbon::parse($notice->start_date), 'medium') }} to {{ local_date(\Illuminate\Support\Carbon::parse($notice->stop_date), 'medium') }}</span>
+            <span>{{ __('Shows :date to :date2', ['date' => local_date(\Illuminate\Support\Carbon::parse($notice->start_date), 'medium'), 'date2' => local_date(\Illuminate\Support\Carbon::parse($notice->stop_date), 'medium')]) }}</span>
             @if ($audience !== null)
-                <span>For {{ $audience }}</span>
+                <span>{{ __('For :audience', ['audience' => $audience]) }}</span>
                 @if ($notice->send_email)
-                    <span>Also sent by email</span>
+                    <span>{{ __('Also sent by email') }}</span>
                 @endif
             @endif
         </div>
@@ -19,7 +19,7 @@
             @if($notice->hasManagedAttachment())
                 <a class="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white" href="{{ route('notices.attachments.download', $notice) }}">
                     <x-lucide-download class="size-4"  />
-                    Download {{ $notice->attachment_name ?? 'attachment' }}
+                    {{ __('Download :attachment', ['attachment' => $notice->attachment_name ?? 'attachment']) }}
                 </a>
             @endif
         </div>
@@ -30,8 +30,8 @@
                 wire:loading.attr="disabled"
                 class="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-                <span wire:loading.remove wire:target="publishNotice">Publish notice</span>
-                <span wire:loading wire:target="publishNotice">Publishing…</span>
+                <span wire:loading.remove wire:target="publishNotice">{{ __('Publish notice') }}</span>
+                <span wire:loading wire:target="publishNotice">{{ __('Publishing…') }}</span>
             </button>
         @endif
         <x-field-error name="notice" class="mt-3" />

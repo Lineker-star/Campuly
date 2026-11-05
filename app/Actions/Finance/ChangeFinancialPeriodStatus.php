@@ -23,11 +23,11 @@ class ChangeFinancialPeriodStatus
     public function change(FinancialPeriod $period, FinancialPeriodStatus $status, ?string $reason = null, ?User $actor = null): FinancialPeriod
     {
         if ($period->school_id !== current_school_id()) {
-            throw new InvalidValueException('That financial period belongs to another school.');
+            throw new InvalidValueException(__('That financial period belongs to another school.'));
         }
 
         if ($status === FinancialPeriodStatus::Open && trim((string) $reason) === '') {
-            throw new InvalidValueException('Say why this financial period is being reopened.');
+            throw new InvalidValueException(__('Say why this financial period is being reopened.'));
         }
 
         return DB::transaction(function () use ($period, $status, $reason, $actor): FinancialPeriod {
@@ -35,7 +35,7 @@ class ChangeFinancialPeriodStatus
             $period = FinancialPeriod::query()->whereKey($period->id)->lockForUpdate()->firstOrFail();
 
             if ($period->status === $status) {
-                throw new InvalidValueException("This financial period is already {$status->label()}.");
+                throw new InvalidValueException(__('This financial period is already :label.', ['label' => $status->label()]));
             }
 
             $period->forceFill([

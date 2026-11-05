@@ -8,21 +8,21 @@
             @if ($batch->valid_count > 0)
                 <april:button type="button" wire:click="apply" class="h-11 select-none" wire:loading.attr="disabled" wire:target="apply,cancel">
                     <x-lucide-database-backup class="mr-2 size-4" />
-                    Write {{ $batch->valid_count }} {{ Str::plural('row', $batch->valid_count) }}
+                    {{ __('Write :valid_count :valid_count2', ['valid_count' => $batch->valid_count, 'valid_count2' => Str::plural('row', $batch->valid_count)]) }}
                 </april:button>
             @else
-                <span class="text-sm text-muted-foreground">No row passed the check, so there is nothing to write.</span>
+                <span class="text-sm text-muted-foreground">{{ __('No row passed the check, so there is nothing to write.') }}</span>
             @endif
 
             <april:button type="button" variant="outline" wire:click="cancel" wire:confirm="Drop this import? Nothing in it will be written." class="h-11 select-none" wire:loading.attr="disabled" wire:target="apply,cancel">
-                Drop this import
+                {{ __('Drop this import') }}
             </april:button>
         @elseif ($batch->applied_at !== null)
             <span class="text-sm text-muted-foreground">
-                Written on {{ local_date(school_time($batch->applied_at), 'medium') }}. An import runs once.
+                {{ __('Written on :date. An import runs once.', ['date' => local_date(school_time($batch->applied_at), 'medium')]) }}
             </span>
         @else
-            <span class="text-sm text-muted-foreground">This import is finished. Load the file again to run it.</span>
+            <span class="text-sm text-muted-foreground">{{ __('This import is finished. Load the file again to run it.') }}</span>
         @endif
     @endcan
 </div>

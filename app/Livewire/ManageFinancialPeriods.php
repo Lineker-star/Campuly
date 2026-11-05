@@ -63,13 +63,13 @@ class ManageFinancialPeriods extends Component
         });
 
         if ($overlapping !== null) {
-            $this->addError('startsOn', "These dates overlap {$overlapping->name}, {$overlapping->starts_on->format('j M Y')} to {$overlapping->ends_on->format('j M Y')}. Each date can belong to one period only.");
+            $this->addError('startsOn', __('These dates overlap :name, :date to :date2. Each date can belong to one period only.', ['name' => $overlapping->name, 'date' => $overlapping->starts_on->format('j M Y'), 'date2' => $overlapping->ends_on->format('j M Y')]));
 
             return;
         }
 
         $this->reset('isAdding', 'name', 'startsOn', 'endsOn');
-        $this->notify('Financial period added.');
+        $this->notify(__('Financial period added.'));
     }
 
     public function close(int $periodId, ChangeFinancialPeriodStatus $change): void

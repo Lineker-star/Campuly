@@ -30,7 +30,7 @@ class CurriculumLibraryService
         $topics = $syllabus->topics()->get();
 
         if ($topics->isEmpty()) {
-            throw new InvalidValueException('Add topics to the syllabus before saving it to the library.');
+            throw new InvalidValueException(__('Add topics to the syllabus before saving it to the library.'));
         }
 
         return DB::transaction(function () use ($courseOffering, $topics, $name, $description, $actor): CurriculumOutline {
@@ -101,7 +101,7 @@ class CurriculumLibraryService
     public function copyInto(Syllabus $draft, CurriculumOutline|Syllabus $source): int
     {
         if ($draft->fresh()?->status !== SyllabusStatus::Draft) {
-            throw new InvalidValueException('Only a draft syllabus can be changed. Create a revised draft instead.');
+            throw new InvalidValueException(__('Only a draft syllabus can be changed. Create a revised draft instead.'));
         }
 
         $isAllowed = $source instanceof CurriculumOutline
@@ -109,7 +109,7 @@ class CurriculumLibraryService
             : $this->earlierSyllabiFor($draft)->contains('id', $source->id);
 
         if (!$isAllowed) {
-            throw new InvalidValueException('Copy from an outline or syllabus of the same subject in this school.');
+            throw new InvalidValueException(__('Copy from an outline or syllabus of the same subject in this school.'));
         }
 
         return DB::transaction(function () use ($draft, $source): int {

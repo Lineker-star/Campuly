@@ -9,14 +9,14 @@
 
 @section('content')
     <april:card>
-        <slot:title>Lessons you teach</slot:title>
+        <slot:title>{{ __('Lessons you teach') }}</slot:title>
         @if ($timetables->isNotEmpty())
-            <slot:description>From {{ $timetables->pluck('name')->join(', ', ' and ') }}</slot:description>
+            <slot:description>{{ __('From :and', ['and' => $timetables->pluck('name')->join(', ', ' and ')]) }}</slot:description>
         @endif
         <slot:content>
             @if ($days === [])
-                <x-empty-state icon="lucide-calendar-clock" title="No lessons this week"
-                    description="Your lessons appear here when a published timetable places a subject you teach." />
+                <x-empty-state icon="lucide-calendar-clock" title="{{ __('No lessons this week') }}"
+                    :description="__('Your lessons appear here when a published timetable places a subject you teach.')" />
             @else
                 <x-personal-week :days="$days" />
             @endif

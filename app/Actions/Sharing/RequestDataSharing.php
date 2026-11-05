@@ -43,17 +43,17 @@ class RequestDataSharing
         ?User $actor = null,
     ): DataSharingRequest {
         if ($enrollment->school_id === $requestingSchool->id) {
-            throw new InvalidValueException('A school does not ask itself for its own records.');
+            throw new InvalidValueException(__('A school does not ask itself for its own records.'));
         }
 
         if ($categories === []) {
-            throw new InvalidValueException('A request must name what it asks for.');
+            throw new InvalidValueException(__('A request must name what it asks for.'));
         }
 
         $expiry = $expiresOn === null ? null : Carbon::parse($expiresOn)->startOfDay();
 
         if ($expiry !== null && $expiry->lt(school_today($requestingSchool))) {
-            throw new InvalidValueException('A request cannot end before it starts.');
+            throw new InvalidValueException(__('A request cannot end before it starts.'));
         }
 
         return DB::transaction(function () use ($enrollment, $requestingSchool, $purpose, $categories, $expiry, $actor): DataSharingRequest {
@@ -68,7 +68,7 @@ class RequestDataSharing
                 ->contains(fn (DataSharingRequest $open): bool => !$open->hasExpired());
 
             if ($stillOpen) {
-                throw new InvalidValueException('This school already has an open request for that learner. Wait for its answer before asking again.');
+                throw new InvalidValueException(__('This school already has an open request for that learner. Wait for its answer before asking again.'));
             }
 
             $request = DataSharingRequest::create([
@@ -142,15 +142,15 @@ class RequestDataSharing
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException("This request is already {$current->label()}, so it cannot be {$status->label()}.");
+                throw new InvalidValueException(__('This request is already :label, so it cannot be :label2.', ['label' => $current->label(), 'label2' => $status->label()]));
             }
 
             if ($status === DataSharingStatus::Approved && $locked->hasExpired()) {
-                throw new InvalidValueException('This request ran out before it was answered. The other school must ask again.');
+                throw new InvalidValueException(__('This request ran out before it was answered. The other school must ask again.'));
             }
 
             if ($status === DataSharingStatus::Approved && !$locked->isStillHeldByTheAskedSchool()) {
-                throw new InvalidValueException('The learner now attends another campus, so this school no longer holds their records. Decline this request; the other school must ask the learner\'s current campus.');
+                throw new InvalidValueException(__('The learner now attends another campus, so this school no longer holds their records. Decline this request; the other school must ask the learner\'s current campus.'));
             }
 
             $locked->status = $status;

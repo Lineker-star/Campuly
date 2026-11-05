@@ -3,8 +3,8 @@
     ['href' => route('health-records.index'), 'text' => 'Health records', 'active'],
 ]])
 
-@section('title', 'Health records')
-@section('page_heading', 'Health records')
+@section('title', __('Health records'))
+@section('page_heading', __('Health records'))
 
 @section('content')
     @livewire('student-health-record-directory')

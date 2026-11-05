@@ -38,11 +38,11 @@ class SupportPlanNote extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('A support note cannot be changed.');
+            throw new RuntimeException(__('A support note cannot be changed.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('A support note cannot be deleted.');
+            throw new RuntimeException(__('A support note cannot be deleted.'));
         });
     }
 

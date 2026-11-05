@@ -97,11 +97,11 @@ class AssignBoardingPlace
         $current = BoardingPlace::currentFor($enrollment);
 
         if ($current === null || !$current->isBoarding()) {
-            throw new InvalidValueException('This learner is not boarding.');
+            throw new InvalidValueException(__('This learner is not boarding.'));
         }
 
         if (trim($reason) === '') {
-            throw new InvalidValueException('Say why the learner is leaving the house.');
+            throw new InvalidValueException(__('Say why the learner is leaving the house.'));
         }
 
         $place = BoardingPlace::create([
@@ -178,15 +178,15 @@ class AssignBoardingPlace
     private function refuseWhatDoesNotFit(StudentRecord $enrollment, DormitoryBed $bed): void
     {
         if ($enrollment->status->isClosed()) {
-            throw new InvalidValueException('This enrollment is closed, so it cannot take a bed.');
+            throw new InvalidValueException(__('This enrollment is closed, so it cannot take a bed.'));
         }
 
         if ($bed->school_id !== $enrollment->school_id) {
-            throw new InvalidValueException('That bed is on another campus.');
+            throw new InvalidValueException(__('That bed is on another campus.'));
         }
 
         if (!$bed->is_active || $bed->status !== DormitoryBedStatus::Available || $bed->room === null || !$bed->room->is_active || !$bed->room->dormitory?->is_active) {
-            throw new InvalidValueException('That bed is out of use.');
+            throw new InvalidValueException(__('That bed is out of use.'));
         }
 
         $occupant = BoardingPlace::query()
@@ -196,7 +196,7 @@ class AssignBoardingPlace
             ->exists();
 
         if ($occupant) {
-            throw new InvalidValueException('Somebody already sleeps in that bed.');
+            throw new InvalidValueException(__('Somebody already sleeps in that bed.'));
         }
     }
 }

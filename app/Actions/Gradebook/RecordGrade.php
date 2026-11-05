@@ -79,7 +79,7 @@ class RecordGrade
         $period = $courseOffering->academicPeriod ?? $courseOffering->academicYear;
 
         if ($period !== null && $period->isClosed()) {
-            throw new ClosedPeriodException('You cannot grade in a closed academic period.');
+            throw new ClosedPeriodException(__('You cannot grade in a closed academic period.'));
         }
 
         if (!$state->needsPoints()) {
@@ -91,15 +91,15 @@ class RecordGrade
         }
 
         if ($points === null) {
-            throw new InvalidValueException('Give the mark a number, or say why there is none.');
+            throw new InvalidValueException(__('Give the mark a number, or say why there is none.'));
         }
 
         if ($points < 0) {
-            throw new InvalidValueException('A mark cannot be less than zero.');
+            throw new InvalidValueException(__('A mark cannot be less than zero.'));
         }
 
         if ($item->max_points !== null && $points > $item->max_points) {
-            throw new InvalidValueException("A mark cannot be more than $item->max_points.");
+            throw new InvalidValueException(__('A mark cannot be more than :max_points.', ['max_points' => $item->max_points]));
         }
     }
 
@@ -112,14 +112,14 @@ class RecordGrade
     {
         if ($item->type !== GradeItemType::Scale) {
             if ($gradingScaleOptionId !== null) {
-                throw new InvalidValueException('Only a scale-based assessment can use a grade option.');
+                throw new InvalidValueException(__('Only a scale-based assessment can use a grade option.'));
             }
 
             return null;
         }
 
         if ($points !== null) {
-            throw new InvalidValueException('Choose a grade option instead of entering a number for a scale-based assessment.');
+            throw new InvalidValueException(__('Choose a grade option instead of entering a number for a scale-based assessment.'));
         }
 
         if (!$state->needsPoints()) {
@@ -129,11 +129,11 @@ class RecordGrade
         $item->loadMissing('gradingScale');
 
         if ($item->gradingScale === null) {
-            throw new InvalidValueException('This scale-based assessment has no grading scale.');
+            throw new InvalidValueException(__('This scale-based assessment has no grading scale.'));
         }
 
         if ($gradingScaleOptionId === null) {
-            throw new InvalidValueException('Choose a grade option.');
+            throw new InvalidValueException(__('Choose a grade option.'));
         }
 
         $option = GradingScaleOption::query()
@@ -141,7 +141,7 @@ class RecordGrade
             ->find($gradingScaleOptionId);
 
         if ($option === null) {
-            throw new InvalidValueException('Choose an option from this assessment’s grading scale.');
+            throw new InvalidValueException(__('Choose an option from this assessment’s grading scale.'));
         }
 
         return $option;

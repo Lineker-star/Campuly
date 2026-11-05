@@ -82,7 +82,7 @@ class AcademicPeriodContext
     public function academicYearOrFail(): AcademicYear
     {
         if ($this->academicYear === null) {
-            throw new RuntimeException('No academic year is set for this request. Set a working academic year first.');
+            throw new RuntimeException(__('No academic year is set for this request. Set a working academic year first.'));
         }
 
         return $this->academicYear;
@@ -94,7 +94,7 @@ class AcademicPeriodContext
     public function academicPeriodOrFail(): AcademicPeriod
     {
         if ($this->academicPeriod === null) {
-            throw new RuntimeException('No academic period is set for this request. Set a working academic period first.');
+            throw new RuntimeException(__('No academic period is set for this request. Set a working academic period first.'));
         }
 
         return $this->academicPeriod;

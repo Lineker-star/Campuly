@@ -5,8 +5,8 @@
     ['text' => 'Record expense', 'active'],
 ]])
 
-@section('title', 'Record expense')
-@section('page_heading', 'Record expense')
+@section('title', __('Record expense'))
+@section('page_heading', __('Record expense'))
 
 @section('content')
     <livewire:record-expense-form />

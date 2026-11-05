@@ -37,15 +37,15 @@ class SubmitPortalRequest
         $person ??= auth()->user();
 
         if ($person === null) {
-            throw new InvalidValueException('A request needs a signed-in person.');
+            throw new InvalidValueException(__('A request needs a signed-in person.'));
         }
 
         if (!$this->access->areaIsOpen(PortalArea::Requests, $enrollment->school_id)) {
-            throw new InvalidValueException('This school does not take requests through the portal.');
+            throw new InvalidValueException(__('This school does not take requests through the portal.'));
         }
 
         if (!$this->access->canRead($person, $enrollment)) {
-            throw new InvalidValueException('This person cannot ask about this student.');
+            throw new InvalidValueException(__('This person cannot ask about this student.'));
         }
 
         // A learner who moved asks their new campus afresh, even while the
@@ -59,7 +59,7 @@ class SubmitPortalRequest
             ->exists();
 
         if ($alreadyAsked) {
-            throw new InvalidValueException('You already asked for this. The school has not answered yet.');
+            throw new InvalidValueException(__('You already asked for this. The school has not answered yet.'));
         }
 
         return PortalRequest::create([
@@ -87,11 +87,11 @@ class SubmitPortalRequest
             $request->setRawAttributes(PortalRequest::query()->lockForUpdate()->findOrFail($request->getKey())->getAttributes(), true);
 
             if ($request->requested_by !== $person->id) {
-                throw new InvalidValueException('Only the person who asked can take this request back.');
+                throw new InvalidValueException(__('Only the person who asked can take this request back.'));
             }
 
             if (!$request->status->isOpen()) {
-                throw new InvalidValueException('The school has already closed this request.');
+                throw new InvalidValueException(__('The school has already closed this request.'));
             }
 
             $request->status = PortalRequestStatus::Cancelled;
@@ -129,11 +129,11 @@ class SubmitPortalRequest
             $current = $request->status;
 
             if ($current === PortalRequestStatus::Cancelled) {
-                throw new InvalidValueException('The family took this request back. It cannot change now.');
+                throw new InvalidValueException(__('The family took this request back. It cannot change now.'));
             }
 
             if (!$current->isOpen()) {
-                throw new InvalidValueException('This request is already '.strtolower($current->label()).'. It cannot change now.');
+                throw new InvalidValueException(__('This request is already :label. It cannot change now.', ['label' => strtolower($current->label())]));
             }
 
             if ($current === $status) {
@@ -141,7 +141,7 @@ class SubmitPortalRequest
             }
 
             if (!$current->canMoveTo($status)) {
-                throw new InvalidValueException('A request that is '.strtolower($current->label()).' cannot move to '.strtolower($status->label()).'.');
+                throw new InvalidValueException(__('A request that is :label cannot move to :label2.', ['label' => strtolower($current->label()), 'label2' => strtolower($status->label())]));
             }
 
             $request->status = $status;

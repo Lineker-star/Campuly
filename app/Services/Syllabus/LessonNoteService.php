@@ -31,15 +31,15 @@ class LessonNoteService
     public function save(Syllabus $syllabus, ?int $academicCycleSectionId, array $data, User $author, ?LessonNote $note = null): LessonNote
     {
         if ($syllabus->fresh()?->status !== SyllabusStatus::Published) {
-            throw new InvalidValueException('Lesson notes are written against the published syllabus only.');
+            throw new InvalidValueException(__('Lesson notes are written against the published syllabus only.'));
         }
 
         if (!in_array($academicCycleSectionId, array_column($this->coverage->tracks($syllabus), 'id'), true)) {
-            throw new InvalidValueException('That class does not take this course offering.');
+            throw new InvalidValueException(__('That class does not take this course offering.'));
         }
 
         if ($data['syllabus_topic_id'] !== null && !$syllabus->topics()->whereKey($data['syllabus_topic_id'])->exists()) {
-            throw new InvalidValueException('That topic is not in the published syllabus.');
+            throw new InvalidValueException(__('That topic is not in the published syllabus.'));
         }
 
         return DB::transaction(function () use ($syllabus, $academicCycleSectionId, $data, $author, $note): LessonNote {
@@ -47,7 +47,7 @@ class LessonNoteService
                 $note = LessonNote::query()->lockForUpdate()->findOrFail($note->id);
 
                 if (!$note->status->isEditable() || $note->course_offering_id !== $syllabus->course_offering_id) {
-                    throw new InvalidValueException('This lesson note can no longer be changed.');
+                    throw new InvalidValueException(__('This lesson note can no longer be changed.'));
                 }
             }
 
@@ -61,7 +61,7 @@ class LessonNoteService
                 ->exists();
 
             if ($duplicate) {
-                throw new InvalidValueException("You already have a lesson note for week {$data['week']} of this class. Edit that note instead.");
+                throw new InvalidValueException(__('You already have a lesson note for week :week of this class. Edit that note instead.', ['week' => $data['week']]));
             }
 
             $note ??= new LessonNote([
@@ -84,7 +84,7 @@ class LessonNoteService
             $note = LessonNote::query()->lockForUpdate()->findOrFail($note->id);
 
             if (!$note->status->isEditable()) {
-                throw new InvalidValueException('This lesson note was already sent for review.');
+                throw new InvalidValueException(__('This lesson note was already sent for review.'));
             }
 
             $note->update(['status' => LessonNoteStatus::Submitted, 'submitted_at' => now()]);
@@ -119,7 +119,7 @@ class LessonNoteService
             $note = LessonNote::query()->lockForUpdate()->findOrFail($note->id);
 
             if (!$note->status->isEditable()) {
-                throw new InvalidValueException('Only a draft or a returned lesson note can be deleted.');
+                throw new InvalidValueException(__('Only a draft or a returned lesson note can be deleted.'));
             }
 
             $note->delete();
@@ -132,7 +132,7 @@ class LessonNoteService
             $note = LessonNote::query()->lockForUpdate()->findOrFail($note->id);
 
             if ($note->status !== LessonNoteStatus::Submitted) {
-                throw new InvalidValueException('This lesson note is not waiting for review.');
+                throw new InvalidValueException(__('This lesson note is not waiting for review.'));
             }
 
             $note->update([

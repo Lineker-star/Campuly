@@ -4,13 +4,13 @@
     ['text' => 'Programmes', 'active'],
 ]])
 
-@section('title', 'Programmes')
-@section('page_heading', 'Programmes')
+@section('title', __('Programmes'))
+@section('page_heading', __('Programmes'))
 
 @section('content')
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-5">
         <p class="text-sm text-muted-foreground">
-            Clubs and activities recorded for {{ $studentRecord->user?->name }} · {{ $studentRecord->school?->name }}.
+            {{ __('Clubs and activities recorded for :name · :name2.', ['name' => $studentRecord->user?->name, 'name2' => $studentRecord->school?->name]) }}
         </p>
 
         @forelse ($participations as $participation)
@@ -26,11 +26,11 @@
                     @endif
                     <dl class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                         @if ($participation->schedule)
-                            <div><dt class="inline font-medium">Schedule:</dt> <dd class="inline">{{ $participation->schedule }}</dd></div>
+                            <div><dt class="inline font-medium">{{ __('Schedule:') }}</dt> <dd class="inline">{{ $participation->schedule }}</dd></div>
                         @endif
                         @if ($participation->starts_on || $participation->ends_on)
                             <div>
-                                <dt class="inline font-medium">Dates:</dt>
+                                <dt class="inline font-medium">{{ __('Dates:') }}</dt>
                                 <dd class="inline">{{ local_date($participation->starts_on, 'medium') ?? 'Not set' }} – {{ local_date($participation->ends_on, 'medium') ?? 'Not set' }}</dd>
                             </div>
                         @endif
@@ -40,8 +40,8 @@
         @empty
             <x-empty-state
                 icon="lucide-sparkles"
-                title="No club or activity places yet"
-                description="When the school records a place in a club or activity, it will appear here." />
+                title="{{ __('No club or activity places yet') }}"
+                :description="__('When the school records a place in a club or activity, it will appear here.')" />
         @endforelse
     </div>
 @endsection

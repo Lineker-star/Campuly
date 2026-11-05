@@ -85,7 +85,7 @@ class GradebookMarkSheet extends Component
     {
         if ($this->changedStudentIds() !== []) {
             $this->gradeItemId = $this->openItemId;
-            $this->addError('gradeItemId', 'Save these marks first, or put them back.');
+            $this->addError('gradeItemId', __('Save these marks first, or put them back.'));
 
             return;
         }
@@ -128,7 +128,7 @@ class GradebookMarkSheet extends Component
         $item = $this->selectedItem();
 
         if ($item === null || !$this->acceptsMarks()) {
-            $this->addError('sheet', 'This gradebook takes no marks now.');
+            $this->addError('sheet', __('This gradebook takes no marks now.'));
 
             return;
         }
@@ -219,7 +219,7 @@ class GradebookMarkSheet extends Component
         Gate::authorize('publishResult', $this->courseOffering);
 
         if (!$this->acceptsMarks()) {
-            $this->notify('This gradebook takes no results now.', 'danger');
+            $this->notify(__('This gradebook takes no results now.'), 'danger');
 
             return;
         }
@@ -235,7 +235,7 @@ class GradebookMarkSheet extends Component
             return;
         }
 
-        $this->notify('Sent for approval.');
+        $this->notify(__('Sent for approval.'));
     }
 
     public function approveResult(int $resultId, ApproveResult $approveResult): void
@@ -250,7 +250,7 @@ class GradebookMarkSheet extends Component
             return;
         }
 
-        $this->notify('Approved. The result is official now.');
+        $this->notify(__('Approved. The result is official now.'));
     }
 
     public function startRejecting(int $resultId): void
@@ -286,7 +286,7 @@ class GradebookMarkSheet extends Component
         }
 
         $this->stopRejecting();
-        $this->notify('Sent back to the teacher.');
+        $this->notify(__('Sent back to the teacher.'));
     }
 
     public function render(): View

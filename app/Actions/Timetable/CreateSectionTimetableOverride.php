@@ -20,13 +20,13 @@ class CreateSectionTimetableOverride
     public function create(Timetable $template, AcademicCycleSection $section, ?User $actor = null): Timetable
     {
         if ($template->status !== TimetableStatus::Published) {
-            throw new InvalidValueException('Only a published timetable can be used as a section template.');
+            throw new InvalidValueException(__('Only a published timetable can be used as a section template.'));
         }
 
         if ($template->academic_period_id !== current_academic_period_id()
             || $section->academic_year_id !== $template->academicPeriod->academic_year_id
             || $section->school_id !== $template->academicCycleSection->school_id) {
-            throw new InvalidValueException('The template and target section must belong to the same campus and academic cycle.');
+            throw new InvalidValueException(__('The template and target section must belong to the same campus and academic cycle.'));
         }
 
         return DB::transaction(function () use ($template, $section, $actor): Timetable {
@@ -40,7 +40,7 @@ class CreateSectionTimetableOverride
                 ->exists();
 
             if ($existing) {
-                throw new InvalidValueException('That section already has its own version of this timetable. Open it instead of starting another.');
+                throw new InvalidValueException(__('That section already has its own version of this timetable. Open it instead of starting another.'));
             }
 
             $override = Timetable::create([

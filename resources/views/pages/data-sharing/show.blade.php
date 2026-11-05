@@ -4,8 +4,8 @@
     ['text' => 'Request', 'active'],
 ]])
 
-@section('title', 'Record sharing request')
-@section('page_heading', 'Record sharing request')
+@section('title', __('Record sharing request'))
+@section('page_heading', __('Record sharing request'))
 
 @section('content')
     <livewire:show-data-sharing-request :sharing-request="$sharingRequest" />

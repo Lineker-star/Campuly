@@ -3,8 +3,8 @@
     ['text' => 'Attendance register', 'active'],
 ]])
 
-@section('title', 'Attendance register')
-@section('page_heading', 'Attendance register')
+@section('title', __('Attendance register'))
+@section('page_heading', __('Attendance register'))
 
 @section('content')
     <livewire:attendance-register />

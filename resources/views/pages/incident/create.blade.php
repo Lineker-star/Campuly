@@ -4,8 +4,8 @@
     ['text' => 'Record a case', 'active'],
 ]])
 
-@section('title', 'Record a case')
-@section('page_heading', 'Record a case')
+@section('title', __('Record a case'))
+@section('page_heading', __('Record a case'))
 
 @section('content')
     @livewire('create-incident')

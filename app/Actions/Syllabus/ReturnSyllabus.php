@@ -23,14 +23,14 @@ class ReturnSyllabus
         $reviewNote = trim($reviewNote);
 
         if ($reviewNote === '') {
-            throw new InvalidValueException('Say what needs to change before sending the syllabus back.');
+            throw new InvalidValueException(__('Say what needs to change before sending the syllabus back.'));
         }
 
         $returned = DB::transaction(function () use ($syllabus, $reviewNote, $actor): Syllabus {
             $syllabus = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->id);
 
             if ($syllabus->status !== SyllabusStatus::Submitted) {
-                throw new InvalidValueException('Only a syllabus waiting for review can be sent back.');
+                throw new InvalidValueException(__('Only a syllabus waiting for review can be sent back.'));
             }
 
             $syllabus->update(['status' => SyllabusStatus::Draft, 'review_note' => $reviewNote]);

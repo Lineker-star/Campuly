@@ -26,11 +26,11 @@ class ReviseSyllabus
             $syllabus = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->id);
 
             if ($syllabus->status !== SyllabusStatus::Published) {
-                throw new InvalidValueException('Only a published syllabus can be revised.');
+                throw new InvalidValueException(__('Only a published syllabus can be revised.'));
             }
 
             if ($syllabus->openRevision() !== null) {
-                throw new InvalidValueException('A revision of this syllabus is already open or waiting for review. Finish it first.');
+                throw new InvalidValueException(__('A revision of this syllabus is already open or waiting for review. Finish it first.'));
             }
 
             $revision = Syllabus::create([

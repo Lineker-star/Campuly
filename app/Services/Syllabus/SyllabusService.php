@@ -27,11 +27,11 @@ class SyllabusService
             ->findOrFail($data['course_offering_id']);
 
         if ($courseOffering->academicPeriod->isClosed()) {
-            throw new InvalidValueException('Reopen the academic period before adding a syllabus.');
+            throw new InvalidValueException(__('Reopen the academic period before adding a syllabus.'));
         }
 
         if ($courseOffering->status === CourseOfferingStatus::Archived) {
-            throw new InvalidValueException('This course offering is archived. Choose an offering that is still in use.');
+            throw new InvalidValueException(__('This course offering is archived. Choose an offering that is still in use.'));
         }
 
         $file = isset($data['file']) ? $data['file']->store('syllabus', config('filesystems.public_disk')) : null;
@@ -94,7 +94,7 @@ class SyllabusService
 
         if ($topic !== null) {
             if ($topic->syllabus_id !== $syllabus->id) {
-                throw new InvalidValueException('That topic belongs to another syllabus.');
+                throw new InvalidValueException(__('That topic belongs to another syllabus.'));
             }
 
             $topic->update($attributes);
@@ -115,7 +115,7 @@ class SyllabusService
         $this->ensureDraft($syllabus);
 
         if ($topic->syllabus_id !== $syllabus->id) {
-            throw new InvalidValueException('That topic belongs to another syllabus.');
+            throw new InvalidValueException(__('That topic belongs to another syllabus.'));
         }
 
         $topic->delete();
@@ -124,7 +124,7 @@ class SyllabusService
     public function deleteSyllabus(Syllabus $syllabus): void
     {
         if ($syllabus->status !== SyllabusStatus::Draft) {
-            throw new InvalidValueException('Published syllabus revisions are immutable. Create a revised draft instead.');
+            throw new InvalidValueException(__('Published syllabus revisions are immutable. Create a revised draft instead.'));
         }
 
         $file = $syllabus->file;
@@ -141,7 +141,7 @@ class SyllabusService
     private function ensureDraft(Syllabus $syllabus): void
     {
         if ($syllabus->fresh()?->status !== SyllabusStatus::Draft) {
-            throw new InvalidValueException('Only a draft syllabus can be changed. Create a revised draft instead.');
+            throw new InvalidValueException(__('Only a draft syllabus can be changed. Create a revised draft instead.'));
         }
     }
 

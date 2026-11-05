@@ -39,7 +39,7 @@ class ChangeAcademicLevelStatus
             $from = $academicLevel->status;
 
             if (!$from->canMoveTo($status)) {
-                throw new InvalidValueException("A {$from->label()} ".strtolower(school_term('class_level', 'class'))." cannot become {$status->label()}.");
+                throw new InvalidValueException(__('A :label :term cannot become :label2.', ['label' => $from->label(), 'term' => strtolower(school_term('class_level', 'class')), 'label2' => $status->label()]));
             }
 
             if ($status === AcademicStructureStatus::Archived) {
@@ -71,7 +71,7 @@ class ChangeAcademicLevelStatus
             ->count();
 
         if ($running > 0) {
-            throw new InvalidValueException("Archive the {$running} draft or active ".strtolower(school_terms('section', 'sections')).' of this '.strtolower(school_term('class_level', 'class')).' first.');
+            throw new InvalidValueException(__('Archive the :running draft or active :term of this :term2 first.', ['running' => $running, 'term' => strtolower(school_terms('section', 'sections')), 'term2' => strtolower(school_term('class_level', 'class'))]));
         }
     }
 }

@@ -40,15 +40,15 @@ class FulfilDataSharingRequest
             $request = DataSharingRequest::query()->lockForUpdate()->findOrFail($request->id);
 
             if (!$request->status->allowsFulfilment()) {
-                throw new InvalidValueException('Only an approved request can be handed over.');
+                throw new InvalidValueException(__('Only an approved request can be handed over.'));
             }
 
             if ($request->hasExpired()) {
-                throw new InvalidValueException('This permission has run out.');
+                throw new InvalidValueException(__('This permission has run out.'));
             }
 
             if (!$request->isStillHeldByTheAskedSchool()) {
-                throw new InvalidValueException('The learner now attends another campus, so this school no longer holds their records. Decline this request; the other school must ask the learner\'s current campus.');
+                throw new InvalidValueException(__('The learner now attends another campus, so this school no longer holds their records. Decline this request; the other school must ask the learner\'s current campus.'));
             }
 
             $package = TransferPackage::create([
@@ -85,14 +85,14 @@ class FulfilDataSharingRequest
     public function receive(TransferPackage $package, ?StudentRecord $enrollment = null, ?User $actor = null): TransferPackage
     {
         if ($enrollment !== null && $enrollment->school_id !== $package->destination_school_id) {
-            throw new InvalidValueException('That enrollment is not in the school the package was sent to.');
+            throw new InvalidValueException(__('That enrollment is not in the school the package was sent to.'));
         }
 
         return DB::transaction(function () use ($package, $enrollment, $actor): TransferPackage {
             $package = TransferPackage::query()->lockForUpdate()->findOrFail($package->id);
 
             if ($package->wasReceived()) {
-                throw new InvalidValueException('This package was already taken in.');
+                throw new InvalidValueException(__('This package was already taken in.'));
             }
 
             // Taking the permission back after the hand-over still counts
@@ -100,11 +100,11 @@ class FulfilDataSharingRequest
             $request = DataSharingRequest::query()->findOrFail($package->data_sharing_request_id);
 
             if ($request->status === DataSharingStatus::Revoked) {
-                throw new InvalidValueException('The other school took this permission back. The records cannot be taken in.');
+                throw new InvalidValueException(__('The other school took this permission back. The records cannot be taken in.'));
             }
 
             if ($request->hasExpired()) {
-                throw new InvalidValueException('This permission ran out before the records were taken in. Ask the other school again.');
+                throw new InvalidValueException(__('This permission ran out before the records were taken in. Ask the other school again.'));
             }
 
             $package->forceFill([

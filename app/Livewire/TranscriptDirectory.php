@@ -79,7 +79,7 @@ class TranscriptDirectory extends Component
         }
 
         $this->reset(['student_record_id', 'reason']);
-        $this->notify('Transcript issued.');
+        $this->notify(__('Transcript issued.'));
     }
 
     public function render(): View

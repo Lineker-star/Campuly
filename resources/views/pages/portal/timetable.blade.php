@@ -4,24 +4,24 @@
     ['text' => 'Timetable', 'active'],
 ]])
 
-@section('title', 'Timetable')
-@section('page_heading', 'Timetable')
+@section('title', __('Timetable'))
+@section('page_heading', __('Timetable'))
 
 @section('content')
     <div class="flex w-full flex-col gap-5">
         <p class="text-sm text-muted-foreground">
-            The week of {{ $studentRecord->user?->name }}, with the lessons they take · {{ $studentRecord->school?->name }}.
+            {{ __('The week of :name, with the lessons they take · :name2.', ['name' => $studentRecord->user?->name, 'name2' => $studentRecord->school?->name]) }}
         </p>
 
         <april:card>
-            <slot:title>This week</slot:title>
+            <slot:title>{{ __('This week') }}</slot:title>
             @if ($timetables->isNotEmpty())
-                <slot:description>From {{ $timetables->pluck('name')->join(', ', ' and ') }}</slot:description>
+                <slot:description>{{ __('From :and', ['and' => $timetables->pluck('name')->join(', ', ' and ')]) }}</slot:description>
             @endif
             <slot:content>
                 @if ($days === [])
-                    <x-empty-state icon="lucide-clock" title="No timetable yet"
-                        description="The timetable appears here when the school publishes it." />
+                    <x-empty-state icon="lucide-clock" title="{{ __('No timetable yet') }}"
+                        :description="__('The timetable appears here when the school publishes it.')" />
                 @else
                     <x-personal-week :days="$days" />
                 @endif

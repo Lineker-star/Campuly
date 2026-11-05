@@ -85,23 +85,23 @@ class JoinWaitlist
     private function refuseWhatDoesNotFit(AcademicCycleSection $section, User $candidate): void
     {
         if ($section->status !== AcademicStructureStatus::Active) {
-            throw new InvalidValueException('Activate the '.strtolower(school_term('section', 'section')).' before opening its admission queue.');
+            throw new InvalidValueException(__('Activate the :term before opening its admission queue.', ['term' => strtolower(school_term('section', 'section'))]));
         }
 
         if ($section->academicYear->isClosed()) {
-            throw new InvalidValueException('The academic cycle is closed. Reopen it before using its admission queue.');
+            throw new InvalidValueException(__('The academic cycle is closed. Reopen it before using its admission queue.'));
         }
 
         if ($section->capacity === null) {
-            throw new InvalidValueException('This section has no capacity limit, so it does not need an admission waitlist.');
+            throw new InvalidValueException(__('This section has no capacity limit, so it does not need an admission waitlist.'));
         }
 
         if (!$candidate->belongsToSchool($section->school_id)) {
-            throw new InvalidValueException('This candidate does not belong to the school.');
+            throw new InvalidValueException(__('This candidate does not belong to the school.'));
         }
 
         if ($candidate->worksAsStaff()) {
-            throw new InvalidValueException("{$candidate->name} works as staff. A member of staff cannot be admitted as a learner.");
+            throw new InvalidValueException(__(':name works as staff. A member of staff cannot be admitted as a learner.', ['name' => $candidate->name]));
         }
 
         if (StudentRecord::query()
@@ -109,12 +109,12 @@ class JoinWaitlist
             ->where('user_id', $candidate->id)
             ->enrolled()
             ->exists()) {
-            throw new InvalidValueException('This candidate is already enrolled in the school.');
+            throw new InvalidValueException(__('This candidate is already enrolled in the school.'));
         }
 
         // A seat offered to a waiting family is not free to somebody new.
         if (!$this->seats->isFull($section)) {
-            throw new InvalidValueException('This section still has a place. Enrol the candidate instead of waitlisting them.');
+            throw new InvalidValueException(__('This section still has a place. Enrol the candidate instead of waitlisting them.'));
         }
     }
 }

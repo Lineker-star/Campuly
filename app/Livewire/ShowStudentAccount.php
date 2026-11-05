@@ -82,7 +82,7 @@ class ShowStudentAccount extends Component
             return;
         }
 
-        $this->notify(money(BrickMoney::ofMinor($applied, config('app.currency'))).' of credit was used against fees owed.');
+        $this->notify(__(':amount of credit was used against fees owed.', ['amount' => money(BrickMoney::ofMinor($applied, config('app.currency')))]));
     }
 
     public function startReversing(int $paymentId): void
@@ -113,7 +113,7 @@ class ShowStudentAccount extends Component
         }
 
         $this->reset('reversingPaymentId', 'reverseReason');
-        $this->notify('The payment was taken back.');
+        $this->notify(__('The payment was taken back.'));
     }
 
     /**
@@ -158,7 +158,7 @@ class ShowStudentAccount extends Component
 
         $this->reset('isRefunding', 'refundAmount', 'refundReason', 'refundReference');
         $this->startNextRecord();
-        $this->notify('The refund was recorded.');
+        $this->notify(__('The refund was recorded.'));
     }
 
     public function startRelieving(int $invoiceId): void
@@ -195,7 +195,7 @@ class ShowStudentAccount extends Component
         $line = $this->invoice((int) $this->relievingInvoiceId)->feeInvoiceRecords->firstWhere('id', (int) $this->reliefLineId);
 
         if ($line === null) {
-            $this->addError('reliefLineId', 'Choose a fee on this invoice.');
+            $this->addError('reliefLineId', __('Choose a fee on this invoice.'));
 
             return;
         }
@@ -216,7 +216,7 @@ class ShowStudentAccount extends Component
 
         $this->reset('relievingInvoiceId', 'reliefLineId', 'reliefAmount', 'reliefKind', 'reliefReason');
         $this->startNextRecord();
-        $this->notify('The fee was taken off.');
+        $this->notify(__('The fee was taken off.'));
     }
 
     public function cancel(): void

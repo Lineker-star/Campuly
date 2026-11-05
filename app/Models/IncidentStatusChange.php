@@ -43,11 +43,11 @@ class IncidentStatusChange extends Model
     protected static function booted(): void
     {
         static::updating(function (): void {
-            throw new RuntimeException('Case history cannot be changed.');
+            throw new RuntimeException(__('Case history cannot be changed.'));
         });
 
         static::deleting(function (): void {
-            throw new RuntimeException('Case history cannot be deleted.');
+            throw new RuntimeException(__('Case history cannot be deleted.'));
         });
     }
 

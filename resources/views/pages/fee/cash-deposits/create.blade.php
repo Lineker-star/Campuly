@@ -5,8 +5,8 @@
     ['text' => 'Record cash deposit', 'active'],
 ]])
 
-@section('title', 'Record cash deposit')
-@section('page_heading', 'Record cash deposit')
+@section('title', __('Record cash deposit'))
+@section('page_heading', __('Record cash deposit'))
 
 @section('content')
     <livewire:record-cash-deposit-form />

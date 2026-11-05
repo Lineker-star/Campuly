@@ -35,16 +35,16 @@ class SaveAcademicCalendar
         $endsOn = $endsOn->copy()->startOfDay();
 
         if ($endsOn->lt($startsOn)) {
-            throw new InvalidValueException('A school calendar cannot end before it starts.');
+            throw new InvalidValueException(__('A school calendar cannot end before it starts.'));
         }
 
         if ($academicYear !== null) {
             if ($academicYear->school_id !== $school->id) {
-                throw new InvalidValueException('That school calendar belongs to another school.');
+                throw new InvalidValueException(__('That school calendar belongs to another school.'));
             }
 
             if ($academicYear->status !== AcademicPeriodStatus::Draft) {
-                throw new InvalidValueException('Publish a calendar only after its dates are final. Published calendars are changed from their detail page.');
+                throw new InvalidValueException(__('Publish a calendar only after its dates are final. Published calendars are changed from their detail page.'));
             }
         }
 
@@ -85,7 +85,7 @@ class SaveAcademicCalendar
                 $periodModel = $period['id'] === null ? null : $existingPeriods->get($period['id']);
 
                 if ($period['id'] !== null && $periodModel === null) {
-                    throw new InvalidValueException('That reporting period does not belong to this school calendar.');
+                    throw new InvalidValueException(__('That reporting period does not belong to this school calendar.'));
                 }
 
                 $attributes = [
@@ -133,7 +133,7 @@ class SaveAcademicCalendar
     private function preparePeriods(array $periods, Carbon $calendarStartsOn, Carbon $calendarEndsOn): array
     {
         if ($periods === []) {
-            throw new InvalidValueException('Add at least one reporting period to the school calendar.');
+            throw new InvalidValueException(__('Add at least one reporting period to the school calendar.'));
         }
 
         $prepared = [];
@@ -144,15 +144,15 @@ class SaveAcademicCalendar
             $type = AcademicPeriodType::from($period['type']);
 
             if (!$type->isPrimaryDivision() && $type !== AcademicPeriodType::Other) {
-                throw new InvalidValueException('A school calendar can only use terms, semesters, trimesters, quarters, or custom reporting periods.');
+                throw new InvalidValueException(__('A school calendar can only use terms, semesters, trimesters, quarters, or custom reporting periods.'));
             }
 
             if ($endsOn->lt($startsOn)) {
-                throw new InvalidValueException("{$period['name']} cannot end before it starts.");
+                throw new InvalidValueException(__(':name cannot end before it starts.', ['name' => $period['name']]));
             }
 
             if ($startsOn->lt($calendarStartsOn) || $endsOn->gt($calendarEndsOn)) {
-                throw new InvalidValueException("{$period['name']} must sit inside the school calendar dates.");
+                throw new InvalidValueException(__(':name must sit inside the school calendar dates.', ['name' => $period['name']]));
             }
 
             $prepared[] = [
@@ -168,7 +168,7 @@ class SaveAcademicCalendar
 
         foreach ($prepared as $position => $period) {
             if ($position > 0 && $period['starts_on']->lte($prepared[$position - 1]['ends_on'])) {
-                throw new InvalidValueException("{$period['name']} overlaps {$prepared[$position - 1]['name']}.");
+                throw new InvalidValueException(__(':name overlaps :name2.', ['name' => $period['name'], 'name2' => $prepared[$position - 1]['name']]));
             }
         }
 
@@ -186,7 +186,7 @@ class SaveAcademicCalendar
             ->first();
 
         if ($overlap !== null) {
-            throw new InvalidValueException("This calendar overlaps {$overlap->name}.");
+            throw new InvalidValueException(__('This calendar overlaps :name.', ['name' => $overlap->name]));
         }
     }
 
@@ -217,7 +217,7 @@ class SaveAcademicCalendar
             $period = $periods->get($periodId);
 
             throw new InvalidValueException(
-                "{$period->displayName} has {$count} timetable(s). Keep this period or move its timetables before removing it."
+                __(':name has :count timetable(s). Keep this period or move its timetables before removing it.', ['name' => $period->displayName, 'count' => $count])
             );
         }
     }

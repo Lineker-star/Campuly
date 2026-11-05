@@ -206,7 +206,7 @@ class InitCommand extends Command
         if ($successfulConnection == false) {
             $this->error('Max db attempts exceeded please retry installation'.PHP_EOL);
 
-            throw new \Exception('Max db connections reached.');
+            throw new \Exception(__('Max db connections reached.'));
         }
 
         $this->newLine();

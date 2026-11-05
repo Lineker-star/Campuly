@@ -10,9 +10,9 @@
 
 @section('content')
     <april:card class="mx-auto max-w-3xl">
-        <slot:title>Edit the reusable {{ strtolower(school_term('class_level', 'class')) }}</slot:title>
+        <slot:title>{{ __('Edit the reusable :term', ['term' => strtolower(school_term('class_level', 'class'))]) }}</slot:title>
         <slot:description>
-            A change here renames the {{ strtolower(school_term('class_level', 'class')) }} everywhere it is read. It never moves a learner, a result, or {{ with_indefinite_article(strtolower(school_term('section', 'section'))) }} between school years.
+            {{ __('A change here renames the :term everywhere it is read. It never moves a learner, a result, or :section between school years.', ['term' => strtolower(school_term('class_level', 'class')), 'section' => with_indefinite_article(strtolower(school_term('section', 'section')))]) }}
         </slot:description>
         <slot:content>
             <livewire:academic-level-form :academic-level="$academicLevel" />

@@ -86,11 +86,11 @@ class CloseReservation
             $reservation = LibraryReservation::query()->lockForUpdate()->findOrFail($reservation->getKey());
 
             if (!$reservation->isOpen()) {
-                throw new InvalidValueException('This reservation has already ended.');
+                throw new InvalidValueException(__('This reservation has already ended.'));
             }
 
             if ($status === LibraryReservationStatus::Expired && $reservation->status !== LibraryReservationStatus::Ready) {
-                throw new InvalidValueException('Only a copy behind the desk can run out of time.');
+                throw new InvalidValueException(__('Only a copy behind the desk can run out of time.'));
             }
 
             $reservation->load('title');

@@ -3,14 +3,14 @@
     ['href' => route('calendar-events.index'), 'text' => 'Calendar', 'active'],
 ]])
 
-@section('title', 'Calendar')
-@section('page_heading', 'Calendar')
+@section('title', __('Calendar'))
+@section('page_heading', __('Calendar'))
 
 @section('page_actions')
     @can('create', App\Models\CalendarEvent::class)
         <april:button-link href="{{ route('calendar-events.create') }}">
             <x-lucide-plus class="mr-2 size-4" />
-            Add a day
+            {{ __('Add a day') }}
         </april:button-link>
     @endcan
 @endsection

@@ -30,11 +30,11 @@ class AttachDormitoryToBoardingResidence
             $school = $dormitory->school()->firstOrFail();
 
             if ($school->organization_id !== $residence->organization_id) {
-                throw new InvalidValueException('That house belongs to another organization.');
+                throw new InvalidValueException(__('That house belongs to another organization.'));
             }
 
             if (!$residence->schools()->whereKey($school->id)->exists()) {
-                throw new InvalidValueException('Link the campus to this residence before adding its house.');
+                throw new InvalidValueException(__('Link the campus to this residence before adding its house.'));
             }
 
             if ($dormitory->boarding_residence_id === $residence->id) {
@@ -42,7 +42,7 @@ class AttachDormitoryToBoardingResidence
             }
 
             if ($dormitory->boarding_residence_id !== null) {
-                throw new InvalidValueException('Move this house out of its current residence first.');
+                throw new InvalidValueException(__('Move this house out of its current residence first.'));
             }
 
             $dormitory->update(['boarding_residence_id' => $residence->id]);

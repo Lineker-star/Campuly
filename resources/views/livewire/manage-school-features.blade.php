@@ -3,7 +3,7 @@
         $switchClasses = 'relative h-6 w-10 shrink-0 cursor-pointer appearance-none rounded-full transition-colors before:absolute before:left-0.5 before:top-0.5 before:size-5 before:rounded-full before:bg-background before:shadow before:transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2';
     @endphp
 
-    <p class="text-sm text-muted-foreground" id="features-on">{{ count(array_filter($enabled)) }} of {{ count($enabled) }} tools are on</p>
+    <p class="text-sm text-muted-foreground" id="features-on">{{ __(':count of :count2 tools are on', ['count' => count(array_filter($enabled)), 'count2' => count($enabled)]) }}</p>
 
     @foreach ($groups as $group => $groupFeatures)
         <section aria-labelledby="group-{{ Str::slug($group) }}" class="flex flex-col gap-2">
@@ -21,7 +21,7 @@
                         </label>
                         @if ($feature === \App\Enums\Feature::Portal && $isOn)
                             <fieldset class="mb-3 ml-4 border-l pl-4">
-                                <legend class="mb-1 text-sm font-medium">Family pages</legend>
+                                <legend class="mb-1 text-sm font-medium">{{ __('Family pages') }}</legend>
                                 <ul class="divide-y">
                                     @foreach ($areas as $area)
                                         @php($isShown = $portalAreas[$area->value] ?? true)
@@ -32,7 +32,7 @@
                                                 <span class="min-w-0">
                                                     <span @class(['block text-sm', 'text-muted-foreground' => !$isShown || $isBlocked])>{{ $area->label() }}</span>
                                                     @if ($isBlocked)
-                                                        <span class="block text-xs text-muted-foreground">Hidden while {{ $needs->label() }} is off</span>
+                                                        <span class="block text-xs text-muted-foreground">{{ __('Hidden while :label is off', ['label' => $needs->label()]) }}</span>
                                                     @endif
                                                 </span>
                                                 <input type="checkbox" role="switch" id="portal-area-{{ $area->value }}" wire:model.live="portalAreas.{{ $area->value }}" @class([$switchClasses, 'bg-foreground before:translate-x-4' => $isShown, 'bg-input' => !$isShown])>

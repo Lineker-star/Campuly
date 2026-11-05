@@ -87,7 +87,7 @@ class StripeChannel implements OnlinePaymentGateway
             ]);
 
         if ($response->failed() || !is_string($response->json('url'))) {
-            throw new InvalidValueException('Stripe could not start this payment. Try again, or take the money another way.');
+            throw new InvalidValueException(__('Stripe could not start this payment. Try again, or take the money another way.'));
         }
 
         return $response->json('url');
@@ -191,7 +191,7 @@ class StripeChannel implements OnlinePaymentGateway
         $secret = config('services.stripe.secret');
 
         if (!is_string($secret) || $secret === '') {
-            throw new InvalidValueException('This school has not set up card payments yet.');
+            throw new InvalidValueException(__('This school has not set up card payments yet.'));
         }
 
         return $secret;

@@ -103,7 +103,7 @@ class ReportCardDirectory extends Component
         }
 
         $this->reset(['student_record_id', 'academic_period_id', 'reason']);
-        $this->notify('Report card published.');
+        $this->notify(__('Report card published.'));
     }
 
     public function render(): View

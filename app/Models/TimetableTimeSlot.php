@@ -49,7 +49,7 @@ class TimetableTimeSlot extends Model
     {
         $failIfPublished = function (self $slot): void {
             if ($slot->timetable?->isPublished()) {
-                throw new InvalidValueException('This timetable is published. Create a revision to change it.');
+                throw new InvalidValueException(__('This timetable is published. Create a revision to change it.'));
             }
         };
 

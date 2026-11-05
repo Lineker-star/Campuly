@@ -44,7 +44,7 @@ class SaveCohort
                 return $cohort;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has a group with that name.');
+            throw new InvalidValueException(__('This school already has a group with that name.'));
         }
     }
 
@@ -76,7 +76,7 @@ class SaveCohort
                 return $cohort;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException('This school already has a group with that name.');
+            throw new InvalidValueException(__('This school already has a group with that name.'));
         }
     }
 
@@ -92,7 +92,7 @@ class SaveCohort
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException('This school already has a group with that name.');
+            throw new InvalidValueException(__('This school already has a group with that name.'));
         }
     }
 }

@@ -54,7 +54,7 @@ class NoticeEmailPreferences extends Component
 
         if ($school === null) {
             unset($this->emailEnabled[$key]);
-            $this->notify('You can only change the setting for your own schools.', 'danger');
+            $this->notify(__('You can only change the setting for your own schools.'), 'danger');
 
             return;
         }

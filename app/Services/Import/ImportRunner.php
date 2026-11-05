@@ -165,7 +165,7 @@ class ImportRunner
             ->update(['status' => $status->value, ...$values]);
 
         if ($claimed === 0) {
-            throw new InvalidValueException('This import was already finished.');
+            throw new InvalidValueException(__('This import was already finished.'));
         }
 
         $batch->refresh();
@@ -234,14 +234,14 @@ class ImportRunner
     private function failIfColumnsAreMissing(Importer $importer, array $rows): void
     {
         if ($rows === []) {
-            throw new InvalidValueException('The file has no rows.');
+            throw new InvalidValueException(__('The file has no rows.'));
         }
 
         $columns = array_keys($rows[0]);
         $missing = array_diff($importer->requiredColumns(), $columns);
 
         if ($missing !== []) {
-            throw new InvalidValueException('The file is missing these columns: '.implode(', ', $missing).'.');
+            throw new InvalidValueException(__('The file is missing these columns: :missing.', ['missing' => implode(', ', $missing)]));
         }
     }
 

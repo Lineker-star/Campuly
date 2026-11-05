@@ -26,23 +26,23 @@ class ApproveResult
     public function approve(ResultSnapshot $result, User $actor, ?string $reason = null): ResultSnapshot
     {
         if ($result->school_id !== current_school_id()) {
-            throw new InvalidValueException('The result belongs to another school.');
+            throw new InvalidValueException(__('The result belongs to another school.'));
         }
 
         if ($result->approval_status !== ResultApprovalStatus::Pending) {
-            throw new InvalidValueException('Only a result awaiting approval can be approved.');
+            throw new InvalidValueException(__('Only a result awaiting approval can be approved.'));
         }
 
         // A second person checks every result. The one who sent it cannot.
         if ($result->published_by === $actor->id) {
-            throw new InvalidValueException('You sent this result, so somebody else approves it.');
+            throw new InvalidValueException(__('You sent this result, so somebody else approves it.'));
         }
 
         return DB::transaction(function () use ($result, $actor, $reason): ResultSnapshot {
             $result = ResultSnapshot::query()->lockForUpdate()->findOrFail($result->id);
 
             if ($result->approval_status !== ResultApprovalStatus::Pending) {
-                throw new InvalidValueException('Only a result awaiting approval can be approved.');
+                throw new InvalidValueException(__('Only a result awaiting approval can be approved.'));
             }
 
             $newerRevision = ResultSnapshot::query()
@@ -52,7 +52,7 @@ class ApproveResult
                 ->max('revision');
 
             if ($newerRevision !== null) {
-                throw new InvalidValueException("The teacher sent revision $newerRevision after this one. Approve that one instead.");
+                throw new InvalidValueException(__('The teacher sent revision :newer_revision after this one. Approve that one instead.', ['newer_revision' => $newerRevision]));
             }
 
             $result->approve($actor, $reason);

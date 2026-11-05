@@ -54,7 +54,7 @@ class AdmissionWaitlistBoard extends Component
         }
 
         $this->reset(['user_id', 'priority']);
-        $this->notify('The candidate is on the admission waitlist.');
+        $this->notify(__('The candidate is on the admission waitlist.'));
     }
 
     public function offer(int $entryId, OfferNextWaitlistEntry $offer): void
@@ -65,12 +65,12 @@ class AdmissionWaitlistBoard extends Component
         $offered = $offer->offer($entry->academicCycleSection, auth()->user());
 
         if ($offered === null) {
-            $this->notify('There is no open place or pending candidate for this section.', 'info');
+            $this->notify(__('There is no open place or pending candidate for this section.'), 'info');
 
             return;
         }
 
-        $this->notify("Offered a place to {$offered->candidate->name}.");
+        $this->notify(__('Offered a place to :name.', ['name' => $offered->candidate->name]));
     }
 
     public function accept(int $entryId, AcceptWaitlistEntry $accept): void
@@ -86,7 +86,7 @@ class AdmissionWaitlistBoard extends Component
             return;
         }
 
-        $this->notify('The candidate accepted the place and is now enrolled.');
+        $this->notify(__('The candidate accepted the place and is now enrolled.'));
     }
 
     public function decline(int $entryId, DeclineWaitlistEntry $decline): void
@@ -102,6 +102,6 @@ class AdmissionWaitlistBoard extends Component
             return;
         }
 
-        $this->notify('The admission waitlist entry was declined.');
+        $this->notify(__('The admission waitlist entry was declined.'));
     }
 }

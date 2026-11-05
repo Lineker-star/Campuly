@@ -74,7 +74,7 @@ class EditFeeInvoiceForm extends Component
             'note' => $this->note === '' ? null : $this->note,
         ]);
 
-        $this->notify('Invoice saved.');
+        $this->notify(__('Invoice saved.'));
     }
 
     public function startEditingLine(int $lineId): void
@@ -109,7 +109,7 @@ class EditFeeInvoiceForm extends Component
         }
 
         $this->cancel();
-        $this->notify("{$line->fee?->name} updated.");
+        $this->notify(__(':name updated.', ['name' => $line->fee?->name]));
     }
 
     public function removeLine(int $lineId, FeeInvoiceRecordService $service): void
@@ -125,7 +125,7 @@ class EditFeeInvoiceForm extends Component
             return;
         }
 
-        $this->notify("{$line->fee?->name} removed.");
+        $this->notify(__(':name removed.', ['name' => $line->fee?->name]));
     }
 
     public function addLine(FeeInvoiceRecordService $service): void
@@ -154,7 +154,7 @@ class EditFeeInvoiceForm extends Component
         }
 
         $this->reset('isAdding', 'feeId', 'newAmount', 'newWaiver', 'newFine');
-        $this->notify('Fee added.');
+        $this->notify(__('Fee added.'));
     }
 
     public function updatedFeeCategoryId(): void

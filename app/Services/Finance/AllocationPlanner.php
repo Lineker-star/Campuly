@@ -102,7 +102,7 @@ class AllocationPlanner
             }
 
             if ($share < 0) {
-                throw new InvalidValueException('A payment cannot take money off an invoice line.');
+                throw new InvalidValueException(__('A payment cannot take money off an invoice line.'));
             }
 
             $plan[(int) $lineId] = $share;
@@ -124,16 +124,16 @@ class AllocationPlanner
             $line = $lines->get($lineId);
 
             if ($line === null) {
-                throw new InvalidValueException('One of these fees is not on this student\'s invoices.');
+                throw new InvalidValueException(__('One of these fees is not on this student\'s invoices.'));
             }
 
             if ($share > $line->outstanding->getMinorAmount()->toInt()) {
-                throw new InvalidValueException('One of these fees was given more than it still owes.');
+                throw new InvalidValueException(__('One of these fees was given more than it still owes.'));
             }
         }
 
         if (array_sum($plan) > $amount) {
-            throw new InvalidValueException('The fees named add up to more than the payment.');
+            throw new InvalidValueException(__('The fees named add up to more than the payment.'));
         }
 
         return $plan;

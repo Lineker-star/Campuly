@@ -62,7 +62,7 @@ class SaveGradingScale
             $scale = GradingScale::query()->lockForUpdate()->findOrFail($scale->getKey());
 
             if ($readAt !== null && $scale->updated_at?->toIso8601String() !== $readAt) {
-                throw new InvalidValueException('Somebody else saved this scale while you worked on it. Open it again to see their changes.');
+                throw new InvalidValueException(__('Somebody else saved this scale while you worked on it. Open it again to see their changes.'));
             }
 
             $scaleType = (string) ($attributes['scale_type'] ?? $scale->scale_type->value);
@@ -74,7 +74,7 @@ class SaveGradingScale
                 ->exists();
 
             if ($hasRecordedGrades && ($scaleType !== $scale->scale_type->value || $maximumValue !== $scale->maximum_value)) {
-                throw new InvalidValueException('A grading scale used in learner records cannot change its basis or maximum value. Create a new scale instead.');
+                throw new InvalidValueException(__('A grading scale used in learner records cannot change its basis or maximum value. Create a new scale instead.'));
             }
 
             $scale->fill(Arr::except($attributes, 'options'));
@@ -98,7 +98,7 @@ class SaveGradingScale
             $scale = GradingScale::query()->lockForUpdate()->findOrFail($scale->getKey());
 
             if ($scale->gradeItems()->exists()) {
-                throw new InvalidValueException('This scale is used by an assessment. Stop offering it instead of deleting it.');
+                throw new InvalidValueException(__('This scale is used by an assessment. Stop offering it instead of deleting it.'));
             }
 
             $scale->delete();
@@ -136,11 +136,11 @@ class SaveGradingScale
             ->filter(fn (array $option): bool => trim((string) ($option['label'] ?? '')) !== '');
 
         if ($options->count() < 2) {
-            throw new InvalidValueException('Give the scale at least two grade options.');
+            throw new InvalidValueException(__('Give the scale at least two grade options.'));
         }
 
         if ($options->map(fn (array $option): string => mb_strtolower(trim((string) $option['label'])))->unique()->count() !== $options->count()) {
-            throw new InvalidValueException('Each grade option needs a different label.');
+            throw new InvalidValueException(__('Each grade option needs a different label.'));
         }
 
         $scaleType = GradingScaleType::tryFrom((string) ($attributes['scale_type'] ?? ''));
@@ -152,11 +152,11 @@ class SaveGradingScale
         $withPoints = $options->filter(fn (array $option): bool => isset($option['points']) && $option['points'] !== '');
 
         match (true) {
-            $scaleType === GradingScaleType::Descriptive && $withPoints->isNotEmpty() => throw new InvalidValueException('A descriptive scale leaves the values blank.'),
-            in_array($scaleType, [GradingScaleType::Percentage, GradingScaleType::Gpa], true) && $withPoints->count() !== $options->count() => throw new InvalidValueException('Give every grade option a value.'),
-            $scaleType === GradingScaleType::Points && $withPoints->isNotEmpty() && $withPoints->count() !== $options->count() => throw new InvalidValueException('Give every grade option points, or leave points blank for all of them.'),
-            $scaleType === GradingScaleType::Percentage && $withPoints->contains(fn (array $option): bool => (float) $option['points'] > 100) => throw new InvalidValueException('A percentage is between 0 and 100.'),
-            $scaleType === GradingScaleType::Gpa && ($attributes['maximum_value'] ?? null) !== null && $withPoints->contains(fn (array $option): bool => (float) $option['points'] > (float) $attributes['maximum_value']) => throw new InvalidValueException('A GPA value cannot be higher than the maximum GPA.'),
+            $scaleType === GradingScaleType::Descriptive && $withPoints->isNotEmpty() => throw new InvalidValueException(__('A descriptive scale leaves the values blank.')),
+            in_array($scaleType, [GradingScaleType::Percentage, GradingScaleType::Gpa], true) && $withPoints->count() !== $options->count() => throw new InvalidValueException(__('Give every grade option a value.')),
+            $scaleType === GradingScaleType::Points && $withPoints->isNotEmpty() && $withPoints->count() !== $options->count() => throw new InvalidValueException(__('Give every grade option points, or leave points blank for all of them.')),
+            $scaleType === GradingScaleType::Percentage && $withPoints->contains(fn (array $option): bool => (float) $option['points'] > 100) => throw new InvalidValueException(__('A percentage is between 0 and 100.')),
+            $scaleType === GradingScaleType::Gpa && ($attributes['maximum_value'] ?? null) !== null && $withPoints->contains(fn (array $option): bool => (float) $option['points'] > (float) $attributes['maximum_value']) => throw new InvalidValueException(__('A GPA value cannot be higher than the maximum GPA.')),
             default => null,
         };
     }
@@ -197,14 +197,14 @@ class SaveGradingScale
             $option = $existingOptions->get((int) $optionId);
 
             if (!$option instanceof GradingScaleOption) {
-                throw new InvalidValueException('A grading-scale option does not belong to this scale.');
+                throw new InvalidValueException(__('A grading-scale option does not belong to this scale.'));
             }
 
             $submittedIds[] = $option->id;
             $isRecorded = GradeEntry::query()->whereBelongsTo($option, 'gradingScaleOption')->exists();
 
             if ($isRecorded && ($option->label !== $label || $option->points !== $points)) {
-                throw new InvalidValueException('A grade option already used in a learner record cannot be changed. Add a new option instead.');
+                throw new InvalidValueException(__('A grade option already used in a learner record cannot be changed. Add a new option instead.'));
             }
 
             $option->update(['label' => $label, 'points' => $points, 'position' => $position++]);
@@ -214,7 +214,7 @@ class SaveGradingScale
 
         foreach ($removedOptions as $option) {
             if (GradeEntry::query()->whereBelongsTo($option, 'gradingScaleOption')->exists()) {
-                throw new InvalidValueException('A grade option already used in a learner record cannot be removed.');
+                throw new InvalidValueException(__('A grade option already used in a learner record cannot be removed.'));
             }
 
             $option->delete();

@@ -42,22 +42,22 @@ class AddSchoolDomain
         $host = SchoolDomain::tidy($host);
 
         if (!$this->looksLikeAHost($host)) {
-            throw new InvalidValueException("{$host} is not a web address this application can answer on.");
+            throw new InvalidValueException(__(':host is not a web address this application can answer on.', ['host' => $host]));
         }
 
         if ($this->isTheApplicationsOwnHost($host)) {
-            throw new InvalidValueException("{$host} is the address of this application. Use an address the organization owns.");
+            throw new InvalidValueException(__(':host is the address of this application. Use an address the organization owns.', ['host' => $host]));
         }
 
         if ($school !== null && $school->organization_id !== $organization->id) {
-            throw new InvalidValueException('That campus belongs to another organization.');
+            throw new InvalidValueException(__('That campus belongs to another organization.'));
         }
 
         try {
             return DB::transaction(fn (): SchoolDomain => $this->claim($organization, $host, $school, $isPrimary, $actor));
         } catch (UniqueConstraintViolationException) {
             // Another organization claimed the same address a moment earlier.
-            throw new InvalidValueException("{$host} is already claimed.");
+            throw new InvalidValueException(__(':host is already claimed.', ['host' => $host]));
         }
     }
 
@@ -77,7 +77,7 @@ class AddSchoolDomain
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException("{$host} is already claimed.");
+            throw new InvalidValueException(__(':host is already claimed.', ['host' => $host]));
         }
 
         if ($isPrimary) {

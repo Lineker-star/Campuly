@@ -151,7 +151,7 @@ class CampusRoleRecord extends Component
         }
 
         $this->reset('personId');
-        $this->notify("{$person->name} now has {$this->role->name}.");
+        $this->notify(__(':name now has :name2.', ['name' => $person->name, 'name2' => $this->role->name]));
     }
 
     public function take(int $userId, AssignCampusRole $assignCampusRole, RoleAuthority $roleAuthority): void
@@ -168,7 +168,7 @@ class CampusRoleRecord extends Component
             return;
         }
 
-        $this->notify("{$this->role->name} was taken from $holder->name.");
+        $this->notify(__(':name was taken from :name2.', ['name' => $this->role->name, 'name2' => $holder->name]));
     }
 
     public function duplicate(WriteCampusRole $writeCampusRole): void

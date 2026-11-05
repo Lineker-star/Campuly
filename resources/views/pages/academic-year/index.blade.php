@@ -8,7 +8,7 @@
 @section('page_heading', school_terms('academic_year', 'School years'))
 
 @section('page_actions')
-    <x-resource-create-action :href="route('academic-years.create')" ability="create" :arguments="[\App\Models\AcademicYear::class]">Set up {{ strtolower(school_term('academic_year', 'school year')) }}</x-resource-create-action>
+    <x-resource-create-action :href="route('academic-years.create')" ability="create" :arguments="[\App\Models\AcademicYear::class]">{{ __('Set up :term', ['term' => strtolower(school_term('academic_year', 'school year'))]) }}</x-resource-create-action>
 @endsection
 
 @section('content', )

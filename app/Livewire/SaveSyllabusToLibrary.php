@@ -41,7 +41,7 @@ class SaveSyllabusToLibrary extends Component
             return;
         }
 
-        $this->notify("Saved {$this->name} to the curriculum library.");
+        $this->notify(__('Saved :name to the curriculum library.', ['name' => $this->name]));
     }
 
     public function render(): View

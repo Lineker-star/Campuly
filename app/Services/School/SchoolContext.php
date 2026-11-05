@@ -62,7 +62,7 @@ class SchoolContext
     public function schoolOrFail(): School
     {
         if ($this->school === null) {
-            throw new RuntimeException('No school is set for this request. Set a working school first.');
+            throw new RuntimeException(__('No school is set for this request. Set a working school first.'));
         }
 
         return $this->school;

@@ -34,11 +34,11 @@ class AssignBoardingSupervisor
         ?User $actor = null,
     ): BoardingSupervision {
         if (!$staff->belongsToSchool($dormitory->school_id)) {
-            throw new InvalidValueException('That member of staff does not work at this campus.');
+            throw new InvalidValueException(__('That member of staff does not work at this campus.'));
         }
 
         if ($staff->studentRecord()->exists()) {
-            throw new InvalidValueException('A learner cannot supervise a boarding house.');
+            throw new InvalidValueException(__('A learner cannot supervise a boarding house.'));
         }
 
         $startsOn ??= now();
@@ -82,13 +82,13 @@ class AssignBoardingSupervisor
     public function end(BoardingSupervision $supervision, ?Carbon $endsOn = null, ?User $actor = null): BoardingSupervision
     {
         if ($supervision->ends_on !== null) {
-            throw new InvalidValueException('This duty has already ended.');
+            throw new InvalidValueException(__('This duty has already ended.'));
         }
 
         $endsOn ??= now();
 
         if ($endsOn->lessThan($supervision->starts_on)) {
-            throw new InvalidValueException('A duty cannot end before it started.');
+            throw new InvalidValueException(__('A duty cannot end before it started.'));
         }
 
         $supervision->ends_on = $endsOn;

@@ -4,13 +4,13 @@
     ['text' => $batch->source_name ?? 'Import', 'active'],
 ]])
 
-@section('title', 'Import')
+@section('title', __('Import'))
 @section('page_heading', $batch->source_name ?? 'Import')
 
 @section('page_actions')
     <april:button-link href="{{ route('imports.index') }}" variant="outline">
         <x-lucide-arrow-left class="mr-2 size-4" />
-        Back to imports
+        {{ __('Back to imports') }}
     </april:button-link>
 @endsection
 
@@ -27,19 +27,17 @@
     <div class="space-y-6">
         @if ($batch->status->canBeApplied() && $batch->valid_count > 0)
             <april:alert>
-                <slot:title>Nothing is written yet</slot:title>
+                <slot:title>{{ __('Nothing is written yet') }}</slot:title>
                 <slot:description>
-                    {{ $batch->valid_count }} {{ Str::plural('row', $batch->valid_count) }} passed the check. Read them
-                    below, then write the import. Rows with errors are left alone.
+                    {{ __(':valid_count :valid_count2 passed the check. Read them below, then write the import. Rows with errors are left alone.', ['valid_count' => $batch->valid_count, 'valid_count2' => Str::plural('row', $batch->valid_count)]) }}
                 </slot:description>
             </april:alert>
         @endif
 
         <april:card>
-            <slot:title>What this file will do</slot:title>
+            <slot:title>{{ __('What this file will do') }}</slot:title>
             <slot:description>
-                {{ $batch->typeTitle() }} · started {{ local_date(school_time($batch->created_at), 'medium') }}
-                by {{ $batch->createdBy?->name ?? 'an unknown person' }}
+                {{ __(':type_title · started :date by :person', ['type_title' => $batch->typeTitle(), 'date' => local_date(school_time($batch->created_at), 'medium'), 'person' => $batch->createdBy?->name ?? 'an unknown person']) }}
             </slot:description>
             <slot:content>
                 <div class="space-y-6">
@@ -59,8 +57,8 @@
         </april:card>
 
         <april:card>
-            <slot:title>Rows</slot:title>
-            <slot:description>Every line the file held, and what the application found wrong with it.</slot:description>
+            <slot:title>{{ __('Rows') }}</slot:title>
+            <slot:description>{{ __('Every line the file held, and what the application found wrong with it.') }}</slot:description>
             <slot:content>
                 @livewire('import-row-directory', ['batch' => $batch])
             </slot:content>

@@ -23,11 +23,11 @@ class SubmitSyllabus
             $syllabus = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->id);
 
             if ($syllabus->status !== SyllabusStatus::Draft) {
-                throw new InvalidValueException('Only a draft syllabus can be sent for review.');
+                throw new InvalidValueException(__('Only a draft syllabus can be sent for review.'));
             }
 
             if (!$syllabus->topics()->exists()) {
-                throw new InvalidValueException('Add at least one topic before sending the syllabus for review.');
+                throw new InvalidValueException(__('Add at least one topic before sending the syllabus for review.'));
             }
 
             $syllabus->update([
@@ -47,7 +47,7 @@ class SubmitSyllabus
             $syllabus = Syllabus::query()->lockForUpdate()->findOrFail($syllabus->id);
 
             if ($syllabus->status !== SyllabusStatus::Submitted) {
-                throw new InvalidValueException('This syllabus is not waiting for review.');
+                throw new InvalidValueException(__('This syllabus is not waiting for review.'));
             }
 
             $syllabus->update(['status' => SyllabusStatus::Draft]);

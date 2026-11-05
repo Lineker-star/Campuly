@@ -251,7 +251,7 @@ class AttendanceRegister
         sort($submittedIds);
 
         if ($studentIds !== $submittedIds) {
-            throw new \InvalidArgumentException('The class list changed. Refresh the register and try again.');
+            throw new \InvalidArgumentException(__('The class list changed. Refresh the register and try again.'));
         }
     }
 }

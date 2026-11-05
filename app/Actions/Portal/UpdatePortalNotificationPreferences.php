@@ -28,7 +28,7 @@ class UpdatePortalNotificationPreferences
         $submittedSchoolIds = array_map('intval', array_keys($preferences));
 
         if (array_diff($submittedSchoolIds, $allowedSchoolIds) !== []) {
-            throw new InvalidValueException('You can only change notification settings for your own schools.');
+            throw new InvalidValueException(__('You can only change notification settings for your own schools.'));
         }
 
         // One upsert, so a double tap cannot race two inserts into the

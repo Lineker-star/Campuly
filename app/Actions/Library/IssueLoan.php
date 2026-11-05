@@ -102,7 +102,7 @@ class IssueLoan
     {
         if ($held !== null && $held->user_id !== $borrower->id) {
             throw new InvalidValueException(
-                'This copy is being kept for somebody else who reserved it. Lend another copy.'
+                __('This copy is being kept for somebody else who reserved it. Lend another copy.')
             );
         }
     }
@@ -115,19 +115,19 @@ class IssueLoan
     private function refuseWhatCannotBeLent(LibraryCopy $copy, User $borrower, LibraryLendingRules $policy): void
     {
         if (!$borrower->belongsToSchool($copy->school_id)) {
-            throw new InvalidValueException('This person does not belong to the campus that owns the copy.');
+            throw new InvalidValueException(__('This person does not belong to the campus that owns the copy.'));
         }
 
         if ($borrower->isLearnerWhoNoLongerAttends($copy->school_id)) {
-            throw new InvalidValueException('This learner no longer attends this campus.');
+            throw new InvalidValueException(__('This learner no longer attends this campus.'));
         }
 
         if (!$copy->status->canBeLent()) {
-            throw new InvalidValueException("This copy is not on the shelf: {$copy->status->label()}.");
+            throw new InvalidValueException(__('This copy is not on the shelf: :label.', ['label' => $copy->status->label()]));
         }
 
         if ($copy->isOut()) {
-            throw new InvalidValueException('Somebody already has this copy.');
+            throw new InvalidValueException(__('Somebody already has this copy.'));
         }
 
         $held = LibraryLoan::query()
@@ -138,7 +138,7 @@ class IssueLoan
 
         if ($held >= $policy->limitFor($borrower)) {
             throw new InvalidValueException(
-                "This person already has {$held} items, which is all this library lends at once.",
+                __('This person already has :held items, which is all this library lends at once.', ['held' => $held]),
             );
         }
     }

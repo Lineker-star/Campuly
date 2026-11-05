@@ -102,7 +102,7 @@ class BackupWriter
                 $name .= '.enc';
             } elseif (config('monitoring.backup.require_encryption')) {
                 throw new InvalidValueException(
-                    'This installation keeps its backups locked, but no BACKUP_KEY is set. Set one, or turn the rule off.'
+                    __('This installation keeps its backups locked, but no BACKUP_KEY is set. Set one, or turn the rule off.')
                 );
             }
 
@@ -110,12 +110,12 @@ class BackupWriter
             $file = fopen($working, 'rb');
 
             if ($file === false) {
-                throw new RuntimeException('The backup could not be read back.');
+                throw new RuntimeException(__('The backup could not be read back.'));
             }
 
             try {
                 if (!Storage::disk((string) config('monitoring.backup.disk'))->writeStream($path, $file)) {
-                    throw new RuntimeException('The backup could not be stored.');
+                    throw new RuntimeException(__('The backup could not be stored.'));
                 }
             } finally {
                 fclose($file);
@@ -146,7 +146,7 @@ class BackupWriter
                 gzclose($out);
             }
 
-            throw new RuntimeException('The backup could not be squeezed.');
+            throw new RuntimeException(__('The backup could not be squeezed.'));
         }
 
         try {
@@ -154,11 +154,11 @@ class BackupWriter
                 $piece = fread($in, 1048576);
 
                 if ($piece === false) {
-                    throw new RuntimeException('The database dump could not be read.');
+                    throw new RuntimeException(__('The database dump could not be read.'));
                 }
 
                 if ($piece !== '' && gzwrite($out, $piece) !== strlen($piece)) {
-                    throw new RuntimeException('The compressed backup could not be written.');
+                    throw new RuntimeException(__('The compressed backup could not be written.'));
                 }
             }
         } finally {
@@ -175,7 +175,7 @@ class BackupWriter
         $diskName = config('monitoring.backup.files_disk');
 
         if (!is_string($diskName) || trim($diskName) === '') {
-            throw new InvalidValueException('Set BACKUP_FILES_DISK before requesting a file backup.');
+            throw new InvalidValueException(__('Set BACKUP_FILES_DISK before requesting a file backup.'));
         }
 
         $disk = Storage::disk($diskName);
@@ -185,7 +185,7 @@ class BackupWriter
         ];
 
         if (in_array('', $excludedPaths, true)) {
-            throw new InvalidValueException('Backup and rehearsal paths must be named directories for file backups.');
+            throw new InvalidValueException(__('Backup and rehearsal paths must be named directories for file backups.'));
         }
 
         $files = array_values(array_filter($disk->allFiles(), function (string $file) use ($excludedPaths): bool {
@@ -205,7 +205,7 @@ class BackupWriter
         $zip = new ZipArchive;
 
         if ($zip->open($archive, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('The file archive could not be started.');
+            throw new RuntimeException(__('The file archive could not be started.'));
         }
 
         $copies = [];
@@ -216,7 +216,7 @@ class BackupWriter
                 $local = $this->localCopy($disk, $file, $copies);
 
                 if (!$zip->addFile($local, $file)) {
-                    throw new RuntimeException("The uploaded file [$file] could not be archived.");
+                    throw new RuntimeException(__('The uploaded file [:file] could not be archived.', ['file' => $file]));
                 }
 
                 $count++;
@@ -230,7 +230,7 @@ class BackupWriter
         }
 
         if (!$closed) {
-            throw new RuntimeException('The file archive could not be completed.');
+            throw new RuntimeException(__('The file archive could not be completed.'));
         }
 
         return $count;
@@ -257,7 +257,7 @@ class BackupWriter
         $stream = $disk->readStream($file);
 
         if (!is_resource($stream)) {
-            throw new RuntimeException("The uploaded file [$file] could not be read.");
+            throw new RuntimeException(__('The uploaded file [:file] could not be read.', ['file' => $file]));
         }
 
         $copy = $this->workingFile('part');
@@ -267,12 +267,12 @@ class BackupWriter
         if ($handle === false) {
             fclose($stream);
 
-            throw new RuntimeException("A working copy of [$file] could not be made.");
+            throw new RuntimeException(__('A working copy of [:file] could not be made.', ['file' => $file]));
         }
 
         try {
             if (stream_copy_to_stream($stream, $handle) === false) {
-                throw new RuntimeException("The uploaded file [$file] could not be copied.");
+                throw new RuntimeException(__('The uploaded file [:file] could not be copied.', ['file' => $file]));
             }
         } finally {
             fclose($handle);
@@ -290,7 +290,7 @@ class BackupWriter
         $file = tempnam(sys_get_temp_dir(), 'skuul-backup');
 
         if ($file === false) {
-            throw new RuntimeException('A working file for the backup could not be made.');
+            throw new RuntimeException(__('A working file for the backup could not be made.'));
         }
 
         return "$file.$extension";

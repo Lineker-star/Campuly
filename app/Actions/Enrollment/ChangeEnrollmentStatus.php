@@ -69,18 +69,18 @@ class ChangeEnrollmentStatus
 
             if (!$current->canMoveTo($status)) {
                 throw new InvalidValueException(
-                    "An enrollment cannot move from {$current->value} to {$status->value}."
+                    __('An enrollment cannot move from :current to :status.', ['current' => $current->value, 'status' => $status->value])
                 );
             }
 
             // The state changes now. A leaver whose last day is ahead stays
             // active until that day, so the register and the bed stay theirs.
             if ($effectiveOn !== null && $effectiveOn->isAfter(school_today()->endOfDay())) {
-                throw new InvalidValueException('A change of state starts when it is made. Make it on '.$effectiveOn->format('j M Y').' or choose an earlier day.');
+                throw new InvalidValueException(__('A change of state starts when it is made. Make it on :date or choose an earlier day.', ['date' => $effectiveOn->format('j M Y')]));
             }
 
             if ($into !== null && !$current->isClosed()) {
-                throw new InvalidValueException('Only a learner who left can be taken back into a section.');
+                throw new InvalidValueException(__('Only a learner who left can be taken back into a section.'));
             }
 
             if ($current->isClosed()) {
@@ -173,7 +173,7 @@ class ChangeEnrollmentStatus
             ->first();
 
         if ($open !== null) {
-            throw new InvalidValueException("This learner now attends {$open->school?->name}. Ask that school to move or transfer them.");
+            throw new InvalidValueException(__('This learner now attends :name. Ask that school to move or transfer them.', ['name' => $open->school?->name]));
         }
     }
 
@@ -190,7 +190,7 @@ class ChangeEnrollmentStatus
         $person = $enrollment->user()->first();
 
         if ($person?->worksAsStaff() === true) {
-            throw new InvalidValueException("{$person->name} works as staff. A member of staff cannot be admitted as a learner.");
+            throw new InvalidValueException(__(':name works as staff. A member of staff cannot be admitted as a learner.', ['name' => $person->name]));
         }
     }
 
@@ -213,7 +213,7 @@ class ChangeEnrollmentStatus
             ->find($enrollment->academic_cycle_section_id);
 
         if ($section !== null && $this->seats->isFull($section, except: $enrollment)) {
-            throw new InvalidValueException("Their section is full at {$section->capacity} learners. Free a seat or raise its size first.");
+            throw new InvalidValueException(__('Their section is full at :capacity learners. Free a seat or raise its size first.', ['capacity' => $section->capacity]));
         }
     }
 

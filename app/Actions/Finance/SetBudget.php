@@ -37,19 +37,19 @@ class SetBudget
         ?User $actor = null,
     ): Budget {
         if ($amount < 0) {
-            throw new InvalidValueException('A budget cannot be less than nothing.');
+            throw new InvalidValueException(__('A budget cannot be less than nothing.'));
         }
 
         if ($account->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('That account belongs to another campus.');
+            throw new InvalidValueException(__('That account belongs to another campus.'));
         }
 
         if ($academicPeriod !== null && $academicPeriod->academic_year_id !== $academicYear->id) {
-            throw new InvalidValueException('That term is not part of this cycle.');
+            throw new InvalidValueException(__('That term is not part of this cycle.'));
         }
 
         if ($program !== null && $program->school_id !== $academicYear->school_id) {
-            throw new InvalidValueException('That programme belongs to another campus.');
+            throw new InvalidValueException(__('That programme belongs to another campus.'));
         }
 
         $fund = $fund === null || trim($fund) === '' ? null : trim($fund);

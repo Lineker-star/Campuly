@@ -30,11 +30,11 @@ class ReverseLedgerTransaction
         ?CarbonInterface $date = null,
     ): LedgerTransaction {
         if ($transaction->isReversed()) {
-            throw new InvalidValueException('This entry was already reversed.');
+            throw new InvalidValueException(__('This entry was already reversed.'));
         }
 
         if ($transaction->reversal_of_id !== null) {
-            throw new InvalidValueException('A reversal cannot be reversed. Post the entry again instead.');
+            throw new InvalidValueException(__('A reversal cannot be reversed. Post the entry again instead.'));
         }
 
         $lines = $transaction->lines()->get()->map(fn ($line): array => [

@@ -3,8 +3,8 @@
     ['text' => 'Notice delivery', 'active'],
 ]])
 
-@section('title', 'Notice delivery')
-@section('page_heading', 'Notice delivery')
+@section('title', __('Notice delivery'))
+@section('page_heading', __('Notice delivery'))
 
 @section('content')
     <div class="mx-auto flex w-full max-w-2xl flex-col gap-6">

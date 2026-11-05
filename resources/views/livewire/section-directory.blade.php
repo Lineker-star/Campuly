@@ -11,7 +11,7 @@
         <div>
             <label for="filter-cycle" class="text-sm text-muted-foreground">{{ school_term('academic_year', 'School year') }}</label>
             <select id="filter-cycle" wire:model.live="academicYearId" class="{{ $controlClasses }}">
-                <option value="">Every {{ strtolower(school_term('academic_year', 'school year')) }}</option>
+                <option value="">{{ __('Every :term', ['term' => strtolower(school_term('academic_year', 'school year'))]) }}</option>
                 @foreach ($academicYears as $academicYear)
                     <option value="{{ $academicYear->id }}">{{ $academicYear->name }}</option>
                 @endforeach
@@ -20,16 +20,16 @@
         <div>
             <label for="filter-level" class="text-sm text-muted-foreground">{{ school_term('class_level', 'Class') }}</label>
             <select id="filter-level" wire:model.live="academicLevelId" class="{{ $controlClasses }}">
-                <option value="">Every {{ strtolower(school_term('class_level', 'class')) }}</option>
+                <option value="">{{ __('Every :term', ['term' => strtolower(school_term('class_level', 'class'))]) }}</option>
                 @foreach ($academicLevels as $academicLevel)
                     <option value="{{ $academicLevel->id }}">{{ $academicLevel->name }}</option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label for="filter-status" class="text-sm text-muted-foreground">Status</label>
+            <label for="filter-status" class="text-sm text-muted-foreground">{{ __('Status') }}</label>
             <select id="filter-status" wire:model.live="status" class="{{ $controlClasses }}">
-                <option value="">Every status</option>
+                <option value="">{{ __('Every status') }}</option>
                 @foreach (\App\Enums\AcademicStructureStatus::cases() as $case)
                     <option value="{{ $case->value }}">{{ $case->label() }}</option>
                 @endforeach
@@ -39,16 +39,16 @@
 
     @if ($totalCount === 0)
         <div class="flex flex-wrap items-center gap-3 text-sm">
-            <p class="text-muted-foreground">No {{ $sectionWord }} yet. A new one starts as a draft.</p>
+            <p class="text-muted-foreground">{{ __('No :section_word yet. A new one starts as a draft.', ['section_word' => $sectionWord]) }}</p>
         </div>
     @elseif ($academicCycleSections->isEmpty())
         <div class="flex flex-wrap items-center gap-3 text-sm">
-            <p class="text-muted-foreground">{{ $selectedYear ? $selectedYear->name.' has no '.$sectionWord.' that matches.' : 'No '.$sectionWord.' matches.' }} This school has <span class="tabular-nums">{{ $totalCount }}</span> in all.</p>
+            <p class="text-muted-foreground">{{ __(':matches This school has', ['matches' => $selectedYear ? $selectedYear->name.' has no '.$sectionWord.' that matches.' : 'No '.$sectionWord.' matches.']) }} <span class="tabular-nums">{{ $totalCount }}</span> {{ __('in all.') }}</p>
             @if ($isFiltered)
-                <april:button type="button" variant="outline" class="h-11 select-none" wire:click="clearFilters">Show every {{ $sectionWord }}</april:button>
+                <april:button type="button" variant="outline" class="h-11 select-none" wire:click="clearFilters">{{ __('Show every :section_word', ['section_word' => $sectionWord]) }}</april:button>
             @endif
             @if ($canCreate && $selectedYear)
-                <april:button-link href="{{ route('academic-cycle-sections.roll-forward.show', ['target_academic_year_id' => $selectedYear->id]) }}" variant="outline" class="h-11 select-none">Roll {{ $sectionsWord }} into {{ $selectedYear->name }}</april:button-link>
+                <april:button-link href="{{ route('academic-cycle-sections.roll-forward.show', ['target_academic_year_id' => $selectedYear->id]) }}" variant="outline" class="h-11 select-none">{{ __('Roll :sections_word into :name', ['sections_word' => $sectionsWord, 'name' => $selectedYear->name]) }}</april:button-link>
             @endif
         </div>
     @else
@@ -70,8 +70,7 @@
                         <a href="{{ route('academic-cycle-sections.show', $academicCycleSection) }}" class="font-medium underline-offset-4 hover:underline">{{ $academicCycleSection->label ?? $academicCycleSection->name }}</a>
                         <p class="text-muted-foreground">
                             {{ $details !== '' ? $details : '—' }}
-                            · <span class="tabular-nums">{{ $academicCycleSection->capacity ?? '—' }}</span> places
-                            · {{ $academicCycleSection->homeroomTeacher?->name ?? '—' }}
+                            · <span class="tabular-nums">{{ $academicCycleSection->capacity ?? '—' }}</span> {{ __('places · :name', ['name' => $academicCycleSection->homeroomTeacher?->name ?? '—']) }}
                         </p>
                     </div>
                     <livewire:academic-structure-status-control :record="$academicCycleSection" :key="'status-'.$academicCycleSection->id" />
@@ -83,8 +82,8 @@
 
     @if ($canCreate)
         <div class="flex flex-wrap gap-2">
-            <april:button-link href="{{ route('academic-cycle-sections.roll-forward.show') }}" variant="outline" class="h-11 select-none">Roll {{ $sectionsWord }} into another year</april:button-link>
-            <april:button-link href="{{ route('academic-levels.index') }}" variant="ghost" class="h-11 select-none">Manage {{ strtolower(school_terms('class_level', 'Class')) }}</april:button-link>
+            <april:button-link href="{{ route('academic-cycle-sections.roll-forward.show') }}" variant="outline" class="h-11 select-none">{{ __('Roll :sections_word into another year', ['sections_word' => $sectionsWord]) }}</april:button-link>
+            <april:button-link href="{{ route('academic-levels.index') }}" variant="ghost" class="h-11 select-none">{{ __('Manage :term', ['term' => strtolower(school_terms('class_level', 'Class'))]) }}</april:button-link>
         </div>
     @endif
 </div>

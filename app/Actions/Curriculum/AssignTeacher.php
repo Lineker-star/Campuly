@@ -123,22 +123,22 @@ class AssignTeacher
     private function failIfRecordsDoNotFit(CourseOffering $courseOffering, User $teacher, ?AcademicCycleSection $academicCycleSection): void
     {
         if (!$teacher->belongsToSchool($courseOffering->school_id)) {
-            throw new InvalidValueException('The teacher does not work in this school.');
+            throw new InvalidValueException(__('The teacher does not work in this school.'));
         }
 
         if (!$teacher->hasRole(Role::Teacher->value)) {
-            throw new InvalidValueException('Only a teacher can be assigned to a subject.');
+            throw new InvalidValueException(__('Only a teacher can be assigned to a subject.'));
         }
 
         if ($academicCycleSection !== null
             && ($academicCycleSection->school_id !== $courseOffering->school_id
                 || $academicCycleSection->academic_year_id !== $courseOffering->academic_year_id
                 || $academicCycleSection->academic_level_id !== $courseOffering->academic_level_id)) {
-            throw new InvalidValueException('The home group does not belong to this offering.');
+            throw new InvalidValueException(__('The home group does not belong to this offering.'));
         }
 
         if ($courseOffering->academicYear->isClosed()) {
-            throw new InvalidValueException('The academic year is closed. Reopen it before you change teaching.');
+            throw new InvalidValueException(__('The academic year is closed. Reopen it before you change teaching.'));
         }
     }
 }

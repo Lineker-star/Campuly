@@ -4,8 +4,8 @@
     ['text' => 'Requests', 'active'],
 ]])
 
-@section('title', 'Requests')
-@section('page_heading', 'Requests')
+@section('title', __('Requests'))
+@section('page_heading', __('Requests'))
 
 @section('content')
     <livewire:portal-requests :student-record="$studentRecord" />

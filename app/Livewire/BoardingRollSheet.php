@@ -73,7 +73,7 @@ class BoardingRollSheet extends Component
 
         if ($this->roll->refresh()->isComplete()) {
             $this->readAnswers();
-            $this->addError('roll', 'Someone completed this roll while you worked on it. Nothing was saved.');
+            $this->addError('roll', __('Someone completed this roll while you worked on it. Nothing was saved.'));
 
             return false;
         }
@@ -141,7 +141,7 @@ class BoardingRollSheet extends Component
         $this->takeInOtherAnswers(array_column($toSave, 'id'));
 
         if ($this->getErrorBag()->isNotEmpty()) {
-            $this->notify(count($toSave) === 0 ? 'Nothing was saved. Check the rows in red.' : count($toSave).' saved. Check the rows in red.', 'danger');
+            $this->notify(__(':count saved. Check the rows in red.', ['count' => count($toSave) === 0 ? 'Nothing was saved. Check the rows in red.' : count($toSave)]), 'danger');
 
             return false;
         }
@@ -177,8 +177,8 @@ class BoardingRollSheet extends Component
         $unaccounted = collect($this->answers)->where('status', BoardingRollEntryStatus::Unaccounted->value)->count();
 
         $unaccounted === 0
-            ? $this->notify('The roll is complete.')
-            : $this->notify('The roll is complete with '.$unaccounted.' '.str('boarder')->plural($unaccounted).' unaccounted for.', 'danger');
+            ? $this->notify(__('The roll is complete.'))
+            : $this->notify(__('The roll is complete with :unaccounted :unaccounted2 unaccounted for.', ['unaccounted' => $unaccounted, 'unaccounted2' => str('boarder')->plural($unaccounted)]), 'danger');
     }
 
     public function render(): View

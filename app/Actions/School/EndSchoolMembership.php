@@ -187,7 +187,7 @@ class EndSchoolMembership
         $membership = $this->end($user, $school);
 
         if ($membership === null) {
-            throw new RuntimeException("{$user->name} is not a member of {$school->name}.");
+            throw new RuntimeException(__(':name is not a member of :name2.', ['name' => $user->name, 'name2' => $school->name]));
         }
 
         return $membership;

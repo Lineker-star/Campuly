@@ -37,7 +37,7 @@ class ShelveLibraryCopies
                 ->map(fn (int $number): string => $number === 0 ? $barcode : "{$barcode}-{$number}");
 
             if (mb_strlen((string) $barcodes->last()) > 60) {
-                throw new InvalidValueException('The barcode is too long to number '.$copies.' copies from. Use a shorter one.');
+                throw new InvalidValueException(__('The barcode is too long to number :copies copies from. Use a shorter one.', ['copies' => $copies]));
             }
 
             $taken = LibraryCopy::query()
@@ -47,10 +47,10 @@ class ShelveLibraryCopies
                 ->pluck('barcode');
 
             if ($taken->isNotEmpty()) {
-                throw new InvalidValueException('This campus already has a copy with the barcode '.$taken->sort()->implode(', ').'.');
+                throw new InvalidValueException(__('This campus already has a copy with the barcode :sort.', ['sort' => $taken->sort()->implode(', ')]));
             }
 
-            $title ??= $this->describe($school, $newTitle ?? throw new InvalidValueException('Say which book this is.'));
+            $title ??= $this->describe($school, $newTitle ?? throw new InvalidValueException(__('Say which book this is.')));
 
             return $barcodes->map(fn (string $code): LibraryCopy => LibraryCopy::create([
                 'school_id' => $school->id,
@@ -74,7 +74,7 @@ class ShelveLibraryCopies
             $existing = LibraryTitle::forSchool($school)->where('isbn', $newTitle['isbn'])->first();
 
             if ($existing !== null) {
-                throw new InvalidValueException("The catalogue already has this ISBN as \"{$existing->title}\". Pick it instead.");
+                throw new InvalidValueException(__('The catalogue already has this ISBN as ":title". Pick it instead.', ['title' => $existing->title]));
             }
         }
 

@@ -69,7 +69,7 @@ class WriteCampusRole
                 return $role;
             });
         } catch (UniqueConstraintViolationException) {
-            throw new InvalidValueException("This campus already has a role called $name.");
+            throw new InvalidValueException(__('This campus already has a role called :name.', ['name' => $name]));
         }
     }
 
@@ -131,7 +131,7 @@ class WriteCampusRole
         $refused = array_values(array_diff($takenOut, $this->authority->grantableBy($actor, $school)->all()));
 
         if ($refused !== []) {
-            throw new InvalidValueException('You cannot take something out of a role that you do not hold yourself: '.implode(', ', $refused).'.');
+            throw new InvalidValueException(__('You cannot take something out of a role that you do not hold yourself: :refused.', ['refused' => implode(', ', $refused)]));
         }
     }
 
@@ -290,7 +290,7 @@ class WriteCampusRole
             ->exists();
 
         if ($isTaken) {
-            throw new InvalidValueException("This campus already has a role called $name.");
+            throw new InvalidValueException(__('This campus already has a role called :name.', ['name' => $name]));
         }
     }
 
@@ -324,7 +324,7 @@ class WriteCampusRole
         $actor = auth()->user();
 
         if (!$actor instanceof User) {
-            throw new InvalidValueException('A role must be written by somebody.');
+            throw new InvalidValueException(__('A role must be written by somebody.'));
         }
 
         return $actor;

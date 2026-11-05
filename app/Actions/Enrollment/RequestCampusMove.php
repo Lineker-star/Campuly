@@ -50,7 +50,7 @@ class RequestCampusMove
             $this->failIfTheMoveCouldNeverBeMade($enrollment, $academicCycleSection);
 
             if ($this->openRequestFor($enrollment) !== null) {
-                throw new InvalidValueException('This student already has a campus move waiting for a decision.');
+                throw new InvalidValueException(__('This student already has a campus move waiting for a decision.'));
             }
 
             $request = CampusMoveRequest::create([
@@ -192,7 +192,7 @@ class RequestCampusMove
     private function failIfTheRequestCannotMoveTo(CampusMoveRequest $request, CampusMoveStatus $status): void
     {
         if (!$request->status->canMoveTo($status)) {
-            throw new InvalidValueException("A campus move request cannot move from {$request->status->value} to {$status->value}.");
+            throw new InvalidValueException(__('A campus move request cannot move from :status to :status2.', ['status' => $request->status->value, 'status2' => $status->value]));
         }
     }
 
@@ -207,7 +207,7 @@ class RequestCampusMove
     private function failIfTheStudentLeftTheAskingCampus(CampusMoveRequest $request): void
     {
         if ($request->studentRecord->school_id !== $request->from_school_id) {
-            throw new InvalidValueException('The student no longer attends the campus that asked. Reject this request, and ask their current campus to ask again.');
+            throw new InvalidValueException(__('The student no longer attends the campus that asked. Reject this request, and ask their current campus to ask again.'));
         }
     }
 
@@ -221,15 +221,15 @@ class RequestCampusMove
         AcademicCycleSection $academicCycleSection,
     ): void {
         if ($enrollment->status->isClosed()) {
-            throw new InvalidValueException('This enrollment is closed. It cannot move to another campus.');
+            throw new InvalidValueException(__('This enrollment is closed. It cannot move to another campus.'));
         }
 
         if ($enrollment->school_id === $academicCycleSection->school_id) {
-            throw new InvalidValueException('The student already attends that campus. Change the placement instead.');
+            throw new InvalidValueException(__('The student already attends that campus. Change the placement instead.'));
         }
 
         if ($enrollment->school->organization_id !== $academicCycleSection->school->organization_id) {
-            throw new InvalidValueException('The two campuses belong to different organizations. Transfer the enrollment instead.');
+            throw new InvalidValueException(__('The two campuses belong to different organizations. Transfer the enrollment instead.'));
         }
 
         $destination = $academicCycleSection->school;
@@ -240,7 +240,7 @@ class RequestCampusMove
             ->exists();
 
         if ($numberTaken) {
-            throw new InvalidValueException("{$destination->name} already has a learner with admission number {$enrollment->admission_number}. Change one of the numbers first.");
+            throw new InvalidValueException(__(':name already has a learner with admission number :admission_number. Change one of the numbers first.', ['name' => $destination->name, 'admission_number' => $enrollment->admission_number]));
         }
     }
 }

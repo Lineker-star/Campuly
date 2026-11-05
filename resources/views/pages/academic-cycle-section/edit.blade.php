@@ -10,9 +10,9 @@
 
 @section('content')
     <april:card class="mx-auto max-w-3xl">
-        <slot:title>Edit {{ $academicCycleSection->academicLevel->name }} · {{ $academicCycleSection->name }} · {{ $academicCycleSection->academicYear->name }}</slot:title>
+        <slot:title>{{ __('Edit :name · :name2 · :name3', ['name' => $academicCycleSection->academicLevel->name, 'name2' => $academicCycleSection->name, 'name3' => $academicCycleSection->academicYear->name]) }}</slot:title>
         <slot:description>
-            A change here updates this one {{ strtolower(school_term('section', 'section')) }} in this one {{ strtolower(school_term('academic_year', 'school year')) }}. No learner, result, attendance, or timetable record moves.
+            {{ __('A change here updates this one :term in this one :term2. No learner, result, attendance, or timetable record moves.', ['term' => strtolower(school_term('section', 'section')), 'term2' => strtolower(school_term('academic_year', 'school year'))]) }}
         </slot:description>
         <slot:content>
             <livewire:academic-cycle-section-form :academic-cycle-section="$academicCycleSection" />

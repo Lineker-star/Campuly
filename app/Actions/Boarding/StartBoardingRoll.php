@@ -52,7 +52,7 @@ class StartBoardingRoll
             $boarders = $this->roster->inDormitory($dormitory);
 
             if ($boarders->isEmpty()) {
-                throw new InvalidValueException('This house has no current boarders to check.');
+                throw new InvalidValueException(__('This house has no current boarders to check.'));
             }
 
             $away = $this->roster->awayFrom($dormitory, $takenOn)->keyBy('student_record_id');

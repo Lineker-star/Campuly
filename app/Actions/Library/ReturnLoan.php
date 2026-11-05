@@ -45,7 +45,7 @@ class ReturnLoan
             $loan = LibraryLoan::query()->lockForUpdate()->findOrFail($loan->id);
 
             if (!$loan->isOpen()) {
-                throw new InvalidValueException('This copy is already back.');
+                throw new InvalidValueException(__('This copy is already back.'));
             }
 
             $loan->returned_on = $returnedOn;

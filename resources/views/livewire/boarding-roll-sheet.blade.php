@@ -6,16 +6,16 @@
 
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-            <h2 id="roll-heading" class="text-base font-semibold">Boarders</h2>
+            <h2 id="roll-heading" class="text-base font-semibold">{{ __('Boarders') }}</h2>
             <span @class([
                 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold',
                 'bg-muted text-muted-foreground' => $roll->isComplete(),
             ])>{{ $roll->isComplete() ? 'Completed '.local_date(school_time($roll->completed_at), 'time') : 'In progress' }}</span>
         </div>
         <p class="text-sm text-muted-foreground" aria-live="polite">
-            {{ $answered }} of {{ count($answers) }} answered
+            {{ __(':answered of :count answered', ['answered' => $answered, 'count' => count($answers)]) }}
             @if ($unaccounted > 0)
-                · <span class="font-medium text-destructive">{{ $unaccounted }} unaccounted</span>
+                · <span class="font-medium text-destructive">{{ __(':unaccounted unaccounted', ['unaccounted' => $unaccounted]) }}</span>
             @endif
         </p>
     </div>
@@ -59,8 +59,8 @@
 
                     @if ($canManage && $needsDetail)
                         <div class="grid gap-2 sm:grid-cols-2">
-                            <input wire:model="answers.{{ $entry->id }}.location" maxlength="150" placeholder="Where (optional)" aria-label="Where {{ $boarder }} is" class="{{ $controlClasses }}">
-                            <input wire:model="answers.{{ $entry->id }}.note" maxlength="1000" placeholder="Note (optional)" aria-label="Note for {{ $boarder }}" class="{{ $controlClasses }}">
+                            <input wire:model="answers.{{ $entry->id }}.location" maxlength="150" placeholder="{{ __('Where (optional)') }}" aria-label="Where {{ $boarder }} is" class="{{ $controlClasses }}">
+                            <input wire:model="answers.{{ $entry->id }}.note" maxlength="1000" placeholder="{{ __('Note (optional)') }}" aria-label="Note for {{ $boarder }}" class="{{ $controlClasses }}">
                         </div>
                     @endif
 
@@ -72,11 +72,11 @@
         @if ($canManage)
             <div class="sticky bottom-0 z-10 flex flex-wrap items-center justify-end gap-3 border-t bg-background py-3">
                 @if ($changed !== [])
-                    <p class="mr-auto text-sm text-muted-foreground" aria-live="polite">{{ count($changed) }} not saved</p>
-                    <april:button type="button" variant="ghost" class="h-11 select-none" wire:click="discard">Put back</april:button>
-                    <april:button type="submit" variant="outline" class="h-11 select-none" wire:loading.attr="disabled" wire:target="save">Save</april:button>
+                    <p class="mr-auto text-sm text-muted-foreground" aria-live="polite">{{ __(':count not saved', ['count' => count($changed)]) }}</p>
+                    <april:button type="button" variant="ghost" class="h-11 select-none" wire:click="discard">{{ __('Put back') }}</april:button>
+                    <april:button type="submit" variant="outline" class="h-11 select-none" wire:loading.attr="disabled" wire:target="save">{{ __('Save') }}</april:button>
                 @endif
-                <april:button type="button" class="h-11 select-none" wire:click="complete" wire:confirm="Complete the roll? Answers cannot change after this." wire:loading.attr="disabled" wire:target="complete,save">Complete roll</april:button>
+                <april:button type="button" class="h-11 select-none" wire:click="complete" wire:confirm="Complete the roll? Answers cannot change after this." wire:loading.attr="disabled" wire:target="complete,save">{{ __('Complete roll') }}</april:button>
             </div>
         @endif
     </form>

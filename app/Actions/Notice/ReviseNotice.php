@@ -30,7 +30,7 @@ class ReviseNotice
             $notice = Notice::query()->lockForUpdate()->findOrFail($notice->id);
 
             if ($notice->status !== NoticeStatus::Published) {
-                throw new InvalidValueException('Only a published notice can be revised.');
+                throw new InvalidValueException(__('Only a published notice can be revised.'));
             }
 
             $revision = Notice::create([

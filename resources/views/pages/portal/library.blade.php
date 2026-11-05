@@ -1,16 +1,16 @@
 @extends('layouts.app', ['breadcrumbs' => [['href' => route('dashboard'), 'text' => 'Dashboard'], ['href' => route('portal.overview'), 'text' => 'My school'], ['text' => 'Library', 'active']]])
 
-@section('title', 'Library')
-@section('page_heading', 'Library')
+@section('title', __('Library'))
+@section('page_heading', __('Library'))
 
 @section('content')
     <div class="flex flex-col gap-6">
         <april:card>
             <slot:title>{{ $studentRecord->user?->name ?? $studentRecord->admission_number }}</slot:title>
-            <slot:description>{{ $studentRecord->school?->name }} · Books currently borrowed</slot:description>
+            <slot:description>{{ __(':name · Books currently borrowed', ['name' => $studentRecord->school?->name]) }}</slot:description>
             <slot:content>
                 @if ($loans->isEmpty())
-                    <p class="text-sm text-muted-foreground">There are no books on loan.</p>
+                    <p class="text-sm text-muted-foreground">{{ __('There are no books on loan.') }}</p>
                 @else
                     <div class="flex flex-col divide-y">
                         @foreach ($loans as $loan)
@@ -18,14 +18,14 @@
                                 <div>
                                     <p class="font-medium">{{ $loan->copy?->title?->title }}</p>
                                     <p class="text-sm text-muted-foreground">
-                                        Copy {{ $loan->copy?->barcode }}
+                                        {{ __('Copy :barcode', ['barcode' => $loan->copy?->barcode]) }}
                                         @if ($loan->school_id !== $studentRecord->school_id)
-                                            · Return to {{ $loan->school?->name }}
+                                            {{ __('· Return to :name', ['name' => $loan->school?->name]) }}
                                         @endif
                                     </p>
                                 </div>
                                 <p class="text-sm {{ $loan->daysLate() > 0 ? 'text-destructive' : 'text-muted-foreground' }}">
-                                    Due {{ local_date($loan->due_on, 'medium') }}
+                                    {{ __('Due :date', ['date' => local_date($loan->due_on, 'medium')]) }}
                                 </p>
                             </div>
                         @endforeach
@@ -35,11 +35,11 @@
         </april:card>
 
         <april:card>
-            <slot:title>Library queue</slot:title>
-            <slot:description>Titles reserved for this learner.</slot:description>
+            <slot:title>{{ __('Library queue') }}</slot:title>
+            <slot:description>{{ __('Titles reserved for this learner.') }}</slot:description>
             <slot:content>
                 @if ($reservations->isEmpty())
-                    <p class="text-sm text-muted-foreground">There are no active reservations.</p>
+                    <p class="text-sm text-muted-foreground">{{ __('There are no active reservations.') }}</p>
                 @else
                     <div class="flex flex-col divide-y">
                         @foreach ($reservations as $reservation)
@@ -49,7 +49,7 @@
                                     <p class="text-sm text-muted-foreground">{{ $reservation->status->label() }}</p>
                                 </div>
                                 @if ($reservation->holds_until)
-                                    <p class="text-sm text-muted-foreground">Collect by {{ local_date($reservation->holds_until, 'medium') }}</p>
+                                    <p class="text-sm text-muted-foreground">{{ __('Collect by :date', ['date' => local_date($reservation->holds_until, 'medium')]) }}</p>
                                 @endif
                             </div>
                         @endforeach

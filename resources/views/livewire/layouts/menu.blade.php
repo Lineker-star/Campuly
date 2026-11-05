@@ -164,7 +164,7 @@ $menuGroups[] = $currentGroup;
                         placeholder="{{ __('Search pages and features...') }}"
                         class="h-14 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground"
                         autocomplete="off" spellcheck="false" aria-label="{{ __('Search pages and features') }}">
-                    <kbd class="rounded border bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">Esc</kbd>
+                    <kbd class="rounded border bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">{{ __('Esc') }}</kbd>
                 </div>
 
                 <div x-ref="results" class="max-h-[60vh] overflow-y-auto overscroll-contain p-2 sm:max-h-[28rem]" role="listbox"
@@ -216,7 +216,7 @@ $menuGroups[] = $currentGroup;
 
                 <div class="hidden items-center justify-between gap-4 border-t px-4 py-2 text-xs text-muted-foreground sm:flex">
                     <span>{{ __('Navigate') }} <kbd class="font-mono">↑</kbd> <kbd class="font-mono">↓</kbd></span>
-                    <span>{{ __('Open') }} <kbd class="font-mono">Enter</kbd></span>
+                    <span>{{ __('Open') }} <kbd class="font-mono">{{ __('Enter') }}</kbd></span>
                 </div>
             </div>
         </div>

@@ -146,7 +146,7 @@ class GradebookSetup extends Component
             $highestMark = $item?->entries()->max('points');
 
             if ($highestMark !== null && (float) $highestMark > $attributes['max_points']) {
-                $this->addError('itemMaxPoints', 'A learner already has '.(float) $highestMark.'. The maximum cannot go below that.');
+                $this->addError('itemMaxPoints', __('A learner already has :highest_mark. The maximum cannot go below that.', ['highest_mark' => (float) $highestMark]));
 
                 return;
             }
@@ -155,7 +155,7 @@ class GradebookSetup extends Component
         if ($item !== null) {
             $item->update($attributes);
             $this->resetItemForm();
-            $this->notify('Assessment changed.');
+            $this->notify(__('Assessment changed.'));
             $this->dispatch('gradebook-changed');
 
             return;
@@ -178,7 +178,7 @@ class GradebookSetup extends Component
         ]);
 
         $this->resetItemForm();
-        $this->notify('Assessment added.');
+        $this->notify(__('Assessment added.'));
         $this->dispatch('gradebook-changed');
     }
 
@@ -188,7 +188,7 @@ class GradebookSetup extends Component
         $item = $this->item($itemId);
 
         if ($item->entries()->exists()) {
-            $this->notify("{$item->name} has marks. Remove them first.", 'danger');
+            $this->notify(__(':name has marks. Remove them first.', ['name' => $item->name]), 'danger');
 
             return;
         }
@@ -199,7 +199,7 @@ class GradebookSetup extends Component
             $this->resetItemForm();
         }
 
-        $this->notify('Assessment removed.');
+        $this->notify(__('Assessment removed.'));
         $this->dispatch('gradebook-changed');
     }
 
@@ -229,7 +229,7 @@ class GradebookSetup extends Component
         ]);
 
         $this->reset('isAddingCategory', 'categoryName', 'categoryWeight');
-        $this->notify('Category added.');
+        $this->notify(__('Category added.'));
     }
 
     public function applyTemplate(ApplyAssessmentTemplate $applyAssessmentTemplate): void
@@ -249,7 +249,7 @@ class GradebookSetup extends Component
         }
 
         $this->reset('templateId', 'isAddingItem');
-        $this->notify('Template applied.');
+        $this->notify(__('Template applied.'));
         $this->dispatch('gradebook-changed');
     }
 
@@ -276,7 +276,7 @@ class GradebookSetup extends Component
         }
 
         $this->reset('isSavingTemplate', 'templateName', 'templateDescription');
-        $this->notify('Saved as a template for your school.');
+        $this->notify(__('Saved as a template for your school.'));
     }
 
     public function render(): View
@@ -311,7 +311,7 @@ class GradebookSetup extends Component
         $this->courseOffering->loadMissing(['academicPeriod', 'academicYear']);
         $period = $this->courseOffering->academicPeriod ?? $this->courseOffering->academicYear;
 
-        abort_if($period !== null && !$period->status->acceptsNewWork(), 403, 'The period is closing or closed, so the assessments cannot change.');
+        abort_if($period !== null && !$period->status->acceptsNewWork(), 403, __('The period is closing or closed, so the assessments cannot change.'));
     }
 
     private function item(int $itemId): GradeItem

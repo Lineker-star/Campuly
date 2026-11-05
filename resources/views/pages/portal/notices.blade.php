@@ -1,23 +1,23 @@
 @extends('layouts.app', ['breadcrumbs' => [['href' => route('dashboard'), 'text' => 'Dashboard'], ['href' => route('portal.overview'), 'text' => 'My school'], ['text' => 'Notices', 'active']]])
-@section('title', 'Notices')
-@section('page_heading', 'Notices')
+@section('title', __('Notices'))
+@section('page_heading', __('Notices'))
 @section('content')
 <div class="flex flex-col gap-4">
     @forelse($notices as $recipient)
         <april:card>
             <slot:title>{{ $recipient->notice->title }}</slot:title>
-            <slot:description>Sent {{ $recipient->delivered_at?->diffForHumans() ?? 'recently' }}</slot:description>
+            <slot:description>{{ __('Sent :recently', ['recently' => $recipient->delivered_at?->diffForHumans() ?? 'recently']) }}</slot:description>
             <slot:content>
                 <div class="flex flex-col gap-3">
                     <div class="rich-text max-w-none text-sm text-slate-700 dark:text-slate-200">{!! $recipient->notice->safe_content !!}</div>
                     @if($recipient->notice->hasManagedAttachment())
-                        <april:button-link href="{{ route('notices.attachments.download', $recipient->notice) }}" variant="secondary" class="w-fit gap-2"><x-lucide-download class="size-4" />Download attachment</april:button-link>
+                        <april:button-link href="{{ route('notices.attachments.download', $recipient->notice) }}" variant="secondary" class="w-fit gap-2"><x-lucide-download class="size-4" />{{ __('Download attachment') }}</april:button-link>
                     @endif
                 </div>
             </slot:content>
         </april:card>
     @empty
-        <april:card><slot:title>No notices yet</slot:title><slot:description>Messages the school sends will appear here.</slot:description></april:card>
+        <april:card><slot:title>{{ __('No notices yet') }}</slot:title><slot:description>{{ __('Messages the school sends will appear here.') }}</slot:description></april:card>
     @endforelse
 </div>
 @endsection
