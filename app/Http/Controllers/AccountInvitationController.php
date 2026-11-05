@@ -29,7 +29,7 @@ class AccountInvitationController extends Controller
     {
         $invitation = $acceptAccountInvitation->findPendingInvitation($token);
 
-        abort_if($invitation === null, 404, 'This invitation link is not valid, or it expired.');
+        abort_if($invitation === null, 404, __('This invitation link is not valid, or it expired.'));
 
         return view('auth.accept-invitation', [
             'token' => $token,
@@ -51,6 +51,6 @@ class AccountInvitationController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('success', 'Your account is ready. Welcome to '.config('app.name').'.');
+        return redirect()->route('dashboard')->with('success', __('Your account is ready. Welcome to :app.', ['app' => config('app.name')]));
     }
 }

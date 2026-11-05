@@ -55,11 +55,11 @@ class InstallationController extends Controller
             ]);
 
             return back()->withErrors([
-                'world_data' => 'The country and state data could not be installed. Check the deployment logs and try again.',
+                'world_data' => __('The country and state data could not be installed. Check the deployment logs and try again.'),
             ]);
         }
 
-        return back()->with('success', 'Countries and states are ready. Reloading the installer.');
+        return back()->with('success', __('Countries and states are ready. Reloading the installer.'));
     }
 
     /**
@@ -75,7 +75,7 @@ class InstallationController extends Controller
             return back()->withErrors(['installer' => $exception->getMessage()]);
         }
 
-        return back()->with('success', 'The application key was generated. Reloading the installer.');
+        return back()->with('success', __('The application key was generated. Reloading the installer.'));
     }
 
     /**
@@ -91,11 +91,11 @@ class InstallationController extends Controller
             $configureDatabase->test($request->validated());
         } catch (\Throwable $exception) {
             return back()
-                ->withErrors(['database' => 'The database connection failed. Check the values and try again.'])
+                ->withErrors(['database' => __('The database connection failed. Check the values and try again.')])
                 ->withInput($request->except('password'));
         }
 
-        return back()->with('success', 'The database connection works. You can now set up the database.');
+        return back()->with('success', __('The database connection works. You can now set up the database.'));
     }
 
     /**
@@ -108,20 +108,20 @@ class InstallationController extends Controller
         abort_if(Installation::isInstalled(), 404);
 
         if (!filled(config('app.key'))) {
-            return back()->withErrors(['installer' => 'Generate the application key before setting up the database.']);
+            return back()->withErrors(['installer' => __('Generate the application key before setting up the database.')]);
         }
 
         try {
             $configureDatabase->migrate($request->validated());
         } catch (\Throwable $exception) {
             return back()
-                ->withErrors(['database' => 'The database setup failed. Check the values and deployment logs, then try again.'])
+                ->withErrors(['database' => __('The database setup failed. Check the values and deployment logs, then try again.')])
                 ->withInput($request->except('password'));
         }
 
         return redirect()
             ->route('install.index')
-            ->with('success', 'The database is ready. Complete the administrator and campus details below.');
+            ->with('success', __('The database is ready. Complete the administrator and campus details below.'));
     }
 
     /**
@@ -138,7 +138,7 @@ class InstallationController extends Controller
 
         if (!$readiness->ready()) {
             return back()
-                ->withErrors(['installer' => 'Complete the installer checks before continuing.'])
+                ->withErrors(['installer' => __('Complete the installer checks before continuing.')])
                 ->withInput($request->except(['admin_password', 'admin_password_confirmation']));
         }
 
@@ -154,6 +154,6 @@ class InstallationController extends Controller
 
         return redirect()
             ->route('login')
-            ->with('success', config('app.name').' is installed. Sign in with the System Administrator account.');
+            ->with('success', __(':app is installed. Sign in with the System Administrator account.', ['app' => config('app.name')]));
     }
 }

@@ -66,6 +66,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 'emergency_contact_phone',
                 'emergency_contact_relationship',
                 'notes',
-            ]);
+            ])
+            // An address that matches no route never runs the web middleware,
+            // so its error page picks the language here (?lang=, installation,
+            // browser, default). Returning null keeps the normal error page.
+            ->render(function (Throwable $exception, Request $request): null {
+                if ($request->route() === null) {
+                    app(SetApplicationLocale::class)->apply($request);
+                }
+
+                return null;
+            });
     })
     ->create();

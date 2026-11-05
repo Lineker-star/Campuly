@@ -56,7 +56,7 @@ class ConfigureDatabase
         DB::purge($data['driver']);
 
         if (Artisan::call('migrate', ['--force' => true]) !== 0) {
-            throw new \RuntimeException('The database migrations did not complete.');
+            throw new \RuntimeException(__('The database migrations did not complete.'));
         }
     }
 

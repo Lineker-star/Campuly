@@ -54,7 +54,7 @@ class InstallApplication
     public function install(array $data): Installation
     {
         if (!$this->readiness->ready()) {
-            throw new \InvalidArgumentException('Complete the installer checks before continuing.');
+            throw new \InvalidArgumentException(__('Complete the installer checks before continuing.'));
         }
 
         $locale = $data['locale'] ?? config('app.locale');
@@ -65,11 +65,11 @@ class InstallApplication
 
         return DB::transaction(function () use ($data, $locale): Installation {
             if (Installation::withoutGlobalScopes()->lockForUpdate()->exists()) {
-                throw new \InvalidArgumentException('The application is already installed.');
+                throw new \InvalidArgumentException(__('The application is already installed.'));
             }
 
             if (User::query()->exists() || School::query()->exists()) {
-                throw new \InvalidArgumentException('This database already contains application data.');
+                throw new \InvalidArgumentException(__('This database already contains application data.'));
             }
 
             Artisan::call('db:seed', [

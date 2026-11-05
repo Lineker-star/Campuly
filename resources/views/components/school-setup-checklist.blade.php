@@ -12,14 +12,14 @@
 <section class="flex flex-col gap-6" aria-labelledby="school-setup-checklist-heading">
     <div class="flex flex-col gap-3">
         <div class="flex items-baseline justify-between gap-4">
-            <h2 id="school-setup-checklist-heading" class="text-lg font-semibold">School setup checklist</h2>
-            <p class="shrink-0 text-sm text-muted-foreground"><span class="font-semibold text-foreground">{{ $checklist['completed'] }}</span> of {{ $checklist['total'] }} done</p>
+            <h2 id="school-setup-checklist-heading" class="text-lg font-semibold">{{ __('School setup checklist') }}</h2>
+            <p class="shrink-0 text-sm text-muted-foreground"><span class="font-semibold text-foreground">{{ $checklist['completed'] }}</span> {{ __('of :total done', ['total' => $checklist['total']]) }}</p>
         </div>
-        <div class="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="School setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $progress }}">
+        <div class="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="{{ __('School setup progress') }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $progress }}">
             <div class="h-full rounded-full bg-brand-gradient" style="width: {{ $progress }}%"></div>
         </div>
         @if ($checklist['required_remaining'] > 0)
-            <p class="text-sm text-muted-foreground">{{ $checklist['required_remaining'] }} required {{ $checklist['required_remaining'] === 1 ? 'step remains' : 'steps remain' }}</p>
+            <p class="text-sm text-muted-foreground">{{ trans_choice(':count required step remains|:count required steps remain', $checklist['required_remaining']) }}</p>
         @endif
     </div>
 

@@ -33,13 +33,23 @@ class SetApplicationLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $this->apply($request);
+
+        return $next($request);
+    }
+
+    /**
+     * Resolve the language of the request and set it for text, dates and numbers.
+     */
+    public function apply(Request $request): string
+    {
         $locale = $this->resolve($request);
 
         app()->setLocale($locale);
         Carbon::setLocale($locale);
         Number::useLocale((string) config("app.number_locales.$locale", $locale));
 
-        return $next($request);
+        return $locale;
     }
 
     /**

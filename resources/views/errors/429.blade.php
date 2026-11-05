@@ -1,5 +1,5 @@
 @extends('errors.layout')
 
 @section('code', '429')
-@section('title', 'Too many tries')
-@section('message', 'Wait a minute, then try again.')
+@section('title', __('Too many tries'))
+@section('message', __('Wait a minute, then try again.'))

@@ -12,11 +12,11 @@ class GenerateApplicationKey
     public function generate(): void
     {
         if (filled(config('app.key'))) {
-            throw new \InvalidArgumentException('The application key already exists. It was not changed.');
+            throw new \InvalidArgumentException(__('The application key already exists. It was not changed.'));
         }
 
         if (Artisan::call('key:generate', ['--force' => true]) !== 0) {
-            throw new \RuntimeException('The application key could not be generated.');
+            throw new \RuntimeException(__('The application key could not be generated.'));
         }
 
         Artisan::call('config:clear');
