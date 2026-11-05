@@ -7,6 +7,7 @@ Read in this order when you join the project (people and AI agents alike).
 | 1 | [../README.md](../README.md) | What Campuly is, quick start |
 | 2 | [../MASTER_PROMPT.md](../MASTER_PROMPT.md) | The build plan: phases and exact steps for the AI coding agent |
 | 3 | [AUDIT_REPORT.md](AUDIT_REPORT.md) | What the current code does, what is missing, verified facts |
+| 3b | [BASELINE.md](BASELINE.md) | Test, PHPStan, build and migration numbers before Phase 0 changes |
 | 4 | [PRD.md](PRD.md) | Product requirements: users, modules, non-functional requirements |
 | 5 | [ROADMAP.md](ROADMAP.md) | Phases, milestones, definition of done |
 | 6 | [BRAND_GUIDELINES.md](BRAND_GUIDELINES.md) | Logo, colours, typography, voice, do and don't |

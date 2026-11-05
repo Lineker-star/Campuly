@@ -55,7 +55,7 @@ class ThemeToggleTest extends TestCase
 
     public function test_the_application_favicon_has_a_deployable_default(): void
     {
-        $this->assertSame('img/logo/logo.png', config('app.favicon'));
+        $this->assertSame('favicon.ico', config('app.favicon'));
         $this->assertFileExists(public_path(config('app.favicon')));
     }
 

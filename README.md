@@ -19,9 +19,13 @@ Target editions:
 
 The build plan is in **[MASTER_PROMPT.md](MASTER_PROMPT.md)**. All project documents are listed in **[docs/00-INDEX.md](docs/00-INDEX.md)**.
 
+## Upgrading an existing Skuul install
+
+> **Breaking change.** Campuly is built on Skuul V3, whose migrations reshape the Skuul V2 schema. Skuul V2 is deprecated (V2 is deprecated upstream as well), and running `php artisan migrate` on a V2 database without a backup can cause data loss. Take a full backup of the database and uploaded files first, try the upgrade on a copy, and keep the backup until the new install is checked: the only rollback is restoring that backup. Release steps are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Quick start (local)
 
-Requirements: PHP 8.4.1+, Composer 2, Node.js 22 or 24, MySQL 8 (PostgreSQL and SQLite support is being completed in Phase 0), optional Redis.
+Requirements: PHP 8.4.1+, Composer 2, Node.js 22 or 24, and MySQL 8, PostgreSQL 15+ or SQLite 3 (see [docs/DATABASE.md](docs/DATABASE.md)), optional Redis.
 
 ```bash
 composer install --no-interaction --prefer-dist
@@ -38,7 +42,7 @@ php artisan serve
 
 Open http://127.0.0.1:8000/install, create the administrator, organization and first campus, then complete the setup checklist. Keep `php artisan queue:work --tries=3` and `php artisan schedule:work` running for notices, reminders and backups.
 
-**Demo data (disposable database only):** set `DEMO_MODE=true`, run `php artisan config:clear` and `php artisan skuul:refresh-demo`. All demo accounts use the password `password` (see `docs/AUDIT_REPORT.md` for the list).
+**Demo data (disposable database only):** set `DEMO_MODE=true`, run `php artisan config:clear` and `php artisan campuly:refresh-demo`. All demo accounts use the password `password` (see `docs/AUDIT_REPORT.md` for the list).
 
 ## Deploy anywhere
 

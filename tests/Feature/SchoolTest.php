@@ -321,7 +321,7 @@ class SchoolTest extends TestCase
 
     public function test_the_application_logo_has_a_deployable_default(): void
     {
-        $this->assertSame('img/logo/logo.png', config('app.logo'));
+        $this->assertSame('img/brand/campuly-mark.png', config('app.logo'));
         $this->assertFileExists(public_path(config('app.logo')));
     }
 

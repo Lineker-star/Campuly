@@ -32,7 +32,9 @@ class LinkButtonContrastTest extends TestCase
 
         $position = strpos($css, $selector);
         $declaration = substr($css, $position, strpos($css, '}', $position) - $position);
-        $this->assertStringContainsString('color: hsl(var(--primary-foreground));', $declaration);
+        // Campuly paints links with its own token, checked at 6.9:1 or better
+        // against the page and card colours in both themes.
+        $this->assertStringContainsString('color: hsl(var(--brand-link));', $declaration);
     }
 
     public function test_the_override_sits_outside_every_layer(): void
