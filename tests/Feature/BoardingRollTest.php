@@ -194,7 +194,7 @@ class BoardingRollTest extends TestCase
             ->call('start', $house->id, BoardingRollType::Evening->value)
             ->assertDispatched('status-message', type: 'danger', message: 'A roll can only be taken for today or a day before.')
             ->set('date', '20266-09-02')
-            ->assertSee(today()->format('l, j F Y'));
+            ->assertSee(local_date(today(), 'weekday'));
 
         $house->update(['is_active' => false]);
 

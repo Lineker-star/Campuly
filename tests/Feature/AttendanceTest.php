@@ -449,7 +449,7 @@ class AttendanceTest extends TestCase
             ->assertSee($enrollment->admission_number)
             ->assertSee('Mark everybody present')
             ->assertSee('Save register')
-            ->assertSee(now()->format('l, j F Y'));
+            ->assertSee(local_date(now(), 'weekday'));
     }
 
     public function test_the_register_screen_steps_between_days_without_losing_the_section(): void
