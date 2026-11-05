@@ -24,6 +24,13 @@ class CreateBackup extends Command
     protected $signature = 'skuul:backup {--with-files : Back up the uploaded files as well} {--keep-old : Leave old backups alone}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:backup'];
+
+    /**
      * @var string
      */
     protected $description = 'Back up the database, and the uploaded files when asked';

@@ -32,7 +32,7 @@ return [
     | Backups
     |--------------------------------------------------------------------------
     |
-    | `skuul:check-backup` reads these values. It reports a failure when the
+    | `campuly:check-backup` reads these values. It reports a failure when the
     | newest file in the backup folder is older than `max_age_hours`.
     |
     */
@@ -46,7 +46,7 @@ return [
         /*
          * A backup holds every mark, every fee, and every safeguarding note
          * the school has, and it is kept away from this machine on purpose.
-         * It therefore leaves locked. Without a key `skuul:backup` refuses,
+         * It therefore leaves locked. Without a key `campuly:backup` refuses,
          * unless the installation says plainly that it accepts plain files.
          */
         'key' => env('BACKUP_KEY'),
@@ -60,7 +60,7 @@ return [
         'keep_months' => (int) env('BACKUP_KEEP_MONTHS', 12),
 
         /*
-         * `skuul:rehearse-restore` loads the newest backup into this
+         * `campuly:rehearse-restore` loads the newest backup into this
          * connection and looks at what came back. It must be a database
          * nobody else uses: restoring writes over whatever is there.
          */

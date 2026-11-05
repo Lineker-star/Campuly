@@ -2,6 +2,20 @@
 
 Changes made in the Campuly fork. Upstream Skuul history stays in `../CHANGELOG.md`.
 
+## [Unreleased] — Phase 0 — Foundation (branch `phase-0-foundation`)
+
+### Added
+- STEP 0.1: `docs/BASELINE.md` with the first recorded test, PHPStan and build results.
+- STEP 0.2: `.github/workflows/campuly-ci.yml`, a CI matrix on MySQL, PostgreSQL and SQLite (install, build, migrate, test, Pint, PHPStan).
+- STEP 0.3: `campuly:*` names for every `skuul:*` Artisan command (the old names keep working); `config/campuly.php` with `CAMPULY_DOCS_URL`; `CAMPULY_UPDATE_REPOSITORY`; `tests/Feature/CampulyBrandTest.php`.
+
+### Changed
+- STEP 0.3: the header and sidebar "Documentation" links follow `CAMPULY_DOCS_URL` and are translatable; `campuly:update` installs releases from the Campuly fork (`Lineker-star/Campuly`) instead of upstream Skuul; installer and updater messages, the demo welcome notice, mail defaults, new backup file names (`campuly-<date>`) and the domain-verification record (`_campuly-verification.<host>`) use the Campuly name.
+- The test bootstrap runs on Windows (no `posix` extension).
+
+### Kept for compatibility
+- `skuul:*` command signatures, the `SKUUL_UPDATE_REPOSITORY` fallback, the encrypted-backup header and key labels (older backups must stay readable), the `Yungifez\AprilUI` package namespace.
+
 ## [Unreleased] — 2026-11-05 — Rebrand and project documentation
 
 ### Added

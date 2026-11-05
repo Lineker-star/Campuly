@@ -22,6 +22,15 @@ class ReleaseConfigurationTest extends TestCase
         }
     }
 
+    public function test_a_new_install_updates_from_the_campuly_fork_and_links_to_campuly_docs(): void
+    {
+        $example = (string) file_get_contents($this->path('.env.example'));
+
+        $this->assertSame('Lineker-star/Campuly', $this->environmentValue('.env.example', 'CAMPULY_UPDATE_REPOSITORY'));
+        $this->assertStringStartsWith('https://', $this->environmentValue('.env.example', 'CAMPULY_DOCS_URL'));
+        $this->assertDoesNotMatchRegularExpression('/^SKUUL_UPDATE_REPOSITORY=/m', $example, 'The example must not point updates at upstream Skuul.');
+    }
+
     public function test_phpunit_overrides_database_credentials_and_urls_in_both_environment_sources(): void
     {
         $configuration = simplexml_load_file($this->path('phpunit.xml'));

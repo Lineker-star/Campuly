@@ -18,7 +18,7 @@ class UpdateApplicationTest extends TestCase
         parent::setUp();
 
         config([
-            'release.update_repository' => 'yungifez/skuul',
+            'release.update_repository' => 'Lineker-star/Campuly',
             'app.maintenance.driver' => 'cache',
             'app.maintenance.store' => 'array',
         ]);
@@ -30,12 +30,12 @@ class UpdateApplicationTest extends TestCase
         $this->fakeCheckout('v3.0.2');
 
         $this->artisan('skuul:update --check')
-            ->expectsOutput('Skuul v3.1.0 is out. This install runs v3.0.2.')
-            ->expectsOutput('Release notes: https://github.com/yungifez/skuul/releases/tag/v3.1.0')
+            ->expectsOutput(config('app.name').' v3.1.0 is out. This install runs v3.0.2.')
+            ->expectsOutput('Release notes: https://github.com/Lineker-star/Campuly/releases/tag/v3.1.0')
             ->assertSuccessful();
 
         $this->assertNothingChanged();
-        Http::assertSent(fn ($request) => $request->url() === 'https://api.github.com/repos/yungifez/skuul/releases/latest');
+        Http::assertSent(fn ($request) => $request->url() === 'https://api.github.com/repos/Lineker-star/Campuly/releases/latest');
     }
 
     public function test_an_install_on_the_newest_release_is_left_alone(): void
@@ -44,7 +44,7 @@ class UpdateApplicationTest extends TestCase
         $this->fakeCheckout('V3.0.2');
 
         $this->artisan('skuul:update --no-backup')
-            ->expectsOutput('Skuul V3.0.2 is the newest release.')
+            ->expectsOutput(config('app.name').' V3.0.2 is the newest release.')
             ->assertSuccessful();
 
         $this->assertNothingChanged();
@@ -56,7 +56,7 @@ class UpdateApplicationTest extends TestCase
         Process::fake(["*'describe'*" => Process::result(errorOutput: 'fatal: No names found', exitCode: 128)]);
 
         $this->artisan('skuul:update --no-backup')
-            ->expectsOutput('This install is not a git checkout of a Skuul release. Update it by hand.')
+            ->expectsOutput('This install is not a git checkout of a '.config('app.name').' release. Update it by hand.')
             ->assertFailed();
 
         $this->assertNothingChanged();
@@ -133,7 +133,7 @@ class UpdateApplicationTest extends TestCase
         $this->fakeCheckout('v3.0.2');
 
         $this->artisan('skuul:update --no-backup')
-            ->expectsOutput('Skuul is now on v3.1.0.')
+            ->expectsOutput(config('app.name').' is now on v3.1.0.')
             ->assertSuccessful();
 
         Process::assertRan(fn ($process) => $process->command === ['git', 'checkout', '--quiet', 'v3.1.0']);
@@ -161,9 +161,9 @@ class UpdateApplicationTest extends TestCase
 
     private function fakeRelease(string $tag): void
     {
-        Http::fake(['api.github.com/repos/yungifez/skuul/releases/latest' => Http::response([
+        Http::fake(['api.github.com/repos/Lineker-star/Campuly/releases/latest' => Http::response([
             'tag_name' => $tag,
-            'html_url' => "https://github.com/yungifez/skuul/releases/tag/$tag",
+            'html_url' => "https://github.com/Lineker-star/Campuly/releases/tag/$tag",
         ])]);
     }
 

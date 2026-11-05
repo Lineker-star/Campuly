@@ -67,7 +67,7 @@ return [
         ],
 
         /*
-         * Where `skuul:rehearse-restore` puts the newest backup. Restoring
+         * Where `campuly:rehearse-restore` puts the newest backup. Restoring
          * writes over whatever is there, so this must be a database nobody
          * else uses.
          */
@@ -75,7 +75,7 @@ return [
             'driver' => 'mysql',
             'host' => env('BACKUP_REHEARSAL_HOST', env('DB_HOST', '127.0.0.1')),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('BACKUP_REHEARSAL_DATABASE', 'skuul_rehearsal'),
+            'database' => env('BACKUP_REHEARSAL_DATABASE', 'campuly_rehearsal'),
             'username' => env('BACKUP_REHEARSAL_USERNAME', env('DB_USERNAME', 'forge')),
             'password' => env('BACKUP_REHEARSAL_PASSWORD', env('DB_PASSWORD', '')),
             'unix_socket' => env('DB_SOCKET', ''),

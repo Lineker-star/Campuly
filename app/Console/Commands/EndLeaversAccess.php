@@ -24,6 +24,13 @@ class EndLeaversAccess extends Command
     protected $signature = 'skuul:end-leavers-access';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:end-leavers-access'];
+
+    /**
      * @var string
      */
     protected $description = 'End the campus membership of staff whose last day has passed';

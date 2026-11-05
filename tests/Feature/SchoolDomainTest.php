@@ -135,7 +135,7 @@ class SchoolDomainTest extends TestCase
 
         $this->assertSame('lagos.example.school', $domain->host);
         $this->assertFalse($domain->isVerified());
-        $this->assertSame('_skuul-verification.lagos.example.school', $domain->verificationRecord());
+        $this->assertSame('_campuly-verification.lagos.example.school', $domain->verificationRecord());
         $this->assertNotNull(AuditEvent::ofAction(AuditAction::SchoolDomainAdded)->forSubject($domain)->first());
     }
 

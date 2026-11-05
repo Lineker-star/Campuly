@@ -9,5 +9,7 @@
     "Sign in to continue to :app.": "Sign in to continue to :app.",
     "Install :app": "Install :app",
     ":app is being updated. Try again in a few minutes.": ":app is being updated. Try again in a few minutes.",
-    "Home": "Home"
+    "Home": "Home",
+    "Documentation": "Documentation",
+    "Documentation (opens in a new tab)": "Documentation (opens in a new tab)"
 }

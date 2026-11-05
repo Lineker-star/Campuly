@@ -17,6 +17,13 @@ class SendAcademicCalendarReminders extends Command
 {
     protected $signature = 'skuul:send-academic-calendar-reminders {--dry-run : List reminders without sending them}';
 
+    /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:send-academic-calendar-reminders'];
+
     protected $description = 'Send staff calendar reminders before periods start or need closure';
 
     public function handle(): int

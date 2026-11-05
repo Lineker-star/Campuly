@@ -91,11 +91,12 @@ class AppLayoutTest extends TestCase
         $document = new \DOMDocument;
         @$document->loadHTML($this->dashboardHtml());
         $xpath = new \DOMXPath($document);
-        $links = $xpath->query('//a[@href="https://skuul.org/current/using/workspace"]');
+        $docsUrl = config('campuly.docs_url');
+        $links = $xpath->query("//a[@href='$docsUrl']");
 
         $this->assertNotFalse($links);
         $this->assertSame(3, $links->length);
-        $headerLinks = $xpath->query('//header//a[@href="https://skuul.org/current/using/workspace"]');
+        $headerLinks = $xpath->query("//header//a[@href='$docsUrl']");
         $this->assertNotFalse($headerLinks);
         $this->assertSame(1, $headerLinks->length);
 

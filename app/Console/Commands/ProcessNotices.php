@@ -23,6 +23,13 @@ class ProcessNotices extends Command
     protected $signature = 'skuul:process-notices';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:process-notices'];
+
+    /**
      * @var string
      */
     protected $description = 'Publish scheduled notices and expire finished ones';

@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Services\Report\ReportRegistry;
+use Illuminate\Console\Attributes\Aliases;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('skuul:release-readiness {--check-backups : Also check backup freshness and restore rehearsal}')]
+#[Aliases(['campuly:release-readiness'])]
 #[Description('Check the release-readiness gates')]
 class ReleaseReadiness extends Command
 {

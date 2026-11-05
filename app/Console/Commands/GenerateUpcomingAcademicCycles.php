@@ -21,6 +21,13 @@ class GenerateUpcomingAcademicCycles extends Command
     protected $signature = 'skuul:generate-upcoming-cycles {--dry-run : List what would be generated without writing it}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:generate-upcoming-cycles'];
+
+    /**
      * @var string
      */
     protected $description = 'Draft the next academic cycle for campuses whose current one is ending';

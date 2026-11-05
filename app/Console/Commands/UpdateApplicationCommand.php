@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Process;
 use Throwable;
 
 /**
- * Move this install to the newest Skuul release on GitHub.
+ * Move this install to the newest release of the application on GitHub.
  *
  * The install must be a git checkout with no local changes. The command
  * backs up first, and it stops at a new major version, which can need
@@ -23,16 +23,23 @@ class UpdateApplicationCommand extends Command
     protected $signature = 'skuul:update {--check : Only say whether a newer release exists} {--no-backup : Do not take a backup first}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:update'];
+
+    /**
      * @var string
      */
-    protected $description = 'Update Skuul to the newest release on GitHub';
+    protected $description = 'Update the application to the newest release on GitHub';
 
     public function handle(): int
     {
         $currentVersion = $this->currentVersion();
 
         if ($currentVersion === null) {
-            $this->error('This install is not a git checkout of a Skuul release. Update it by hand.');
+            $this->error('This install is not a git checkout of a '.config('app.name').' release. Update it by hand.');
 
             return self::FAILURE;
         }
@@ -48,12 +55,12 @@ class UpdateApplicationCommand extends Command
         $newVersion = $release['tag_name'];
 
         if (version_compare($this->normalize($newVersion), $this->normalize($currentVersion), '<=')) {
-            $this->info("Skuul $currentVersion is the newest release.");
+            $this->info(config('app.name')." $currentVersion is the newest release.");
 
             return self::SUCCESS;
         }
 
-        $this->info("Skuul $newVersion is out. This install runs $currentVersion.");
+        $this->info(config('app.name')." $newVersion is out. This install runs $currentVersion.");
         $this->line("Release notes: {$release['html_url']}");
 
         if ($this->option('check')) {
@@ -78,7 +85,7 @@ class UpdateApplicationCommand extends Command
             return self::FAILURE;
         }
 
-        if (!$this->option('no-backup') && $this->call('skuul:backup', ['--with-files' => true]) !== self::SUCCESS) {
+        if (!$this->option('no-backup') && $this->call('campuly:backup', ['--with-files' => true]) !== self::SUCCESS) {
             $this->error('The backup failed. Nothing was changed.');
 
             return self::FAILURE;
@@ -101,7 +108,7 @@ class UpdateApplicationCommand extends Command
         }
 
         $this->call('up');
-        $this->info("Skuul is now on $newVersion.");
+        $this->info(config('app.name')." is now on $newVersion.");
 
         return self::SUCCESS;
     }
@@ -147,7 +154,7 @@ class UpdateApplicationCommand extends Command
         $repository = config('release.update_repository');
 
         return Http::acceptJson()
-            ->withUserAgent('skuul-updater')
+            ->withUserAgent('campuly-updater')
             ->timeout(15)
             ->get("https://api.github.com/repos/$repository/releases/latest")
             ->throw()

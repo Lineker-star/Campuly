@@ -41,8 +41,10 @@ return [
     | Update source
     |--------------------------------------------------------------------------
     |
-    | The GitHub repository whose releases `skuul:update` installs.
+    | The GitHub repository whose releases `campuly:update` installs. It points
+    | at the Campuly fork so an update never brings upstream Skuul over the brand.
+    | SKUUL_UPDATE_REPOSITORY is still read for installs that already set it.
     |
     */
-    'update_repository' => (string) env('SKUUL_UPDATE_REPOSITORY', 'yungifez/skuul'),
+    'update_repository' => (string) env('CAMPULY_UPDATE_REPOSITORY', env('SKUUL_UPDATE_REPOSITORY', 'Lineker-star/Campuly')),
 ];

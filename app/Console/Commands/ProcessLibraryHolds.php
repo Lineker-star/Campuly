@@ -23,6 +23,13 @@ class ProcessLibraryHolds extends Command
     protected $signature = 'skuul:process-library-holds';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:process-library-holds'];
+
+    /**
      * @var string
      */
     protected $description = 'End library holds nobody collected and pass the copy on';

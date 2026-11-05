@@ -20,6 +20,13 @@ class CheckBackup extends Command
     protected $signature = 'skuul:check-backup';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:check-backup'];
+
+    /**
      * @var string
      */
     protected $description = 'Check that a recent backup exists';
@@ -83,7 +90,7 @@ class CheckBackup extends Command
 
         if ($newest === null) {
             return $this->reportFailure(
-                'No restore has ever been rehearsed. Run skuul:rehearse-restore.',
+                'No restore has ever been rehearsed. Run campuly:rehearse-restore.',
                 ['path' => $path],
             );
         }

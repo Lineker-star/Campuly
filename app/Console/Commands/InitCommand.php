@@ -17,6 +17,13 @@ class InitCommand extends Command
     protected $signature = 'skuul:init';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:init'];
+
+    /**
      * @var string
      */
     protected $description = 'Install Campuly';
@@ -124,7 +131,7 @@ class InitCommand extends Command
     {
         $this->line("Set up your app's environment details");
         $this->env = $this->choice(
-            'What environment are you installing skuul on?',
+            'What environment are you installing '.config('app.name').' on?',
             ['local', 'production'],
             $this->env
         );
@@ -259,12 +266,12 @@ class InitCommand extends Command
         $this->line('Creating super admin account');
         switch ($this->env) {
             case 'local':
-                $this->info('Since you are trying out skuul locally, we have already created a super admin account for you. Check the docs on what these credentials are if unsure');
+                $this->info('Since you are trying out '.config('app.name').' locally, we have already created a super admin account for you. Check the docs on what these credentials are if unsure');
                 break;
             default:
-                $this->info('If you choose to not create a super admin now for some reason, you cen do so late by running php artisan skuul:create-super-admin');
+                $this->info('If you choose to not create a super admin now for some reason, you can do so later by running php artisan campuly:create-super-admin');
                 if ($this->confirm('Do you wish to create a super admin account now?', true)) {
-                    $this->call('skuul:create-super-admin');
+                    $this->call('campuly:create-super-admin');
                 } else {
                     $this->line('skipping...');
                 }

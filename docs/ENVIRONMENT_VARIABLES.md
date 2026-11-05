@@ -62,7 +62,14 @@ Set in `.env` (local) or the platform's environment settings (production). Never
 
 ## Accounts and documents (existing)
 
-`CHECK_EMAIL_DOMAINS`, `ACCOUNT_INVITATION_EXPIRY_HOURS`, `DOCUMENT_RENDERER` (empty, `browser`, `dompdf`), `BROWSER_RENDERER_URL`, `BROWSER_RENDERER_TOKEN`, `BROWSER_RENDERER_TIMEOUT`, `SKUUL_UPDATE_REPOSITORY` (set to your Campuly fork).
+`CHECK_EMAIL_DOMAINS`, `ACCOUNT_INVITATION_EXPIRY_HOURS`, `DOCUMENT_RENDERER` (empty, `browser`, `dompdf`), `BROWSER_RENDERER_URL`, `BROWSER_RENDERER_TOKEN`, `BROWSER_RENDERER_TIMEOUT`.
+
+## Campuly
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `CAMPULY_DOCS_URL` | `https://github.com/Lineker-star/Campuly/tree/main/docs` | Where the header and sidebar "Documentation" links lead. |
+| `CAMPULY_UPDATE_REPOSITORY` | `Lineker-star/Campuly` | GitHub repository whose releases `campuly:update` installs. `SKUUL_UPDATE_REPOSITORY` is still read when this is unset, for older installs. |
 
 ## Container
 
@@ -72,7 +79,6 @@ Set in `.env` (local) or the platform's environment settings (production). Never
 
 | Phase | Variables |
 |---|---|
-| 0 | `CAMPULY_DOCS_URL`, `CAMPULY_UPDATE_REPOSITORY` |
 | 1 | `APP_DEFAULT_LOCALE=fr` |
 | 4 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` |
 | 6 | `PAYMENTS_MOBILE_MONEY_DRIVER`, provider keys (`CAMPAY_*`, `NOTCHPAY_*`, `FLUTTERWAVE_*`, `MTN_MOMO_*`, `ORANGE_MONEY_*`), `SMS_DRIVER`, `SMS_*`, `WHATSAPP_*` |

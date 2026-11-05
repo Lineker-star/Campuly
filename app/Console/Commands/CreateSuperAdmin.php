@@ -23,6 +23,13 @@ class CreateSuperAdmin extends Command
     protected $signature = 'skuul:create-super-admin';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:create-super-admin'];
+
+    /**
      * @var string
      */
     protected $description = 'Creates a super admin';

@@ -42,6 +42,13 @@ class RehearseRestore extends Command
         {--check-only : Look inside the backup without restoring it}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:rehearse-restore'];
+
+    /**
      * @var string
      */
     protected $description = 'Restore the newest backup into a separate database and check what came back';

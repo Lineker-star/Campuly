@@ -18,6 +18,13 @@ class BringInvoicesIntoTheBooks extends Command
     protected $signature = 'skuul:bring-invoices-into-books {--school= : Only this school id}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:bring-invoices-into-books'];
+
+    /**
      * @var string
      */
     protected $description = 'Put invoices raised before the ledger existed on their learners\' accounts';

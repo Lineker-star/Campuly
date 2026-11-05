@@ -81,7 +81,7 @@ class MonitoringTest extends TestCase
         Storage::disk('backups')->put('restore-rehearsals/2026-08-21-030000.json', '{"restored":false,"rows":null}');
 
         $this->artisan('skuul:check-backup')
-            ->expectsOutput('No restore has ever been rehearsed. Run skuul:rehearse-restore.')
+            ->expectsOutput('No restore has ever been rehearsed. Run campuly:rehearse-restore.')
             ->assertFailed();
     }
 

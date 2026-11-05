@@ -20,6 +20,13 @@ class SendSyllabusBehindReminders extends Command
 {
     protected $signature = 'skuul:send-syllabus-behind-reminders {--dry-run : List reminders without sending them}';
 
+    /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:send-syllabus-behind-reminders'];
+
     protected $description = 'Send teachers a weekly list of the classes that are behind their syllabus';
 
     public function handle(SyllabusCoverageService $coverage): int

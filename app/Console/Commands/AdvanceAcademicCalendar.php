@@ -23,6 +23,13 @@ class AdvanceAcademicCalendar extends Command
     protected $signature = 'skuul:advance-academic-calendar {--dry-run : List what would open without opening it}';
 
     /**
+     * The Campuly name. The skuul: name stays for existing cron entries and scripts.
+     *
+     * @var array<int, string>
+     */
+    protected $aliases = ['campuly:advance-academic-calendar'];
+
+    /**
      * @var string
      */
     protected $description = 'Open scheduled academic periods whose start date has arrived';

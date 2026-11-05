@@ -102,7 +102,7 @@ class SchoolDomain extends Model
      */
     public function verificationRecord(): string
     {
-        return '_skuul-verification.'.$this->host;
+        return '_campuly-verification.'.$this->host;
     }
 
     /**

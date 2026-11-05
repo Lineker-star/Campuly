@@ -57,7 +57,7 @@ class BackupWriter
             $dumper->dumpTo($plain, (array) DB::connection($connection)->getConfig());
             $this->squeeze($plain, $squeezed);
 
-            return $this->store($squeezed, "skuul-$stamp.sql.gz");
+            return $this->store($squeezed, "campuly-$stamp.sql.gz");
         } finally {
             $this->forget($plain, $squeezed);
         }
@@ -79,7 +79,7 @@ class BackupWriter
                 return null;
             }
 
-            return $this->store($archive, "skuul-$stamp.files.zip");
+            return $this->store($archive, "campuly-$stamp.files.zip");
         } finally {
             $this->forget($archive);
         }
